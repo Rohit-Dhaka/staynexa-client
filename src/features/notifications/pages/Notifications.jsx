@@ -1,0 +1,384 @@
+import { useCallback, useEffect, useMemo, useState } from "react";
+import {
+  Bell,
+  CheckCheck,
+  Trash2,
+  Search,
+  CalendarDays,
+  CreditCard,
+  Users,
+  ClipboardCheck,
+  Info,
+  Inbox,
+  Filter,
+  Loader2,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+import {
+  getNotifications,
+  markNotificationRead,
+  markAllNotificationsRead,
+  deleteNotification,
+  clearReadNotifications,
+} from "../services/notifications.service";
+
+const CATEGORY_META = {
+  booking: {
+    label: "Booking",
+    icon: CalendarDays,
+    color: "bg-violet-50 text-violet-600",
+  },
+  attendance: {
+    label: "Attendance",
+    icon: ClipboardCheck,
+    color: "bg-emerald-50 text-emerald-600",
+  },
+  payroll: {
+    label: "Payroll",
+    icon: CreditCard,
+    color: "bg-amber-50 text-amber-600",
+  },
+  staff: { label: "Staff", icon: Users, color: "bg-sky-50 text-sky-600" },
+  guest: { label: "Guest", icon: Users, color: "bg-cyan-50 text-cyan-600" },
+  finance: {
+    label: "Finance",
+    icon: CreditCard,
+    color: "bg-rose-50 text-rose-600",
+  },
+  system: { label: "System", icon: Info, color: "bg-slate-100 text-slate-600" },
+};
+const FILTERS = [
+  { value: "all", label: "All notifications" },
+  { value: "unread", label: "Unread" },
+  ...Object.entries(CATEGORY_META).map(([value, meta]) => ({
+    value,
+    label: meta.label,
+  })),
+];
+const dateText = (value) =>
+  value
+    ? new Date(value).toLocaleString("en-IN", {
+        dateStyle: "medium",
+        timeStyle: "short",
+      })
+    : "";
+
+export default function Notifications() {
+  const navigate = useNavigate();
+  const [items, setItems] = useState([]);
+  const [pagination, setPagination] = useState({
+    page: 1,
+    pages: 1,
+    total: 0,
+    limit: 20,
+  });
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [activeFilter, setActiveFilter] = useState("all");
+  const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [reload, setReload] = useState(0);
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    try {
+      const params = { page: pagination.page, limit: pagination.limit };
+      if (activeFilter === "unread") params.unread = true;
+      else if (activeFilter !== "all") params.category = activeFilter;
+      const data = await getNotifications(params);
+      setItems(data?.items || []);
+      setPagination(
+        data?.pagination || { page: 1, pages: 1, total: 0, limit: 20 },
+      );
+      setUnreadCount(Number(data?.unreadCount || 0));
+    } catch (error) {
+      toast.error(
+        error?.response?.data?.message || "Could not load notifications",
+      );
+    } finally {
+      setLoading(false);
+    }
+  }, [pagination.page, pagination.limit, activeFilter, reload]);
+
+  useEffect(() => {
+    load();
+  }, [load]);
+  const filtered = useMemo(() => {
+    const query = search.trim().toLowerCase();
+    return items.filter(
+      (item) =>
+        !query ||
+        `${item.title} ${item.message} ${item.category}`
+          .toLowerCase()
+          .includes(query),
+    );
+  }, [items, search]);
+  const refresh = () => setReload((n) => n + 1);
+
+  const openItem = async (item) => {
+    try {
+      if (!item.read) await markNotificationRead(item._id);
+      setItems((current) =>
+        current.map((n) =>
+          n._id === item._id
+            ? { ...n, read: true, readAt: n.readAt || new Date().toISOString() }
+            : n,
+        ),
+      );
+      if (!item.read) setUnreadCount((n) => Math.max(0, n - 1));
+      if (item.link) navigate(item.link);
+    } catch (error) {
+      toast.error(
+        error?.response?.data?.message || "Could not update notification",
+      );
+    }
+  };
+  const markAll = async () => {
+    try {
+      await markAllNotificationsRead();
+      setItems((current) =>
+        current.map((n) => ({
+          ...n,
+          read: true,
+          readAt: n.readAt || new Date().toISOString(),
+        })),
+      );
+      setUnreadCount(0);
+      toast.success("All notifications marked as read");
+    } catch (error) {
+      toast.error(
+        error?.response?.data?.message || "Could not mark notifications read",
+      );
+    }
+  };
+  const remove = async (item) => {
+    try {
+      await deleteNotification(item._id);
+      setItems((current) => current.filter((n) => n._id !== item._id));
+      setPagination((p) => ({ ...p, total: Math.max(0, p.total - 1) }));
+      if (!item.read) setUnreadCount((n) => Math.max(0, n - 1));
+      toast.success("Notification deleted");
+    } catch (error) {
+      toast.error(
+        error?.response?.data?.message || "Could not delete notification",
+      );
+    }
+  };
+  const clearRead = async () => {
+    try {
+      await clearReadNotifications();
+      toast.success("Read notifications cleared");
+      setPagination((p) => ({ ...p, page: 1 }));
+      refresh();
+    } catch (error) {
+      toast.error(
+        error?.response?.data?.message || "Could not clear read notifications",
+      );
+    }
+  };
+
+  return (
+    <main className="  space-y-6 ">
+      <header className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+        <div>
+          <div className="mb-2 flex items-center gap-2 text-sm text-slate-500">
+            <Bell size={16} />
+            <span>Dashboard</span>
+            <span>/</span>
+            <span className="text-slate-800">Notifications</span>
+          </div>
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+            Notifications
+          </h1>
+          <p className="mt-1 text-sm text-slate-500">
+            Stay updated with bookings, staff activity and payroll.
+          </p>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={markAll}
+            disabled={!unreadCount}
+            className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm font-semibold text-slate-700 disabled:opacity-50"
+          >
+            <CheckCheck size={16} /> Mark all read
+          </button>
+          <button
+            type="button"
+            onClick={clearRead}
+            className="inline-flex items-center gap-2 rounded-xl border border-rose-100 bg-white px-3.5 py-2.5 text-sm font-semibold text-rose-600"
+          >
+            <Trash2 size={16} /> Clear read
+          </button>
+        </div>
+      </header>
+      <section className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <Summary
+          title="Total notifications"
+          value={pagination.total}
+          icon={<Bell size={22} />}
+        />
+        <Summary
+          title="Unread"
+          value={unreadCount}
+          icon={<Inbox size={22} />}
+        />
+        <Summary
+          title="Read"
+          value={Math.max(0, pagination.total - unreadCount)}
+          icon={<CheckCheck size={22} />}
+        />
+      </section>
+      <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <div className="border-b border-slate-100 p-4 sm:p-5">
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+              <h2 className="font-bold text-slate-900">Recent activity</h2>
+              <p className="mt-1 text-sm text-slate-500">
+                {filtered.length} notifications on this page
+              </p>
+            </div>
+            <div className="relative w-full lg:max-w-xs">
+              <Search
+                size={17}
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+              />
+              <input
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search notifications..."
+                className="w-full rounded-xl border border-slate-200 bg-slate-50 py-2.5 pl-10 pr-3 text-sm outline-none focus:border-blue-400"
+              />
+            </div>
+          </div>
+          <div className="mt-4 flex items-center gap-2 overflow-x-auto pb-1">
+            <Filter size={16} className="shrink-0 text-slate-400" />
+            {FILTERS.map((filter) => (
+              <button
+                key={filter.value}
+                type="button"
+                onClick={() => {
+                  setActiveFilter(filter.value);
+                  setPagination((p) => ({ ...p, page: 1 }));
+                }}
+                className={`shrink-0 rounded-lg px-3 py-2 text-xs font-semibold ${activeFilter === filter.value ? "bg-blue-600 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`}
+              >
+                {filter.label}
+                {filter.value === "unread" && unreadCount > 0
+                  ? ` (${unreadCount})`
+                  : ""}
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className="divide-y divide-slate-100">
+          {loading ? (
+            <div className="flex justify-center p-12 text-slate-400">
+              <Loader2 className="animate-spin" />
+            </div>
+          ) : filtered.length ? (
+            filtered.map((item) => {
+              const meta = CATEGORY_META[item.category] || CATEGORY_META.system;
+              const Icon = meta.icon;
+              return (
+                <article
+                  key={item._id}
+                  className={`flex gap-3 p-4 sm:gap-4 sm:p-5 ${item.read ? "bg-white" : "bg-blue-50/40"}`}
+                >
+                  <span
+                    className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${meta.color}`}
+                  >
+                    <Icon size={20} />
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => openItem(item)}
+                    className="min-w-0 flex-1 text-left"
+                  >
+                    <span className="flex flex-wrap items-center gap-2">
+                      <span className="font-semibold text-slate-900">
+                        {item.title}
+                      </span>
+                      {!item.read && (
+                        <span className="rounded-full bg-blue-100 px-2 py-0.5 text-[10px] font-bold text-blue-700">
+                          UNREAD
+                        </span>
+                      )}
+                      <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-slate-600">
+                        {meta.label}
+                      </span>
+                    </span>
+                    <span className="mt-1 block text-sm leading-6 text-slate-600">
+                      {item.message}
+                    </span>
+                    <span className="mt-2 block text-xs text-slate-400">
+                      {dateText(item.createdAt)}
+                    </span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => remove(item)}
+                    title="Delete notification"
+                    aria-label="Delete notification"
+                    className="self-start rounded-lg p-2 text-slate-400 hover:bg-rose-50 hover:text-rose-600"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                </article>
+              );
+            })
+          ) : (
+            <div className="p-12 text-center">
+              <Bell size={28} className="mx-auto text-slate-300" />
+              <p className="mt-3 font-semibold text-slate-800">
+                No notifications found
+              </p>
+              <p className="mt-1 text-sm text-slate-500">
+                Try another filter or search term.
+              </p>
+            </div>
+          )}
+        </div>
+        <footer className="flex items-center justify-between border-t border-slate-100 px-4 py-3 text-sm text-slate-600">
+          <span>
+            Page {pagination.page} of {pagination.pages} · {pagination.total}{" "}
+            total
+          </span>
+          <div className="flex gap-2">
+            <button
+              type="button"
+              disabled={pagination.page <= 1 || loading}
+              onClick={() => setPagination((p) => ({ ...p, page: p.page - 1 }))}
+              className="inline-flex items-center gap-1 rounded-lg border border-slate-200 px-3 py-2 disabled:opacity-40"
+            >
+              <ChevronLeft size={15} /> Previous
+            </button>
+            <button
+              type="button"
+              disabled={pagination.page >= pagination.pages || loading}
+              onClick={() => setPagination((p) => ({ ...p, page: p.page + 1 }))}
+              className="inline-flex items-center gap-1 rounded-lg border border-slate-200 px-3 py-2 disabled:opacity-40"
+            >
+              Next <ChevronRight size={15} />
+            </button>
+          </div>
+        </footer>
+      </section>
+    </main>
+  );
+}
+function Summary({ title, value, icon }) {
+  return (
+    <article className="flex items-center justify-between rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+      <div>
+        <p className="text-sm text-slate-500">{title}</p>
+        <p className="mt-2 text-3xl font-bold text-slate-900">{value}</p>
+      </div>
+      <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">
+        {icon}
+      </span>
+    </article>
+  );
+}

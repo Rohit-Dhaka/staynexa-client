@@ -1,0 +1,378 @@
+import { useCallback, useEffect, useState } from "react";
+import ExportButtons from "../../../components/common/ExportButtons";
+import { useNavigate } from "react-router-dom";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Eye,
+  Loader2,
+  Pencil,
+  Plus,
+  Search,
+  Star,
+  Users,
+} from "lucide-react";
+import toast from "react-hot-toast";
+
+import useAuth from "../../../hooks/useAuth";
+import { ROLES } from "../../../constants/roles";
+import { TableSkeleton } from "../../../components/common/Skeleton";
+import { getGuests, updateGuestFlags } from "../services/guests.service";
+
+const LIMIT = 10;
+
+const selectClass =
+  "rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100";
+
+// Query parameters the backend understands.
+const FILTERS = {
+  vip: { isVip: "true" },
+  blacklisted: { isBlacklisted: "true" },
+  inactive: { isActive: "false" },
+};
+
+const guestExportColumns = [
+  { header: "Guest Name", key: "name" },
+  { header: "Email", key: "email" },
+  { header: "Phone", key: "phone" },
+  { header: "City", key: "city" },
+  { header: "Completed Stays", key: "completedStays", type: "number" },
+  { header: "Total Bookings", key: "totalBookings", type: "number" },
+  { header: "Total Spent", key: "totalSpent", type: "currency" },
+  {
+    header: "VIP",
+    value: (guest) => (guest.isVip ? "Yes" : "No"),
+  },
+  {
+    header: "Blacklisted",
+    value: (guest) => (guest.isBlacklisted ? "Yes" : "No"),
+  },
+  {
+    header: "Active",
+    value: (guest) => (guest.isActive ? "Yes" : "No"),
+  },
+  {
+    header: "Last Stay",
+    value: (guest) => formatDate(guest.lastStay),
+  },
+];
+
+const formatINR = (value) => `₹${Number(value || 0).toLocaleString("en-IN")}`;
+
+const formatDate = (value) =>
+  value
+    ? new Date(value).toLocaleDateString("en-IN", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+      })
+    : "-";
+
+const GuestList = () => {
+  const navigate = useNavigate();
+  const { user } = useAuth();
+
+  // The backend lets only managers and super admins edit guests.
+  const canManage = [ROLES.SUPER_ADMIN, ROLES.MANAGER].includes(user?.role);
+
+  const [items, setItems] = useState([]);
+  const [meta, setMeta] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [searchInput, setSearchInput] = useState("");
+  const [search, setSearch] = useState("");
+  const [filter, setFilter] = useState("");
+  const [busyId, setBusyId] = useState(null);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setSearch(searchInput.trim());
+      setPage(1);
+    }, 400);
+    return () => clearTimeout(timer);
+  }, [searchInput]);
+
+  const fetchGuests = useCallback(async () => {
+    setLoading(true);
+    try {
+      const params = { page, limit: LIMIT, ...(FILTERS[filter] || {}) };
+      if (search) params.search = search;
+
+      const data = await getGuests(params);
+
+      // The backend sends { guests, meta }.
+      setItems(data.guests || []);
+      setMeta(data.meta || null);
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to load guests");
+    } finally {
+      setLoading(false);
+    }
+  }, [page, search, filter]);
+
+  useEffect(() => {
+    fetchGuests();
+  }, [fetchGuests]);
+
+  const toggleVip = async (guest) => {
+    setBusyId(guest._id);
+    try {
+      await updateGuestFlags(guest._id, { isVip: !guest.isVip });
+      toast.success(
+        guest.isVip ? "VIP removed" : `${guest.name} marked as VIP`,
+      );
+      fetchGuests();
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Action failed");
+    } finally {
+      setBusyId(null);
+    }
+  };
+
+  const currentPage = meta?.page || page;
+  const totalPages = meta?.totalPages || 1;
+
+  return (
+    <div className="w-full min-w-0 max-w-none space-y-5">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900">Guests</h1>
+          <p className="text-sm text-slate-500">
+            Guest profiles and stay history
+          </p>
+        </div>
+        <div className="flex gap-2">
+          {canManage && (
+            <ExportButtons
+              title="Guest Report"
+              fileName="guests"
+              columns={guestExportColumns}
+              rows={items}
+              getRows={async () => {
+                return items;
+              }}
+            />
+          )}
+
+          {canManage && (
+            <button
+              type="button"
+              onClick={() => navigate("/guests/new")}
+              className="flex items-center justify-center gap-2 rounded-lg bg-[#1a1a1a] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-700"
+            >
+              <Plus size={16} />
+              Add Guest
+            </button>
+          )}
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-3 rounded-xl border border-slate-200 bg-white p-4 sm:flex-row">
+        <div className="relative flex-1">
+          <Search
+            size={16}
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+          />
+          <input
+            type="text"
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+            placeholder="Search by name, phone or email"
+            className="w-full rounded-lg border border-slate-300 py-2.5 pl-9 pr-3 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+          />
+        </div>
+
+        <select
+          value={filter}
+          onChange={(e) => {
+            setFilter(e.target.value);
+            setPage(1);
+          }}
+          aria-label="Filter guests"
+          className={selectClass}
+        >
+          <option value="">All Guests</option>
+          <option value="vip">VIP</option>
+          <option value="blacklisted">Blacklisted</option>
+          <option value="inactive">Inactive</option>
+        </select>
+      </div>
+
+      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
+        {loading ? (
+          <TableSkeleton rows={6} columns={6} />
+        ) : items.length === 0 ? (
+          <div className="flex flex-col items-center justify-center gap-3 px-4 py-16 text-center">
+            <div className="rounded-xl bg-slate-100 p-4 text-slate-500">
+              <Users size={28} />
+            </div>
+            <h3 className="font-semibold text-slate-800">No guests found</h3>
+            <p className="max-w-sm text-sm text-slate-500">
+              {search || filter
+                ? "Try changing the search or filter."
+                : "Guests are saved automatically when you create a booking."}
+            </p>
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[820px] text-left text-sm">
+              <thead className="border-b border-slate-100 bg-slate-50 text-xs uppercase tracking-wider text-slate-500">
+                <tr>
+                  <th className="px-5 py-3 font-semibold">Guest</th>
+                  <th className="px-5 py-3 font-semibold">Phone</th>
+                  <th className="px-5 py-3 font-semibold">City</th>
+                  <th className="px-5 py-3 font-semibold">Stays</th>
+                  <th className="px-5 py-3 font-semibold">Tags</th>
+                  <th className="px-5 py-3 text-right font-semibold">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+
+              <tbody className="divide-y divide-slate-100">
+                {items.map((guest) => (
+                  <tr key={guest._id} className="hover:bg-slate-50/60">
+                    <td className="px-5 py-4">
+                      <p className="font-semibold text-slate-900">
+                        {guest.name}
+                      </p>
+                      <p className="text-xs text-slate-500">
+                        {guest.email || "-"}
+                      </p>
+                    </td>
+
+                    <td className="px-5 py-4 text-slate-600">{guest.phone}</td>
+
+                    <td className="px-5 py-4 text-slate-600">
+                      {guest.city || "-"}
+                    </td>
+
+                    <td className="px-5 py-4">
+                      <p className="text-slate-800">
+                        {guest.completedStays ?? 0} completed
+                        <span className="text-slate-400">
+                          {" "}
+                          / {guest.totalBookings ?? 0} bookings
+                        </span>
+                      </p>
+                      <p className="text-xs text-slate-500">
+                        {guest.totalSpent
+                          ? `${formatINR(guest.totalSpent)} spent`
+                          : "No spend yet"}
+                        {guest.lastStay
+                          ? ` - last ${formatDate(guest.lastStay)}`
+                          : ""}
+                      </p>
+                    </td>
+
+                    <td className="px-5 py-4">
+                      <div className="flex flex-wrap gap-1.5">
+                        {guest.isVip && (
+                          <span className="rounded-full bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-700">
+                            VIP
+                          </span>
+                        )}
+                        {guest.isBlacklisted && (
+                          <span className="rounded-full bg-rose-50 px-2.5 py-1 text-xs font-semibold text-rose-700">
+                            Blacklisted
+                          </span>
+                        )}
+                        {!guest.isActive && (
+                          <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-600">
+                            Inactive
+                          </span>
+                        )}
+                      </div>
+                    </td>
+
+                    <td className="px-5 py-4">
+                      <div className="flex items-center justify-end gap-1">
+                        <button
+                          type="button"
+                          onClick={() => navigate(`/guests/${guest._id}`)}
+                          title="View profile"
+                          aria-label="View profile"
+                          className="rounded-lg p-2 text-slate-500 hover:bg-slate-100 hover:text-indigo-600"
+                        >
+                          <Eye size={16} />
+                        </button>
+
+                        {canManage && (
+                          <>
+                            <button
+                              type="button"
+                              onClick={() =>
+                                navigate(`/guests/${guest._id}/edit`)
+                              }
+                              title="Edit"
+                              aria-label="Edit guest"
+                              className="rounded-lg p-2 text-slate-500 hover:bg-slate-100 hover:text-indigo-600"
+                            >
+                              <Pencil size={16} />
+                            </button>
+
+                            <button
+                              type="button"
+                              onClick={() => toggleVip(guest)}
+                              disabled={busyId === guest._id}
+                              title={guest.isVip ? "Remove VIP" : "Mark as VIP"}
+                              aria-label={
+                                guest.isVip ? "Remove VIP" : "Mark as VIP"
+                              }
+                              className="rounded-lg p-2 text-slate-500 hover:bg-slate-100 hover:text-amber-600 disabled:opacity-40"
+                            >
+                              {busyId === guest._id ? (
+                                <Loader2 size={16} className="animate-spin" />
+                              ) : (
+                                <Star
+                                  size={16}
+                                  className={
+                                    guest.isVip
+                                      ? "fill-amber-400 text-amber-500"
+                                      : ""
+                                  }
+                                />
+                              )}
+                            </button>
+                          </>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        {!loading && meta && meta.total > 0 && (
+          <div className="flex flex-col items-center justify-between gap-3 border-t border-slate-100 px-5 py-3 text-sm text-slate-500 sm:flex-row">
+            <p>
+              Page {currentPage} of {totalPages} &middot; {meta.total} total
+            </p>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={() => setPage((p) => p - 1)}
+                disabled={currentPage <= 1}
+                className="flex items-center gap-1 rounded-lg border border-slate-300 px-3 py-1.5 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                <ChevronLeft size={14} /> Prev
+              </button>
+              <button
+                type="button"
+                onClick={() => setPage((p) => p + 1)}
+                disabled={currentPage >= totalPages}
+                className="flex items-center gap-1 rounded-lg border border-slate-300 px-3 py-1.5 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                Next <ChevronRight size={14} />
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default GuestList;
