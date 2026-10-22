@@ -17,7 +17,7 @@ import toast from "react-hot-toast";
 import useAuth from "../../../hooks/useAuth";
 import { ROLES } from "../../../constants/roles";
 import { TableSkeleton } from "../../../components/common/Skeleton";
-import { getGuests, updateGuestFlags } from "../services/guests.service";
+import { getGuests, updateGuestFlags } from "../services/Guests.service";
 
 const LIMIT = 10;
 

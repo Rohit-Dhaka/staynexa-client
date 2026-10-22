@@ -22,7 +22,7 @@ import {
 } from "../services/bookings.service";
 // Namespace import: the page still loads even if the function name differs.
 import * as frontdeskService from "../../frontdesk/services/frontdesk.service";
-import { lookupGuest, suggestGuests } from "../../guests/services/guests.service";
+import { lookupGuest, suggestGuests } from "../../guests/services/Guests.service";
 import { Field, ErrorBox, NoteBox, inputClass } from "../components/formUi";
 import {
   BOOKING_SOURCES,
