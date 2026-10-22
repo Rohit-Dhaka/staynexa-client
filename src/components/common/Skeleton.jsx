@@ -1,5 +1,5 @@
 export const Skeleton = ({ className = "" }) => (
-  <div className={`animate-pulse rounded-md bg-slate-200/80 ${className}`} />
+  <div className={`animate-pulse rounded bg-slate-200/80 ${className}`} />
 );
 
 export const SummaryCardsSkeleton = ({ count = 7 }) => (
@@ -7,7 +7,7 @@ export const SummaryCardsSkeleton = ({ count = 7 }) => (
     {Array.from({ length: count }).map((_, index) => (
       <div
         key={index}
-        className="rounded-xl border border-slate-200 bg-white p-4"
+        className="rounded border border-slate-200 bg-white p-4"
       >
         <Skeleton className="h-3 w-16" />
         <Skeleton className="mt-3 h-7 w-10" />

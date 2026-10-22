@@ -62,9 +62,9 @@ const ExtendHoldModal = ({ booking, onClose, onDone }) => {
             key={p.hours}
             type="button"
             onClick={() => setMode({ type: "preset", hours: p.hours })}
-            className={`rounded-lg px-4 py-2 text-sm font-medium transition ${
+            className={`rounded px-4 py-2 text-sm font-medium transition ${
               mode.type === "preset" && mode.hours === p.hours
-                ? "bg-indigo-600 text-white"
+                ? "bg-black text-white"
                 : "bg-slate-100 text-slate-700 hover:bg-slate-200"
             }`}
           >
@@ -74,8 +74,8 @@ const ExtendHoldModal = ({ booking, onClose, onDone }) => {
         <button
           type="button"
           onClick={() => setMode({ type: "custom" })}
-          className={`rounded-lg px-4 py-2 text-sm font-medium transition ${
-            mode.type === "custom" ? "bg-indigo-600 text-white" : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+          className={`rounded px-4 py-2 text-sm font-medium transition ${
+            mode.type === "custom" ? "bg-black text-white" : "bg-slate-100 text-slate-700 hover:bg-slate-200"
           }`}
         >
           Khud ka time

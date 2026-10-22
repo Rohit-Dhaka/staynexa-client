@@ -40,7 +40,7 @@ const Dashboard = () => {
 
   return (
     <div className="space-y-6">
-      <div className="rounded-2xl bg-blue-600 p-6 text-white sm:p-8">
+      <div className="rounded bg-black p-6 text-white sm:p-8">
         <p className="text-sm text-blue-100">{getGreeting()}</p>
         <h1 className="mt-1 text-2xl font-bold sm:text-3xl">{user.name}</h1>
         <p className="mt-2 text-sm text-blue-100">
@@ -57,9 +57,9 @@ const Dashboard = () => {
             <Link
               key={path}
               to={path}
-              className="rounded-xl border border-gray-100 bg-white p-5 transition hover:border-blue-200 hover:shadow-sm"
+              className="rounded border border-gray-100 bg-white p-5 transition hover:border-blue-200 hover:"
             >
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
+              <div className="flex h-10 w-10 items-center justify-center rounded bg-black text-blue-600">
                 <Icon size={20} />
               </div>
               <p className="mt-4 font-semibold text-gray-900">{label}</p>

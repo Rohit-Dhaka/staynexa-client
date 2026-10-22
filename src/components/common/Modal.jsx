@@ -37,7 +37,7 @@ const Modal = ({ open, title, subtitle, onClose, children, footer, size = "md", 
         if (event.target === event.currentTarget && !busy) onClose?.();
       }}
     >
-      <div className={`flex max-h-[90vh] w-full ${SIZES[size] || SIZES.md} flex-col rounded-2xl bg-white shadow-xl`}>
+      <div className={`flex max-h-[90vh] w-full ${SIZES[size] || SIZES.md} flex-col rounded bg-white `}>
         <div className="flex items-start justify-between gap-4 border-b border-slate-100 px-6 py-4">
           <div>
             <h3 className="text-base font-semibold text-slate-900">{title}</h3>
@@ -47,7 +47,7 @@ const Modal = ({ open, title, subtitle, onClose, children, footer, size = "md", 
             type="button"
             onClick={onClose}
             disabled={busy}
-            className="rounded-lg p-1.5 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700 disabled:opacity-50"
+            className="rounded p-1.5 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700 disabled:opacity-50"
             aria-label="Close"
           >
             <X size={18} />

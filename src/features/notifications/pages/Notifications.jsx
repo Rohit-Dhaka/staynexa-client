@@ -201,14 +201,14 @@ export default function Notifications() {
             type="button"
             onClick={markAll}
             disabled={!unreadCount}
-            className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm font-semibold text-slate-700 disabled:opacity-50"
+            className="inline-flex items-center gap-2 rounded border border-slate-200 bg-white px-3.5 py-2.5 text-sm font-semibold text-slate-700 disabled:opacity-50"
           >
             <CheckCheck size={16} /> Mark all read
           </button>
           <button
             type="button"
             onClick={clearRead}
-            className="inline-flex items-center gap-2 rounded-xl border border-rose-100 bg-white px-3.5 py-2.5 text-sm font-semibold text-rose-600"
+            className="inline-flex items-center gap-2 rounded border border-rose-100 bg-white px-3.5 py-2.5 text-sm font-semibold text-rose-600"
           >
             <Trash2 size={16} /> Clear read
           </button>
@@ -231,7 +231,7 @@ export default function Notifications() {
           icon={<CheckCheck size={22} />}
         />
       </section>
-      <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+      <section className="overflow-hidden rounded border border-slate-200 bg-white">
         <div className="border-b border-slate-100 p-4 sm:p-5">
           <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
             <div>
@@ -249,7 +249,7 @@ export default function Notifications() {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search notifications..."
-                className="w-full rounded-xl border border-slate-200 bg-slate-50 py-2.5 pl-10 pr-3 text-sm outline-none focus:border-blue-400"
+                className="w-full rounded border border-slate-200 bg-slate-50 py-2.5 pl-10 pr-3 text-sm outline-none focus:border-blue-400"
               />
             </div>
           </div>
@@ -263,7 +263,7 @@ export default function Notifications() {
                   setActiveFilter(filter.value);
                   setPagination((p) => ({ ...p, page: 1 }));
                 }}
-                className={`shrink-0 rounded-lg px-3 py-2 text-xs font-semibold ${activeFilter === filter.value ? "bg-blue-600 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`}
+                className={`shrink-0 rounded px-3 py-2 text-xs font-semibold ${activeFilter === filter.value ? "bg-black text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`}
               >
                 {filter.label}
                 {filter.value === "unread" && unreadCount > 0
@@ -285,10 +285,10 @@ export default function Notifications() {
               return (
                 <article
                   key={item._id}
-                  className={`flex gap-3 p-4 sm:gap-4 sm:p-5 ${item.read ? "bg-white" : "bg-blue-50/40"}`}
+                  className={`flex gap-3 p-4 sm:gap-4 sm:p-5 ${item.read ? "bg-white" : "bg-black/40"}`}
                 >
                   <span
-                    className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${meta.color}`}
+                    className={`flex h-11 w-11 shrink-0 items-center justify-center rounded ${meta.color}`}
                   >
                     <Icon size={20} />
                   </span>
@@ -302,7 +302,7 @@ export default function Notifications() {
                         {item.title}
                       </span>
                       {!item.read && (
-                        <span className="rounded-full bg-blue-100 px-2 py-0.5 text-[10px] font-bold text-blue-700">
+                        <span className="rounded-full bg-black px-2 py-0.5 text-[10px] font-bold text-blue-700">
                           UNREAD
                         </span>
                       )}
@@ -322,7 +322,7 @@ export default function Notifications() {
                     onClick={() => remove(item)}
                     title="Delete notification"
                     aria-label="Delete notification"
-                    className="self-start rounded-lg p-2 text-slate-400 hover:bg-rose-50 hover:text-rose-600"
+                    className="self-start rounded p-2 text-slate-400 hover:bg-rose-50 hover:text-rose-600"
                   >
                     <Trash2 size={16} />
                   </button>
@@ -351,7 +351,7 @@ export default function Notifications() {
               type="button"
               disabled={pagination.page <= 1 || loading}
               onClick={() => setPagination((p) => ({ ...p, page: p.page - 1 }))}
-              className="inline-flex items-center gap-1 rounded-lg border border-slate-200 px-3 py-2 disabled:opacity-40"
+              className="inline-flex items-center gap-1 rounded border border-slate-200 px-3 py-2 disabled:opacity-40"
             >
               <ChevronLeft size={15} /> Previous
             </button>
@@ -359,7 +359,7 @@ export default function Notifications() {
               type="button"
               disabled={pagination.page >= pagination.pages || loading}
               onClick={() => setPagination((p) => ({ ...p, page: p.page + 1 }))}
-              className="inline-flex items-center gap-1 rounded-lg border border-slate-200 px-3 py-2 disabled:opacity-40"
+              className="inline-flex items-center gap-1 rounded border border-slate-200 px-3 py-2 disabled:opacity-40"
             >
               Next <ChevronRight size={15} />
             </button>
@@ -371,12 +371,12 @@ export default function Notifications() {
 }
 function Summary({ title, value, icon }) {
   return (
-    <article className="flex items-center justify-between rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+    <article className="flex items-center justify-between rounded border border-slate-200 bg-white p-5 ">
       <div>
         <p className="text-sm text-slate-500">{title}</p>
         <p className="mt-2 text-3xl font-bold text-slate-900">{value}</p>
       </div>
-      <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">
+      <span className="flex h-12 w-12 items-center justify-center rounded bg-black text-blue-600">
         {icon}
       </span>
     </article>

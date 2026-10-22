@@ -195,13 +195,13 @@ const MonthlySheet = () => {
           </p>
         </div>
 
-        <div className="flex  items-center gap-2 bg-white p-2 rounded-xl">
+        <div className="flex  items-center gap-2 bg-white p-2 rounded">
          
           <button
             type="button"
             onClick={() => shift(-1)}
             aria-label="Previous month"
-            className="rounded-xl border border-slate-200 bg-white p-2.5 text-slate-600 shadow-sm transition hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700"
+            className="rounded border border-slate-200 bg-white p-2.5 text-slate-600  transition hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700"
           >
             <ChevronLeft size={18} />
           </button>
@@ -218,14 +218,14 @@ const MonthlySheet = () => {
             type="button"
             onClick={() => shift(1)}
             aria-label="Next month"
-            className="rounded-xl border border-slate-200 bg-white p-2.5 text-slate-600 shadow-sm transition hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700"
+            className="rounded border border-slate-200 bg-white p-2.5 text-slate-600  transition hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700"
           >
             <ChevronRight size={18} />
           </button>
           <button
             type="button"
             onClick={goToToday}
-            className="rounded-xl border border-indigo-200 bg-indigo-50 px-3 py-2.5 text-sm font-semibold text-indigo-700 transition hover:bg-indigo-100"
+            className="rounded border border-indigo-200 bg-indigo-50 px-3 py-2.5 text-sm font-semibold text-indigo-700 transition hover:bg-indigo-100"
           >
             Today
           </button>
@@ -235,7 +235,7 @@ const MonthlySheet = () => {
                 id="staff-filter"
                 value={selectedStaffId}
                 onChange={(event) => setSelectedStaffId(event.target.value)}
-                className="w-full min-w-[10px] rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm outline-none focus:border-indigo-500"
+                className="w-full min-w-[10px] rounded border border-slate-300 bg-white px-3 py-2 text-sm outline-none focus:border-indigo-500"
               >
                 <option value="all">All staff</option>
                 {staffRows.map((row) => (
@@ -250,7 +250,7 @@ const MonthlySheet = () => {
             type="button"
             onClick={refresh}
             disabled={loading || refreshing}
-            className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50 disabled:opacity-50"
+            className="inline-flex items-center gap-2 rounded border border-slate-200 bg-white px-3 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50 disabled:opacity-50"
           >
             <RefreshCw size={15} className={refreshing ? "animate-spin" : ""} />
             Refresh
@@ -259,7 +259,7 @@ const MonthlySheet = () => {
       </div>
 
       {data?.isLocked && (
-        <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+        <div className="rounded border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
           This attendance month is locked. Editing is disabled.
         </div>
       )}
@@ -294,7 +294,7 @@ const MonthlySheet = () => {
         ].map((item) => (
           <div
             key={item.label}
-            className={`rounded-2xl p-4 flex gap-2 ring-1 ${item.style}`}
+            className={`rounded p-4 flex gap-2 ring-1 ${item.style}`}
           >
             <p className=" font-medium ">{item.label}</p>
             <p className=" font-bold ">
@@ -310,21 +310,21 @@ const MonthlySheet = () => {
       {error && (
         <div
           role="alert"
-          className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700"
+          className="rounded border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700"
         >
           {error}
         </div>
       )}
 
       {loading && (
-        <div className="flex justify-center rounded-2xl border border-slate-200 bg-white py-16 text-slate-400">
+        <div className="flex justify-center rounded border border-slate-200 bg-white py-16 text-slate-400">
           <Loader2 className="animate-spin" />
         </div>
       )}
 
       {data && !loading && (
         <div className="grid grid-cols-1 gap-5 ">
-          <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+          <div className="overflow-hidden rounded border border-slate-200 bg-white ">
             <div className="grid grid-cols-7 border-b border-slate-200 bg-slate-50">
               {WEEKDAYS.map((weekday) => (
                 <div
@@ -375,7 +375,7 @@ const MonthlySheet = () => {
                       <span
                         className={`flex h-7 w-7 items-center justify-center rounded-full text-xs font-semibold ${
                           isToday
-                            ? "bg-indigo-600 text-white"
+                            ? "bg-black text-white"
                             : isFuture
                               ? "text-slate-400"
                               : "text-slate-700"
@@ -421,7 +421,7 @@ const MonthlySheet = () => {
                                 disabled={!editable}
                                 onClick={() => openCell(row, calendarDay)}
                                 title={`${row.user.name}: ${cell.note || meta?.label || "Not marked"}${editable ? " — click to edit" : ""}`}
-                                className={`flex w-full items-center gap-1 truncate rounded-md px-1.5 py-1 text-left text-[10px] font-semibold transition sm:text-[11px] ${
+                                className={`flex w-full items-center gap-1 truncate rounded px-1.5 py-1 text-left text-[10px] font-semibold transition sm:text-[11px] ${
                                   meta
                                     ? meta.chip
                                     : "bg-slate-100 text-slate-500"
@@ -454,7 +454,7 @@ const MonthlySheet = () => {
           </div>
 
           {/* <aside className="space-y-4">
-            <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+            <div className="rounded border border-slate-200 bg-white p-4 ">
               <h3 className="font-semibold text-slate-900">
                 Attendance legend
               </h3>
@@ -465,7 +465,7 @@ const MonthlySheet = () => {
                     className="flex items-center gap-2 text-sm text-slate-600"
                   >
                     <span
-                      className={`inline-flex min-w-9 justify-center rounded-md px-2 py-1 text-[10px] font-bold ${ATTENDANCE_META[status].chip}`}
+                      className={`inline-flex min-w-9 justify-center rounded px-2 py-1 text-[10px] font-bold ${ATTENDANCE_META[status].chip}`}
                     >
                       {ATTENDANCE_META[status].code}
                     </span>
@@ -473,13 +473,13 @@ const MonthlySheet = () => {
                   </div>
                 ))}
                 <div className="flex items-center gap-2 text-sm text-slate-600">
-                  <span className="inline-flex min-w-9 justify-center rounded-md bg-slate-100 px-2 py-1 text-[10px] font-bold text-slate-500">
+                  <span className="inline-flex min-w-9 justify-center rounded bg-slate-100 px-2 py-1 text-[10px] font-bold text-slate-500">
                     —
                   </span>
                   <span>Not marked</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm text-slate-600">
-                  <span className="inline-flex min-w-9 justify-center rounded-md bg-white px-2 py-1 text-[10px] font-bold text-amber-700 ring-1 ring-amber-500">
+                  <span className="inline-flex min-w-9 justify-center rounded bg-white px-2 py-1 text-[10px] font-bold text-amber-700 ring-1 ring-amber-500">
                     Late
                   </span>
                   <span>Late check-in</span>
@@ -487,7 +487,7 @@ const MonthlySheet = () => {
               </div>
             </div>
 
-            <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+            <div className="rounded border border-slate-200 bg-white p-4 ">
               <h3 className="font-semibold text-slate-900">Monthly totals</h3>
               <p className="mt-1 text-xs text-slate-500">
                 {selectedStaffId === "all"

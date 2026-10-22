@@ -1,137 +1,263 @@
+
 import api from "../../../api/axiosInstance";
 
-/**
- * Super Admin Dashboard Service
- * Har API independently load hoti hai.
- * Ek API fail hone par baaki dashboard data load ho sakta hai.
- */
-
 const unwrap = (response) =>
-  response?.data?.data ?? response?.data ?? null;
+  response?.data?.data ?? response?.data ?? {};
 
-const getLocalDateKey = () => {
-  const date = new Date();
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
+const asList = (data, keys = []) => {
+  if (Array.isArray(data)) return data;
 
-  return `${year}-${month}-${day}`;
+  for (const key of keys) {
+    if (Array.isArray(data?.[key])) return data[key];
+  }
+
+  if (Array.isArray(data?.items)) return data.items;
+  if (Array.isArray(data?.results)) return data.results;
+
+  return [];
 };
 
-const safeGet = async (key, url, params) => {
+const getTotal = (data) => {
+  const candidates = [
+    data?.total,
+    data?.meta?.total,
+    data?.pagination?.total,
+    data?.pagination?.totalItems,
+    data?.count,
+  ];
+
+  const value = candidates.find(
+    (item) =>
+      item !== undefined &&
+      item !== null &&
+      Number.isFinite(Number(item))
+  );
+
+  return value === undefined ? null : Number(value);
+};
+
+const requestModule = async (
+  name,
+  request,
+  normalize = (data) => data
+) => {
   try {
-    const response = await api.get(
-      url,
-      params ? { params } : undefined
-    );
+    const response = await request();
 
     return {
+      name,
       ok: true,
-      data: unwrap(response),
+      data: normalize(unwrap(response)),
       error: null,
     };
   } catch (error) {
+    console.error(`[SuperAdminDashboard] ${name} failed`, {
+      status: error.response?.status,
+      message: error.response?.data?.message,
+      response: error.response?.data,
+    });
+
     return {
+      name,
       ok: false,
       data: null,
       error:
-        error?.response?.data?.message ||
-        error?.message ||
-        `Unable to load ${key}`,
+        error.response?.data?.message ||
+        error.message ||
+        "Unable to load this module.",
     };
   }
 };
 
-/**
- * Dashboard ki sabhi required GET APIs.
- */
+const listModule = (name, request, keys = []) =>
+  requestModule(name, request, (data) => ({
+    items: asList(data, keys),
+    total: getTotal(data),
+    raw: data,
+  }));
+
+const sleep = (ms) =>
+  new Promise((resolve) => setTimeout(resolve, ms));
+
 export const getDashboardData = async () => {
-  const today = getLocalDateKey();
+  const currentDate = new Date();
+  const month = currentDate.getMonth() + 1;
+  const year = currentDate.getFullYear();
 
+  // Each request is a function so it does not start immediately.
   const requests = [
-    ["frontDesk", "/front-desk/overview"],
+    () =>
+      requestModule("rooms", () =>
+        api.get("/rooms/summary")
+      ),
 
-    ["rooms", "/rooms/summary"],
+    () =>
+      listModule(
+        "bookings",
+        () =>
+          api.get("/bookings", {
+            params: { page: 1, limit: 10 },
+          }),
+        ["bookings", "items", "results"]
+      ),
 
-    ["bookings", "/bookings", {
-      page: 1,
-      limit: 100,
-    }],
+    () =>
+      listModule(
+        "guests",
+        () =>
+          api.get("/guests", {
+            params: { page: 1, limit: 10 },
+          }),
+        ["guests", "items", "results"]
+      ),
 
-    ["payments", "/payments/summary"],
+    () =>
+      requestModule("frontDesk", () =>
+        api.get("/front-desk/overview")
+      ),
 
-    ["revenue", "/billing/revenue"],
+    () =>
+      requestModule("payments", () =>
+        api.get("/payments/summary")
+      ),
 
-    ["expenses", "/expenses", {
-      page: 1,
-      limit: 100,
-    }],
+    () =>
+      requestModule("revenue", () =>
+        api.get("/billing/revenue", {
+          params: { month, year },
+        })
+      ),
 
-    ["housekeepingSummary", "/housekeeping/summary"],
+    () =>
+      listModule(
+        "bills",
+        () =>
+          api.get("/billing", {
+            params: { page: 1, limit: 10 },
+          }),
+        ["bills", "items", "results"]
+      ),
 
-    ["housekeeping", "/housekeeping", {
-      page: 1,
-      limit: 100,
-    }],
+    () =>
+      listModule(
+        "staff",
+        () =>
+          api.get("/staff", {
+            params: { page: 1, limit: 10 },
+          }),
+        ["staff", "items", "results"]
+      ),
 
-    ["banquet", "/banquet/summary"],
+    () =>
+      requestModule("attendance", () =>
+        api.get("/attendance/monthly", {
+          params: { month, year },
+        })
+      ),
 
-    ["banquetBookings", "/banquet/bookings", {
-      page: 1,
-      limit: 100,
-    }],
+    () =>
+      requestModule("payroll", () =>
+        api.get("/payroll/summary", {
+          params: {
+            period: `${year}-${String(month).padStart(2, "0")}`,
+          },
+        })
+      ),
 
-    ["staff", "/staff", {
-      page: 1,
-      limit: 100,
-    }],
+    () =>
+      requestModule("banquet", () =>
+        api.get("/banquet/summary")
+      ),
 
-    ["attendanceToday", "/attendance/daily", {
-      date: today,
-    }],
+    () =>
+      listModule(
+        "housekeeping",
+        () =>
+          api.get("/housekeeping", {
+            params: { page: 1, limit: 10 },
+          }),
+        ["tasks", "items", "results"]
+      ),
 
-    ["leaves", "/attendance/leaves", {
-      status: "PENDING",
-      page: 1,
-      limit: 100,
-    }],
+    () =>
+      requestModule("guestRequests", () =>
+        api.get("/guest-requests/summary")
+      ),
 
- [
-  "payroll",
-  "/payroll/summary",
-  {
-    period: `${new Date().getFullYear()}-${String(
-      new Date().getMonth() + 1
-    ).padStart(2, "0")}`,
-  },
-],
-    ["payrollList", "/payroll", {
-      page: 1,
-      limit: 100,
-    }],
+    () =>
+      requestModule("reviews", () =>
+        api.get("/reviews/summary")
+      ),
 
-    ["guests", "/guests", {
-      page: 1,
-      limit: 100,
-    }],
+    () =>
+      listModule(
+        "offers",
+        () =>
+          api.get("/offers", {
+            params: { page: 1, limit: 10 },
+          }),
+        ["offers", "items", "results"]
+      ),
 
-    ["offers", "/offers", {
-      page: 1,
-      limit: 100,
-    }],
+    () =>
+      listModule(
+        "expenses",
+        () =>
+          api.get("/expenses", {
+            params: { page: 1, limit: 10 },
+          }),
+        ["expenses", "items", "results"]
+      ),
   ];
 
-  const responses = await Promise.all(
-    requests.map(async ([key, url, params]) => {
-      const result = await safeGet(
-        key,
-        url,
-        params
-      );
+  const results = [];
 
-      return [key, result];
-    })
-  );
+  // Run requests sequentially to reduce request bursts.
+  for (const request of requests) {
+    results.push(await request());
+    await sleep(400);
+  }
 
-  return Object.fromEntries(responses);
+  const [
+    rooms,
+    bookings,
+    guests,
+    frontDesk,
+    payments,
+    revenue,
+    bills,
+    staff,
+    attendance,
+    payroll,
+    banquet,
+    housekeeping,
+    guestRequests,
+    reviews,
+    offers,
+    expenses,
+  ] = results;
+
+  return {
+    rooms,
+    bookings,
+    guests,
+    frontDesk,
+    payments,
+    revenue,
+    bills,
+    staff,
+    attendance,
+    payroll,
+    banquet,
+    housekeeping,
+    guestRequests,
+    reviews,
+    offers,
+    expenses,
+
+    failedModules: results.filter((item) => !item.ok).length,
+    totalModules: results.length,
+    generatedAt: new Date().toISOString(),
+    period: { month, year },
+  };
 };

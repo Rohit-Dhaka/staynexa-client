@@ -15,7 +15,7 @@ const inr = (n) => `₹${Number(n || 0).toLocaleString("en-IN")}`;
 const day = (v) => (v ? new Date(v).toLocaleDateString("en-IN") : "-");
 
 const Stat = ({ label, value }) => (
-  <div className="min-w-0 rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+  <div className="min-w-0 rounded border border-slate-200 bg-white p-5 ">
     <p className="text-sm text-slate-500">{label}</p>
     <p className="mt-2 break-words text-2xl font-bold text-slate-900">{value}</p>
   </div>
@@ -150,7 +150,7 @@ const GuestProfile = () => {
         <div className="flex flex-wrap gap-2">
           <button
             onClick={() => navigate(`/guests/${id}/edit`)}
-            className="inline-flex items-center gap-2 rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+            className="inline-flex items-center gap-2 rounded border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
           >
             <Pencil size={15} /> Edit
           </button>
@@ -163,7 +163,7 @@ const GuestProfile = () => {
               )
             }
             disabled={busy}
-            className="inline-flex items-center gap-2 rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-60"
+            className="inline-flex items-center gap-2 rounded border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-60"
           >
             <Star size={15} />
             {guest.isVip ? "Remove VIP" : "Mark VIP"}
@@ -172,7 +172,7 @@ const GuestProfile = () => {
           <button
             onClick={handleBlacklist}
             disabled={busy}
-            className="inline-flex items-center gap-2 rounded-lg border border-rose-200 px-4 py-2 text-sm font-medium text-rose-600 hover:bg-rose-50 disabled:opacity-60"
+            className="inline-flex items-center gap-2 rounded border border-rose-200 px-4 py-2 text-sm font-medium text-rose-600 hover:bg-rose-50 disabled:opacity-60"
           >
             <Ban size={15} />
             {guest.isBlacklisted ? "Remove blacklist" : "Blacklist"}
@@ -183,7 +183,7 @@ const GuestProfile = () => {
             disabled={busy}
             aria-label="Delete guest"
             title="Delete guest"
-            className="inline-flex items-center gap-2 rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-600 hover:bg-red-50 hover:text-red-600 disabled:opacity-60"
+            className="inline-flex items-center gap-2 rounded border border-slate-300 px-4 py-2 text-sm font-medium text-slate-600 hover:bg-red-50 hover:text-red-600 disabled:opacity-60"
           >
             <Trash2 size={15} />
             Delete
@@ -192,7 +192,7 @@ const GuestProfile = () => {
       </div>
 
       {/* Guest profile */}
-      <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
+      <section className="rounded border border-slate-200 bg-white p-5  sm:p-7">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-3">
@@ -221,7 +221,7 @@ const GuestProfile = () => {
         </div>
 
         {guest.isBlacklisted && guest.blacklistReason && (
-          <p className="mt-5 rounded-lg bg-rose-50 px-4 py-3 text-sm text-rose-700">
+          <p className="mt-5 rounded bg-rose-50 px-4 py-3 text-sm text-rose-700">
             Blacklisted: {guest.blacklistReason}
           </p>
         )}
@@ -236,7 +236,7 @@ const GuestProfile = () => {
       </section>
 
       {/* Guest details */}
-      <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
+      <section className="rounded border border-slate-200 bg-white p-5  sm:p-7">
         <h2 className="mb-6 text-lg font-semibold text-slate-900">
           Guest details
         </h2>
@@ -262,7 +262,7 @@ const GuestProfile = () => {
       </section>
 
       {/* Booking history */}
-      <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+      <section className="overflow-hidden rounded border border-slate-200 bg-white ">
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 px-5 py-4 sm:px-7">
           <h2 className="text-lg font-semibold text-slate-900">
             Booking history

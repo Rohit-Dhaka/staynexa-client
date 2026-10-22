@@ -290,7 +290,7 @@ const BanquetBookingForm = () => {
       </div>
 
       {loading ? (
-        <div className="rounded-xl border border-slate-200 bg-white p-6">
+        <div className="rounded border border-slate-200 bg-white p-6">
           <FormSkeleton fields={6} />
         </div>
       ) : (
@@ -343,7 +343,7 @@ const BanquetBookingForm = () => {
                       type="button"
                       disabled={!item.available}
                       onClick={() => setForm((f) => ({ ...f, hall: item.hall._id }))}
-                      className={`rounded-xl border p-4 text-left transition ${
+                      className={`rounded border p-4 text-left transition ${
                         selected
                           ? "border-indigo-500 bg-indigo-50 ring-2 ring-indigo-100"
                           : item.available
@@ -466,7 +466,7 @@ const BanquetBookingForm = () => {
               {catering.map((line, index) => {
                 const pkg = packages.find((p) => p._id === line.packageId);
                 return (
-                  <div key={index} className="grid grid-cols-1 items-end gap-3 rounded-lg border border-slate-200 p-3 sm:grid-cols-12">
+                  <div key={index} className="grid grid-cols-1 items-end gap-3 rounded border border-slate-200 p-3 sm:grid-cols-12">
                     <div className="sm:col-span-6">
                       <Field label="Package" htmlFor={`pkg-${index}`}>
                         <select
@@ -503,7 +503,7 @@ const BanquetBookingForm = () => {
                       type="button"
                       onClick={() => setCatering((l) => l.filter((_, i) => i !== index))}
                       aria-label="Remove package"
-                      className="rounded-md p-2 text-slate-400 transition hover:bg-rose-50 hover:text-rose-600 sm:col-span-1 sm:mb-0.5"
+                      className="rounded p-2 text-slate-400 transition hover:bg-rose-50 hover:text-rose-600 sm:col-span-1 sm:mb-0.5"
                     >
                       <Trash2 size={16} />
                     </button>
@@ -530,7 +530,7 @@ const BanquetBookingForm = () => {
             {extras.length === 0 && <p className="text-sm text-slate-500">No extra services added.</p>}
             <div className="space-y-3">
               {extras.map((extra, index) => (
-                <div key={index} className="grid grid-cols-1 items-end gap-3 rounded-lg border border-slate-200 p-3 sm:grid-cols-12">
+                <div key={index} className="grid grid-cols-1 items-end gap-3 rounded border border-slate-200 p-3 sm:grid-cols-12">
                   <div className="sm:col-span-6">
                     <Field label="Description" htmlFor={`extra-${index}`}>
                       <input
@@ -570,7 +570,7 @@ const BanquetBookingForm = () => {
                     type="button"
                     onClick={() => setExtras((l) => l.filter((_, i) => i !== index))}
                     aria-label="Remove service"
-                    className="rounded-md p-2 text-slate-400 transition hover:bg-rose-50 hover:text-rose-600 sm:col-span-1 sm:mb-0.5"
+                    className="rounded p-2 text-slate-400 transition hover:bg-rose-50 hover:text-rose-600 sm:col-span-1 sm:mb-0.5"
                   >
                     <Trash2 size={16} />
                   </button>
@@ -679,7 +679,7 @@ const BanquetBookingForm = () => {
             </dl>
           </Card>
 
-          <div className="flex flex-col-reverse gap-3 rounded-xl border border-slate-200 bg-white p-4 sm:flex-row sm:items-center sm:justify-end">
+          <div className="flex flex-col-reverse gap-3 rounded border border-slate-200 bg-white p-4 sm:flex-row sm:items-center sm:justify-end">
             <button type="button" onClick={() => navigate(backPath)} disabled={submitting} className={outlineButton}>
               Cancel
             </button>

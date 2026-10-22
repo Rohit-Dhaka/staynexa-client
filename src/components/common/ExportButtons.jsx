@@ -39,7 +39,7 @@ const ExportButtons = ({ title, fileName, columns, rows = [], getRows }) => {
   };
 
   const btn =
-    "flex items-center gap-2 rounded-lg border px-3 py-2 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-60";
+    "flex items-center gap-2 rounded border px-3 py-2 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-60";
 
   return (
     <div className="flex items-center gap-2">

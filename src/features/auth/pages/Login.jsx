@@ -3,9 +3,7 @@ import { Link } from "react-router-dom";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 import useAuth from "../../../hooks/useAuth";
-
-const inputClass =
-  "w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 disabled:opacity-60";
+const inputClass = "w-full rounded border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 disabled:opacity-60";
 
 const Login = () => {
   const { login } = useAuth();
@@ -118,7 +116,7 @@ const Login = () => {
         <button
           type="submit"
           disabled={submitting}
-          className="flex w-full items-center justify-center gap-2 rounded-lg bg-[#1a1a1a] py-3 text-sm font-semibold text-white transition hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-70"
+          className="flex w-full items-center justify-center gap-2 rounded bg-[#1a1a1a] py-3 text-sm font-semibold text-white transition hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-70"
         >
           {submitting && <Loader2 size={16} className="animate-spin" />}
           {submitting ? "Logging in..." : "Login"}

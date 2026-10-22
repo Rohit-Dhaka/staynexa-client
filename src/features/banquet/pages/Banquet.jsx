@@ -64,7 +64,7 @@ const banquetExportColumns = [
 ];
 
 const StatCard = ({ label, value, loading }) => (
-  <div className="rounded-xl border border-slate-200 bg-white p-4">
+  <div className="rounded border border-slate-200 bg-white p-4">
     <p className="text-xs text-slate-500">{label}</p>
     {loading ? (
       <Skeleton className="mt-2 h-7 w-20" />
@@ -229,7 +229,7 @@ const Banquet = () => {
             }}
             className={`whitespace-nowrap rounded-full px-4 py-1.5 text-sm font-medium transition ${
               view === v.value
-                ? "bg-indigo-600 text-white"
+                ? "bg-black text-white"
                 : "bg-white text-slate-600 ring-1 ring-slate-200 hover:bg-slate-50"
             }`}
           >
@@ -293,12 +293,12 @@ const Banquet = () => {
         </select>
       </div>
 
-      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
+      <div className="overflow-hidden rounded border border-slate-200 bg-white">
         {loading ? (
           <TableSkeleton rows={6} columns={7} />
         ) : data.items.length === 0 ? (
           <div className="flex flex-col items-center gap-3 px-4 py-16 text-center">
-            <div className="rounded-xl bg-slate-100 p-4 text-slate-500">
+            <div className="rounded bg-slate-100 p-4 text-slate-500">
               <PartyPopper size={28} />
             </div>
             <h3 className="font-semibold text-slate-800">No bookings found</h3>
@@ -384,7 +384,7 @@ const Banquet = () => {
                 onClick={() => setPage((current) => Math.max(1, current - 1))}
                 disabled={page <= 1}
                 aria-label="Previous page"
-                className="rounded-lg border border-slate-300 p-2 text-slate-600 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
+                className="rounded border border-slate-300 p-2 text-slate-600 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
               >
                 <ChevronLeft size={16} />
               </button>
@@ -393,7 +393,7 @@ const Banquet = () => {
                 onClick={() => setPage((current) => Math.min(data.pages, current + 1))}
                 disabled={page >= data.pages}
                 aria-label="Next page"
-                className="rounded-lg border border-slate-300 p-2 text-slate-600 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
+                className="rounded border border-slate-300 p-2 text-slate-600 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
               >
                 <ChevronRight size={16} />
               </button>

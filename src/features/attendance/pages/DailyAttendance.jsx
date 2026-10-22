@@ -129,7 +129,7 @@ const createDraft = (row) => ({
 });
 
 const StatCard = ({ label, value, icon: Icon, tone }) => (
-  <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm transition hover:shadow-md">
+  <div className="rounded border border-slate-200 bg-white p-4 ">
     <div className="flex items-center justify-between gap-2">
       <p className="text-xs font-medium text-slate-500">{label}</p>
       <Icon size={17} className={tone} />
@@ -434,7 +434,7 @@ const DailyAttendance = () => {
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <div className="rounded-xl bg-indigo-100 p-2.5 text-indigo-700">
+            <div className="rounded bg-indigo-100 p-2.5 text-indigo-700">
               <CalendarDays size={22} />
             </div>
 
@@ -461,7 +461,7 @@ const DailyAttendance = () => {
               type="button"
               onClick={markAllPresent}
               disabled={busy || loading}
-              className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50"
+              className="inline-flex items-center gap-2 rounded bg-black px-4 py-2.5 text-sm font-semibold text-white  transition  disabled:cursor-not-allowed disabled:opacity-50"
             >
               {busy ? (
                 <Loader2 size={16} className="animate-spin" />
@@ -475,13 +475,13 @@ const DailyAttendance = () => {
       </div>
 
       {/* Date controls */}
-      <div className="flex flex-wrap items-center gap-3 rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
+      <div className="flex flex-wrap items-center gap-3 rounded border border-slate-200 bg-white p-3 ">
         <div className="flex items-center gap-1">
           <button
             type="button"
             aria-label="Previous day"
             onClick={() => setDate(addDays(date, -1))}
-            className="rounded-lg border border-slate-200 p-2 text-slate-600 hover:bg-slate-50"
+            className="rounded border border-slate-200 p-2 text-slate-600 hover:bg-slate-50"
           >
             <ChevronLeft size={18} />
           </button>
@@ -491,7 +491,7 @@ const DailyAttendance = () => {
             aria-label="Next day"
             disabled={date >= today}
             onClick={() => setDate(addDays(date, 1))}
-            className="rounded-lg border border-slate-200 p-2 text-slate-600 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
+            className="rounded border border-slate-200 p-2 text-slate-600 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
           >
             <ChevronRight size={18} />
           </button>
@@ -504,13 +504,13 @@ const DailyAttendance = () => {
           onChange={(event) => {
             if (event.target.value) setDate(event.target.value);
           }}
-          className="rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+          className="rounded border border-slate-300 px-3 py-2 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
         />
 
         <button
           type="button"
           onClick={() => setDate(today)}
-          className="rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+          className="rounded border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
         >
           Today
         </button>
@@ -529,7 +529,7 @@ const DailyAttendance = () => {
       {error && (
         <div
           role="alert"
-          className="flex items-start gap-2 rounded-lg border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700"
+          className="flex items-start gap-2 rounded border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700"
         >
           <CircleAlert size={18} className="mt-0.5 shrink-0" />
           <span>{error}</span>
@@ -539,7 +539,7 @@ const DailyAttendance = () => {
       {success && (
         <div
           role="status"
-          className="flex items-start gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700"
+          className="flex items-start gap-2 rounded border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700"
         >
           <CheckCircle2 size={18} className="mt-0.5 shrink-0" />
           <span>{success}</span>
@@ -549,7 +549,7 @@ const DailyAttendance = () => {
       {data?.dayType && (
         <div
           role={isWeeklyOff ? "alert" : "status"}
-          className={`flex items-start gap-3 rounded-xl border px-4 py-3.5 text-sm ${
+          className={`flex items-start gap-3 rounded border px-4 py-3.5 text-sm ${
             isWeeklyOff
               ? "border-amber-300 bg-amber-50 text-amber-900"
               : "border-violet-200 bg-violet-50 text-violet-700"
@@ -580,7 +580,7 @@ const DailyAttendance = () => {
       )}
 
       {data?.isLocked && (
-        <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+        <div className="rounded border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
           This month is locked because payroll has been processed.
           Attendance records cannot be changed.
         </div>
@@ -634,7 +634,7 @@ const DailyAttendance = () => {
       )}
 
       {/* Attendance table */}
-      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+      <div className="overflow-hidden rounded border border-slate-200 bg-white ">
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 px-4 py-3">
           <div>
             <h2 className="font-semibold text-slate-900">
@@ -649,7 +649,7 @@ const DailyAttendance = () => {
             type="button"
             onClick={refresh}
             disabled={loading}
-            className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-50"
+            className="inline-flex items-center gap-2 rounded border border-slate-200 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-50"
           >
             <RotateCcw size={14} />
             Refresh
@@ -770,7 +770,7 @@ const DailyAttendance = () => {
                                 aria-pressed={selected}
                                 disabled={disabled}
                                 onClick={() => saveStatus(row, option.value)}
-                                className={`rounded-lg border px-2 py-2 text-xs font-semibold transition ${
+                                className={`rounded border px-2 py-2 text-xs font-semibold transition ${
                                   selected
                                     ? option.active
                                     : "border-slate-200 bg-white text-slate-600 hover:border-indigo-300 hover:bg-indigo-50"
@@ -809,7 +809,7 @@ const DailyAttendance = () => {
                               hasApprovedLeave
                             }
                             aria-label={`Check-in time for ${row.user.name}`}
-                            className="w-full rounded-lg border border-slate-300 bg-white py-2 pl-8 pr-2 text-sm outline-none focus:border-indigo-500 disabled:cursor-not-allowed disabled:bg-slate-100"
+                            className="w-full rounded border border-slate-300 bg-white py-2 pl-8 pr-2 text-sm outline-none focus:border-indigo-500 disabled:cursor-not-allowed disabled:bg-slate-100"
                           />
                         </div>
 
@@ -840,7 +840,7 @@ const DailyAttendance = () => {
                               hasApprovedLeave
                             }
                             aria-label={`Check-out time for ${row.user.name}`}
-                            className="w-full rounded-lg border border-slate-300 bg-white py-2 pl-8 pr-2 text-sm outline-none focus:border-indigo-500 disabled:cursor-not-allowed disabled:bg-slate-100"
+                            className="w-full rounded border border-slate-300 bg-white py-2 pl-8 pr-2 text-sm outline-none focus:border-indigo-500 disabled:cursor-not-allowed disabled:bg-slate-100"
                           />
                         </div>
 
@@ -872,7 +872,7 @@ const DailyAttendance = () => {
                             onClick={() => resetDraft(row)}
                             disabled={saving}
                             title="Discard unsaved time changes"
-                            className="rounded-lg border border-slate-200 p-2 text-slate-500 hover:bg-slate-100 disabled:opacity-50"
+                            className="rounded border border-slate-200 p-2 text-slate-500 hover:bg-slate-100 disabled:opacity-50"
                           >
                             <RotateCcw size={15} />
                           </button>
@@ -883,7 +883,7 @@ const DailyAttendance = () => {
                             disabled={
                               !canEdit || saving || busy || hasApprovedLeave
                             }
-                            className="inline-flex items-center gap-1.5 rounded-lg bg-indigo-600 px-3 py-2 text-xs font-semibold text-white transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-40"
+                            className="inline-flex items-center gap-1.5 rounded bg-black px-3 py-2 text-xs font-semibold text-white transition  disabled:cursor-not-allowed disabled:opacity-40"
                           >
                             {saving ? (
                               <Loader2 size={14} className="animate-spin" />

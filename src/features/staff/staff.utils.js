@@ -55,7 +55,7 @@ export const formatDate = (value) =>
       })
     : "-";
 
-// Same rule as the backend: 8+ characters, at least one letter and one number.
+
 export const getPasswordError = (password, label = "Password") => {
   if (!password || password.length < 8) {
     return `${label} must be at least 8 characters`;
@@ -67,7 +67,7 @@ export const getPasswordError = (password, label = "Password") => {
   return "";
 };
 
-// Random 12 character password (no look-alike characters such as 0/O or 1/l).
+
 export const generatePassword = (length = 12) => {
   const upper = "ABCDEFGHJKLMNPQRSTUVWXYZ";
   const lower = "abcdefghijkmnpqrstuvwxyz";

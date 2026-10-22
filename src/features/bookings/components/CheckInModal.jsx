@@ -243,7 +243,7 @@ const CheckInModal = ({ booking, onClose, onDone }) => {
       {guests.length === 0 && <p className="mb-2 text-sm text-slate-500">No additional guests.</p>}
       <div className="space-y-3">
         {guests.map((g, i) => (
-          <div key={i} className="rounded-xl border border-slate-200 p-3">
+          <div key={i} className="rounded border border-slate-200 p-3">
             <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
               <Field label="Naam *">
                 <input value={g.name} onChange={(e) => updateGuest(i, { name: e.target.value })} className={inputClass} />
@@ -288,7 +288,7 @@ const CheckInModal = ({ booking, onClose, onDone }) => {
       <button
         type="button"
         onClick={() => setGuests((list) => [...list, { ...emptyGuest }])}
-        className="mt-3 flex items-center gap-1.5 rounded-lg border border-slate-300 px-3 py-1.5 text-sm text-slate-700 transition hover:bg-slate-50"
+        className="mt-3 flex items-center gap-1.5 rounded border border-slate-300 px-3 py-1.5 text-sm text-slate-700 transition hover:bg-slate-50"
       >
         <Plus size={15} /> Add Guest
       </button>

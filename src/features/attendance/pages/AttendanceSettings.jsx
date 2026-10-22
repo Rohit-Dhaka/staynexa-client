@@ -35,10 +35,10 @@ import {
 
 const cx = (...classes) => classes.filter(Boolean).join(" ");
 
-const sectionClass = "rounded-lg border border-slate-200 bg-white p-4 sm:p-5";
+const sectionClass = "rounded border border-slate-200 bg-white p-4 sm:p-5";
 const headingClass = "text-base font-semibold text-slate-900";
 const labelClass = "text-sm font-medium text-slate-700";
-const buttonClass = "inline-flex items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-60";
+const buttonClass = "inline-flex items-center justify-center gap-2 rounded px-3 py-2 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-60";
 
 const toForm = (s) => ({
   shiftStart: s.shiftStart,
@@ -241,7 +241,7 @@ const AttendanceSettings = () => {
   }
 
   if (!form || !settings) {
-    return <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">Settings could not be loaded. Please refresh and try again.</div>;
+    return <div className="rounded border border-red-200 bg-red-50 p-4 text-sm text-red-700">Settings could not be loaded. Please refresh and try again.</div>;
   }
 
   return (
@@ -265,7 +265,7 @@ const AttendanceSettings = () => {
 
       {msg.text && (
         <div className={cx(
-          "flex items-start gap-2 rounded-lg border p-3 text-sm",
+          "flex items-start gap-2 rounded border p-3 text-sm",
           msg.type === "ok" ? "border-green-200 bg-green-50 text-green-800" : "border-red-200 bg-red-50 text-red-700",
         )}>
           {msg.type === "ok" ? <CheckCircle2 size={17} className="mt-0.5 shrink-0" /> : <AlertTriangle size={17} className="mt-0.5 shrink-0" />}
@@ -297,8 +297,8 @@ const AttendanceSettings = () => {
             const active = form.weeklyOffDays.includes(day);
             return (
               <button key={label} type="button" aria-pressed={active} onClick={() => toggleOff(day)} className={cx(
-                "rounded-lg border px-3 py-2 text-sm font-medium",
-                active ? " bg-blue-600 text-white" : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50",
+                "rounded border px-3 py-2 text-sm font-medium",
+                active ? " bg-black text-white" : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50",
               )}>
                 {label}<span className="mt-1 block text-xs font-normal">{active ? "Day off" : "Working"}</span>
               </button>
@@ -328,7 +328,7 @@ const AttendanceSettings = () => {
       <section className={sectionClass}>
         <div className="mb-4 flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
           <div className="flex items-center gap-2"><CalendarDays size={18} className="text-slate-500" /><h2 className={headingClass}>Holiday Calendar</h2></div>
-          <select aria-label="Holiday year" value={holidayYear} onChange={(e) => setHolidayYear(Number(e.target.value))} className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm">
+          <select aria-label="Holiday year" value={holidayYear} onChange={(e) => setHolidayYear(Number(e.target.value))} className="rounded border border-slate-300 bg-white px-3 py-2 text-sm">
             {[-1, 0, 1].map((offset) => { const year = new Date().getFullYear() + offset; return <option key={year} value={year}>{year}</option>; })}
           </select>
         </div>
@@ -336,7 +336,7 @@ const AttendanceSettings = () => {
           <Field label="Holiday date"><input type="date" value={holiday.date} onChange={(e) => setHoliday({ ...holiday, date: e.target.value })} className={inputClass} /></Field>
           <Field label="Holiday name"><input value={holiday.name} onChange={(e) => setHoliday({ ...holiday, name: e.target.value })} placeholder="e.g. Diwali" className={inputClass} /></Field>
           <Field label="Holiday type"><select value={holiday.type} onChange={(e) => setHoliday({ ...holiday, type: e.target.value })} className={inputClass}><option value="public">Public</option><option value="company">Company</option><option value="optional">Optional</option></select></Field>
-          <div className="flex items-end"><button type="button" onClick={addHoliday} disabled={addingHoliday} className={cx(buttonClass, "w-full bg-blue-600 text-white hover:bg-slate-700")}>{addingHoliday ? <RefreshCw size={15} className="animate-spin" /> : <Plus size={15} />} Add holiday</button></div>
+          <div className="flex items-end"><button type="button" onClick={addHoliday} disabled={addingHoliday} className={cx(buttonClass, "w-full bg-black text-white hover:bg-slate-700")}>{addingHoliday ? <RefreshCw size={15} className="animate-spin" /> : <Plus size={15} />} Add holiday</button></div>
         </div>
         <div className="mt-4 border-t border-slate-100 pt-3">
           {loadingHolidays ? <p className="py-4 text-sm text-slate-500">Loading holidays...</p> : holidays.length === 0 ? <p className="py-4 text-sm text-slate-500">No holidays added for {holidayYear}.</p> : (
@@ -344,7 +344,7 @@ const AttendanceSettings = () => {
               {holidays.map((item) => (
                 <li key={item._id} className="flex items-center gap-3 py-3">
                   <div className="min-w-0 flex-1"><p className="text-sm font-medium text-slate-800">{item.name}</p><p className="mt-0.5 text-xs text-slate-500">{formatDay(item.dateKey)} · {item.type}</p></div>
-                  <button type="button" onClick={() => removeHoliday(item)} disabled={removingId === item._id} title="Remove holiday" aria-label={`Remove ${item.name}`} className="rounded-md p-2 text-slate-500 hover:bg-red-50 hover:text-red-600 disabled:opacity-50">{removingId === item._id ? <RefreshCw size={16} className="animate-spin" /> : <Trash2 size={16} />}</button>
+                  <button type="button" onClick={() => removeHoliday(item)} disabled={removingId === item._id} title="Remove holiday" aria-label={`Remove ${item.name}`} className="rounded p-2 text-slate-500 hover:bg-red-50 hover:text-red-600 disabled:opacity-50">{removingId === item._id ? <RefreshCw size={16} className="animate-spin" /> : <Trash2 size={16} />}</button>
                 </li>
               ))}
             </ul>
@@ -354,7 +354,7 @@ const AttendanceSettings = () => {
 
       <section className={sectionClass}>
         <div className="mb-4 flex items-center gap-2"><LockKeyhole size={18} className="text-slate-500" /><h2 className={headingClass}>Monthly Attendance Lock</h2></div>
-        <div className="mb-4 rounded-lg bg-slate-50 p-3 text-sm">
+        <div className="mb-4 rounded bg-slate-50 p-3 text-sm">
           <span className="font-medium">Status: </span>{settings.lockedUntil ? `Locked through ${formatDay(settings.lockedUntil)}` : "No months are locked"}
         </div>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -362,7 +362,7 @@ const AttendanceSettings = () => {
           <Field label="Year"><select value={lockYm.year} onChange={(e) => setLockYm({ ...lockYm, year: Number(e.target.value) })} className={inputClass}>{[-1, 0].map((offset) => { const year = new Date().getFullYear() + offset; return <option key={year} value={year}>{year}</option>; })}</select></Field>
         </div>
         <div className="mt-4 flex flex-wrap gap-2">
-          <button type="button" onClick={() => doLock(lockMonth, "lock", "Month locked successfully.")} disabled={Boolean(locking)} className={cx(buttonClass, "bg-blue-600 text-white ")}><LockKeyhole size={15} />{locking === "lock" ? "Locking..." : "Lock month"}</button>
+          <button type="button" onClick={() => doLock(lockMonth, "lock", "Month locked successfully.")} disabled={Boolean(locking)} className={cx(buttonClass, "bg-black text-white ")}><LockKeyhole size={15} />{locking === "lock" ? "Locking..." : "Lock month"}</button>
           {isSuperAdmin && <button type="button" onClick={() => doLock(unlockMonth, "unlock", "Month unlocked successfully.")} disabled={Boolean(locking)} className={cx(buttonClass, "border border-slate-300 bg-white text-slate-700 hover:bg-slate-50")}><UnlockKeyhole size={15} />{locking === "unlock" ? "Unlocking..." : "Unlock month"}</button>}
         </div>
         <p className="mt-3 flex items-start gap-2 text-xs text-slate-500"><ShieldCheck size={14} className="mt-0.5 shrink-0" /> A month can only be locked after it ends. Locking a month also locks all earlier months. Only a Super Admin can unlock a month.</p>
@@ -370,7 +370,7 @@ const AttendanceSettings = () => {
 
       <div className="flex flex-col-reverse gap-2 border-t border-slate-200 pt-4 sm:flex-row sm:justify-end">
         <button type="button" onClick={() => { setForm(toForm(settings)); flash("", ""); }} disabled={saving} className={cx(buttonClass, "border border-slate-300 bg-white text-slate-700 ")}>Reset changes</button>
-        <button type="button" onClick={saveSettings} disabled={saving} className={cx(buttonClass, "bg-blue-600 px-5 text-white hover:bg-slate-700")}>
+        <button type="button" onClick={saveSettings} disabled={saving} className={cx(buttonClass, "bg-black px-5 text-white hover:bg-slate-700")}>
           {saving ? <RefreshCw size={15} className="animate-spin" /> : <CheckCircle2 size={15} />}{saving ? "Saving..." : "Save settings"}
         </button>
       </div>

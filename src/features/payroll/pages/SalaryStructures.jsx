@@ -143,14 +143,14 @@ const SalaryStructures = () => {
 
       {/* Missing salary warning */}
       {missing > 0 && (
-        <p className="rounded-lg bg-amber-50 px-4 py-3 text-sm text-amber-700">
+        <p className="rounded bg-amber-50 px-4 py-3 text-sm text-amber-700">
           {missing} staff member{missing > 1 ? "s have" : " has"} no
           salary set yet.
         </p>
       )}
 
       {/* Salary table */}
-      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
+      <div className="overflow-hidden rounded border border-slate-200 bg-white">
         {loading ? (
           <div className="flex justify-center py-16 text-slate-400">
             <Loader2 className="animate-spin" size={24} />
@@ -254,7 +254,7 @@ const SalaryStructures = () => {
                                 }
                                 aria-label="Edit current salary"
                                 title="Correct the current revision"
-                                className="rounded-md p-2 text-slate-500 hover:bg-slate-100"
+                                className="rounded p-2 text-slate-500 hover:bg-slate-100"
                               >
                                 <Pencil size={16} />
                               </button>
@@ -277,7 +277,7 @@ const SalaryStructures = () => {
                             onClick={() => openHistory(user)}
                             aria-label="Salary history"
                             title="Salary history"
-                            className="rounded-md p-2 text-slate-500 hover:bg-slate-100"
+                            className="rounded p-2 text-slate-500 hover:bg-slate-100"
                           >
                             <History size={16} />
                           </button>
@@ -341,7 +341,7 @@ const SalaryStructures = () => {
             {history?.items?.map((item) => (
               <li
                 key={item._id}
-                className="flex items-start justify-between gap-3 rounded-lg border border-slate-200 p-3"
+                className="flex items-start justify-between gap-3 rounded border border-slate-200 p-3"
               >
                 <div>
                   <p className="text-sm font-semibold text-slate-900">

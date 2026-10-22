@@ -29,7 +29,7 @@ import { fetchAllPages } from "../../../utils/exportUtils";
 const LIMIT = 10;
 
 const selectClass =
-  "rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100";
+  "rounded border border-gray-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100";
 
 const StaffList = () => {
   const [items, setItems] = useState([]);
@@ -189,7 +189,7 @@ const getExportRows = () =>
           />
           <button
             onClick={openCreate}
-            className="flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700"
+            className="flex items-center justify-center gap-2 rounded bg-black px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-black"
           >
             <Plus size={16} />
             Add staff
@@ -197,7 +197,7 @@ const getExportRows = () =>
         </div>
       </div>
 
-      <div className="flex flex-col gap-3 rounded-xl border border-gray-100 bg-white p-4 sm:flex-row">
+      <div className="flex flex-col gap-3 rounded border border-gray-100 bg-white p-4 sm:flex-row">
         <div className="relative flex-1">
           <Search
             size={16}
@@ -208,7 +208,7 @@ const getExportRows = () =>
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
             placeholder="Search by name, email or phone"
-            className="w-full rounded-lg border border-gray-300 py-2.5 pl-9 pr-3 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
+            className="w-full rounded border border-gray-300 py-2.5 pl-9 pr-3 text-sm outline-none  "
           />
         </div>
 
@@ -239,10 +239,10 @@ const getExportRows = () =>
         </select>
       </div>
 
-      <div className="overflow-hidden rounded-xl border border-gray-100 bg-white">
+      <div className="overflow-hidden rounded border border-gray-100 bg-white">
         <div className="overflow-x-auto">
           <table className="w-full min-w-[720px] text-left text-sm">
-            <thead className="border-b border-gray-100 bg-gray-50 text-xs uppercase tracking-wider text-gray-500">
+            <thead className="border-b border-gray-100  text-xs uppercase tracking-wider text-gray-500">
               <tr>
                 <th className="px-5 py-3 font-semibold">Name</th>
                 <th className="px-5 py-3 font-semibold">Phone</th>
@@ -280,7 +280,7 @@ const getExportRows = () =>
                   const isSuperAdmin = staff.role === "super_admin";
 
                   return (
-                  <tr key={staff._id} className="hover:bg-gray-50/60">
+                  <tr key={staff._id} className="hover:/60">
                     <td className="px-5 py-4">
                       <p className="font-semibold text-gray-900">
                         {staff.name}
@@ -297,7 +297,7 @@ const getExportRows = () =>
                             ? "bg-rose-50 text-rose-700"
                             : staff.role === "manager"
                               ? "bg-purple-50 text-purple-700"
-                              : "bg-blue-50 text-blue-700"
+                              : "bg-black text-white"
                         }`}
                       >
                         {staff.role === "super_admin"
@@ -326,14 +326,14 @@ const getExportRows = () =>
                         <button
                           onClick={() => openEdit(staff)}
                           title="Edit"
-                          className="rounded-lg p-2 text-gray-500 hover:bg-gray-100 hover:text-blue-600"
+                          className="rounded p-2 text-gray-500 hover:bg-gray-100 hover:text-blue-600"
                         >
                           <Pencil size={16} />
                         </button>
                         <button
                           onClick={() => setResetTarget(staff)}
                           title="Reset password"
-                          className="rounded-lg p-2 text-gray-500 hover:bg-gray-100 hover:text-blue-600"
+                          className="rounded p-2 text-gray-500 hover:bg-gray-100 hover:text-blue-600"
                         >
                           <KeyRound size={16} />
                         </button>
@@ -354,7 +354,7 @@ const getExportRows = () =>
                                 ? "Deactivate staff"
                                 : "Activate staff"
                           }
-                          className="rounded-lg p-2 text-gray-500 hover:bg-gray-100 hover:text-amber-600 disabled:cursor-not-allowed disabled:opacity-30"
+                          className="rounded p-2 text-gray-500 hover:bg-gray-100 hover:text-amber-600 disabled:cursor-not-allowed disabled:opacity-30"
                         >
                           {busyId === staff._id ? (
                             <Loader2 size={16} className="animate-spin" />
@@ -377,7 +377,7 @@ const getExportRows = () =>
                               ? "Super Admin deletion is protected"
                               : "Delete staff"
                           }
-                          className="rounded-lg p-2 text-gray-500 hover:bg-red-50 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-30"
+                          className="rounded p-2 text-gray-500 hover:bg-red-50 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-30"
                         >
                           <Trash2 size={16} />
                         </button>
@@ -399,14 +399,14 @@ const getExportRows = () =>
               <button
                 onClick={() => setPage((prev) => prev - 1)}
                 disabled={!meta.hasPrevPage}
-                className="flex items-center gap-1 rounded-lg border border-gray-300 px-3 py-1.5 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+                className="flex items-center gap-1 rounded border border-gray-300 px-3 py-1.5 hover: disabled:cursor-not-allowed disabled:opacity-40"
               >
                 <ChevronLeft size={14} /> Prev
               </button>
               <button
                 onClick={() => setPage((prev) => prev + 1)}
                 disabled={!meta.hasNextPage}
-                className="flex items-center gap-1 rounded-lg border border-gray-300 px-3 py-1.5 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+                className="flex items-center gap-1 rounded border border-gray-300 px-3 py-1.5 hover: disabled:cursor-not-allowed disabled:opacity-40"
               >
                 Next <ChevronRight size={14} />
               </button>
@@ -424,7 +424,7 @@ const getExportRows = () =>
 
       {deleteTarget && deleteTarget.role !== "super_admin" && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-          <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl">
+          <div className="w-full max-w-sm rounded bg-white p-6 ">
             <h2 className="text-lg font-bold text-gray-900">Delete staff?</h2>
             <p className="mt-2 text-sm text-gray-500">
               <span className="font-semibold text-gray-900">
@@ -438,14 +438,14 @@ const getExportRows = () =>
               <button
                 onClick={() => setDeleteTarget(null)}
                 disabled={deleting}
-                className="rounded-lg border border-gray-300 px-5 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                className="rounded border border-gray-300 px-5 py-2.5 text-sm font-medium text-gray-700 hover:"
               >
                 Cancel
               </button>
               <button
                 onClick={handleDelete}
                 disabled={deleting}
-                className="flex items-center gap-2 rounded-lg bg-red-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-red-700 disabled:opacity-70"
+                className="flex items-center gap-2 rounded bg-red-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-red-700 disabled:opacity-70"
               >
                 {deleting && <Loader2 size={16} className="animate-spin" />}
                 Delete

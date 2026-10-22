@@ -37,9 +37,9 @@ const STATUS_META = {
 };
 const STATUS_KEYS = Object.keys(STATUS_META);
 const inputClass =
-  "rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100";
+  "rounded border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100";
 const primaryButton =
-  "flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-700";
+  "flex items-center justify-center gap-2 rounded bg-black px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-700";
 const formatPrice = (value) => `₹${Number(value || 0).toLocaleString("en-IN")}`;
 const useDebounce = (value, delay = 400) => {
   const [debounced, setDebounced] = useState(value);
@@ -93,12 +93,12 @@ const SummaryCards = ({ summary }) => {
   if (!summary) return <SummaryCardsSkeleton count={STATUS_KEYS.length + 1} />;
   return (
     <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-7">
-      <div className="rounded-xl border border-slate-200 bg-white p-4">
+      <div className="rounded border border-slate-200 bg-white p-4">
         <p className="text-xs text-slate-500">Total Rooms</p>
         <p className="mt-1 text-2xl font-bold text-slate-900">{summary.total ?? 0}</p>
       </div>
       {STATUS_KEYS.map((key) => (
-        <div key={key} className="rounded-xl border border-slate-200 bg-white p-4">
+        <div key={key} className="rounded border border-slate-200 bg-white p-4">
           <p className="text-xs text-slate-500">{STATUS_META[key].label}</p>
           <p className="mt-1 text-2xl font-bold text-slate-900">{summary[key] ?? 0}</p>
         </div>
@@ -113,8 +113,8 @@ const Pagination = ({ page, totalPages, onChange }) => {
     <div className="flex items-center justify-between border-t border-slate-200 px-4 py-3">
       <p className="text-xs text-slate-500">Page {page} of {totalPages}</p>
       <div className="flex gap-2">
-        <button type="button" onClick={() => onChange(page - 1)} disabled={page <= 1} aria-label="Previous page" className="rounded-lg border border-slate-300 p-2 text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"><ChevronLeft size={16} /></button>
-        <button type="button" onClick={() => onChange(page + 1)} disabled={page >= totalPages} aria-label="Next page" className="rounded-lg border border-slate-300 p-2 text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"><ChevronRight size={16} /></button>
+        <button type="button" onClick={() => onChange(page - 1)} disabled={page <= 1} aria-label="Previous page" className="rounded border border-slate-300 p-2 text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"><ChevronLeft size={16} /></button>
+        <button type="button" onClick={() => onChange(page + 1)} disabled={page >= totalPages} aria-label="Next page" className="rounded border border-slate-300 p-2 text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"><ChevronRight size={16} /></button>
       </div>
     </div>
   );
@@ -206,14 +206,14 @@ const RoomsTab = ({ canManage }) => {
           {canManage && <button type="button" onClick={() => navigate("/rooms/new")} className={primaryButton}><Plus size={16} />Add Room</button>}
         </div>
       </div>
-      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
+      <div className="overflow-hidden rounded border border-slate-200 bg-white">
         {loading ? <TableSkeleton rows={6} columns={6} /> : rooms.length === 0 ? <EmptyState text="No rooms found" /> : (
           <div className="overflow-x-auto"><table className="w-full min-w-[720px] text-left text-sm">
             <thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-500"><tr><th className="px-4 py-3 font-medium">Room</th><th className="px-4 py-3 font-medium">Floor</th><th className="px-4 py-3 font-medium">Type</th><th className="px-4 py-3 font-medium">Price / Night</th><th className="px-4 py-3 font-medium">Status</th><th className="px-4 py-3 text-right font-medium">Actions</th></tr></thead>
             <tbody className="divide-y divide-slate-100">{rooms.map((room) => { const price = room.priceOverride ?? room.roomType?.basePrice ?? 0; const busy = busyId === room._id; return (
               <tr key={room._id} className="hover:bg-slate-50/60"><td className="px-4 py-3 font-semibold text-slate-900">{room.roomNumber}</td><td className="px-4 py-3 text-slate-600">{room.floor}</td><td className="px-4 py-3 text-slate-600">{room.roomType?.name || "-"}</td><td className="px-4 py-3 text-slate-600">{formatPrice(price)}{room.priceOverride != null && <span className="ml-1.5 text-xs text-indigo-600">custom</span>}</td>
-                <td className="px-3 py-3"><div className="flex items-center gap-1.5 whitespace-nowrap">{STATUS_KEYS.map((key) => { const selected = room.status === key; return <label key={key} className={`inline-flex cursor-pointer items-center gap-1.5 rounded-md border px-2 py-1.5 text-xs font-medium transition-colors ${selected ? "border-blue-500 bg-blue-50 text-blue-700" : "border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50"} ${busy ? "cursor-not-allowed opacity-60" : ""}`}><input type="radio" name={`room-status-${room._id || room.id}`} value={key} checked={selected} onChange={() => handleStatusChange(room, key)} disabled={busy} className="h-3.5 w-3.5 accent-blue-600" /><span className="leading-none">{STATUS_META[key].label}</span></label>; })}</div></td>
-                <td className="px-4 py-3">{canManage && <div className="flex justify-end gap-1"><button type="button" onClick={() => navigate(`/rooms/${room._id}/edit`)} disabled={busy} aria-label="Edit room" className="rounded-md p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 disabled:opacity-40"><Pencil size={15} /></button><button type="button" onClick={() => setDeleteTarget(room)} disabled={busy} aria-label="Delete room" className="rounded-md p-2 text-slate-500 transition hover:bg-rose-50 hover:text-rose-600 disabled:opacity-40"><Trash2 size={15} /></button></div>}</td>
+                <td className="px-3 py-3"><div className="flex items-center gap-1.5 whitespace-nowrap">{STATUS_KEYS.map((key) => { const selected = room.status === key; return <label key={key} className={`inline-flex cursor-pointer items-center gap-1.5 rounded border px-2 py-1.5 text-xs font-medium transition-colors ${selected ? "border-blue-500 bg-black text-blue-700" : "border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50"} ${busy ? "cursor-not-allowed opacity-60" : ""}`}><input type="radio" name={`room-status-${room._id || room.id}`} value={key} checked={selected} onChange={() => handleStatusChange(room, key)} disabled={busy} className="h-3.5 w-3.5 accent-blue-600" /><span className="leading-none">{STATUS_META[key].label}</span></label>; })}</div></td>
+                <td className="px-4 py-3">{canManage && <div className="flex justify-end gap-1"><button type="button" onClick={() => navigate(`/rooms/${room._id}/edit`)} disabled={busy} aria-label="Edit room" className="rounded p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 disabled:opacity-40"><Pencil size={15} /></button><button type="button" onClick={() => setDeleteTarget(room)} disabled={busy} aria-label="Delete room" className="rounded p-2 text-slate-500 transition hover:bg-rose-50 hover:text-rose-600 disabled:opacity-40"><Trash2 size={15} /></button></div>}</td>
               </tr>); })}</tbody>
           </table></div>
         )}
@@ -260,12 +260,12 @@ const RoomTypesTab = ({ canManage }) => {
         <div className="relative sm:w-72"><Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" /><input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search room type" className={`${inputClass} w-full pl-10`} /></div>
         <div className="flex flex-wrap items-center gap-2"><ExportButtons title="Room Types Report" fileName="room-types" columns={roomTypeExportColumns} rows={roomTypes} />{canManage && <button type="button" onClick={() => navigate("/rooms/types/new")} className={primaryButton}><Plus size={16} />Add Room Type</button>}</div>
       </div>
-      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
+      <div className="overflow-hidden rounded border border-slate-200 bg-white">
         {loading ? <TableSkeleton rows={5} columns={6} /> : roomTypes.length === 0 ? <EmptyState text="No room types found" /> : (
           <div className="overflow-x-auto"><table className="w-full min-w-[720px] text-left text-sm">
             <thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-500"><tr><th className="px-4 py-3 font-medium">Name</th><th className="px-4 py-3 font-medium">Base Price</th><th className="px-4 py-3 font-medium">Capacity</th><th className="px-4 py-3 font-medium">Bed</th><th className="px-4 py-3 font-medium">Amenities</th><th className="px-4 py-3 text-right font-medium">Actions</th></tr></thead>
             <tbody className="divide-y divide-slate-100">{roomTypes.map((type) => { const busy = busyId === type._id; const amenities = type.amenities || []; return (
-              <tr key={type._id} className="hover:bg-slate-50/60"><td className="px-4 py-3"><div className="flex items-center gap-3">{type.images?.[0]?.url ? <img src={type.images[0].url} alt={type.name} className="h-10 w-14 shrink-0 rounded-md object-cover" /> : <div className="flex h-10 w-14 shrink-0 items-center justify-center rounded-md bg-slate-100 text-slate-400"><BedDouble size={16} /></div>}<span className="font-semibold text-slate-900">{type.name}</span></div></td><td className="px-4 py-3 text-slate-600">{formatPrice(type.basePrice)}</td><td className="px-4 py-3 text-slate-600">{type.capacity?.adults ?? 0} adults, {type.capacity?.children ?? 0} children</td><td className="px-4 py-3 capitalize text-slate-600">{type.bedType}</td><td className="px-4 py-3 text-slate-600">{amenities.length === 0 ? "-" : `${amenities.slice(0, 3).join(", ")}${amenities.length > 3 ? ` +${amenities.length - 3}` : ""}`}</td><td className="px-4 py-3">{canManage && <div className="flex justify-end gap-1"><button type="button" onClick={() => navigate(`/rooms/types/${type._id}/edit`)} disabled={busy} aria-label="Edit room type" className="rounded-md p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 disabled:opacity-40"><Pencil size={15} /></button><button type="button" onClick={() => setDeleteTarget(type)} disabled={busy} aria-label="Delete room type" className="rounded-md p-2 text-slate-500 transition hover:bg-rose-50 hover:text-rose-600 disabled:opacity-40"><Trash2 size={15} /></button></div>}</td></tr>
+              <tr key={type._id} className="hover:bg-slate-50/60"><td className="px-4 py-3"><div className="flex items-center gap-3">{type.images?.[0]?.url ? <img src={type.images[0].url} alt={type.name} className="h-10 w-14 shrink-0 rounded object-cover" /> : <div className="flex h-10 w-14 shrink-0 items-center justify-center rounded bg-slate-100 text-slate-400"><BedDouble size={16} /></div>}<span className="font-semibold text-slate-900">{type.name}</span></div></td><td className="px-4 py-3 text-slate-600">{formatPrice(type.basePrice)}</td><td className="px-4 py-3 text-slate-600">{type.capacity?.adults ?? 0} adults, {type.capacity?.children ?? 0} children</td><td className="px-4 py-3 capitalize text-slate-600">{type.bedType}</td><td className="px-4 py-3 text-slate-600">{amenities.length === 0 ? "-" : `${amenities.slice(0, 3).join(", ")}${amenities.length > 3 ? ` +${amenities.length - 3}` : ""}`}</td><td className="px-4 py-3">{canManage && <div className="flex justify-end gap-1"><button type="button" onClick={() => navigate(`/rooms/types/${type._id}/edit`)} disabled={busy} aria-label="Edit room type" className="rounded p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 disabled:opacity-40"><Pencil size={15} /></button><button type="button" onClick={() => setDeleteTarget(type)} disabled={busy} aria-label="Delete room type" className="rounded p-2 text-slate-500 transition hover:bg-rose-50 hover:text-rose-600 disabled:opacity-40"><Trash2 size={15} /></button></div>}</td></tr>
             ); })}</tbody>
           </table></div>
         )}

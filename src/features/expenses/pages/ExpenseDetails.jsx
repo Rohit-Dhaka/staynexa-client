@@ -37,7 +37,7 @@ export default function ExpenseDetails() {
         <p>Expense nahi mila.</p>
         <button
           onClick={() => navigate("/expenses")}
-          className="mt-4 rounded-lg bg-slate-900 px-4 py-2 text-white"
+          className="mt-4 rounded bg-slate-900 px-4 py-2 text-white"
         >
           Back to Expenses
         </button>
@@ -62,7 +62,7 @@ export default function ExpenseDetails() {
         <div className="flex items-center gap-3">
           <button
             onClick={() => navigate("/expenses")}
-            className="rounded-lg border p-2 hover:bg-slate-50"
+            className="rounded border p-2 hover:bg-slate-50"
             aria-label="Back"
           >
             <ArrowLeft size={20} />
@@ -79,15 +79,15 @@ export default function ExpenseDetails() {
 
         <button
           onClick={() => navigate(`/expenses/${id}/edit`)}
-          className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+          className="flex items-center gap-2 rounded bg-black px-4 py-2 text-white hover:bg-black"
         >
           <Pencil size={16} /> Edit Expense
         </button>
       </div>
 
-      <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+      <div className="rounded border border-slate-200 bg-white p-5 ">
         <div className="mb-5 flex items-center gap-3 border-b pb-4">
-          <div className="rounded-lg bg-blue-50 p-3 text-blue-600">
+          <div className="rounded bg-black p-3 text-blue-600">
             <Receipt size={24} />
           </div>
           <div>

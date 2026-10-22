@@ -26,7 +26,7 @@ import {
 } from "../payroll.utils";
 
 const StatCard = ({ label, value, tone = "text-slate-900" }) => (
-  <div className="rounded-xl border border-slate-200 bg-white p-4">
+  <div className="rounded border border-slate-200 bg-white p-4">
     <p className="text-xs text-slate-500">{label}</p>
     <p className={`mt-1 text-xl font-bold ${tone}`}>{value}</p>
   </div>
@@ -154,7 +154,7 @@ const PayrollRuns = () => {
       )}
 
       {summary?.missingStructure?.length > 0 && (
-        <div className="rounded-lg bg-amber-50 px-4 py-3 text-sm text-amber-800">
+        <div className="rounded bg-amber-50 px-4 py-3 text-sm text-amber-800">
           <p className="font-medium">
             No salary is set for: {summary.missingStructure.map((m) => m.name).join(", ")}
           </p>
@@ -164,7 +164,7 @@ const PayrollRuns = () => {
         </div>
       )}
 
-      <div className="rounded-xl border border-slate-200 bg-white p-5">
+      <div className="rounded border border-slate-200 bg-white p-5">
         <h2 className="text-sm font-semibold text-slate-900">Run payroll for {periodLabel(period)}</h2>
         <div className="mt-4 flex flex-wrap items-center gap-3">
           <button type="button" onClick={handleGenerate} disabled={Boolean(busy)} className={primaryButton}>
@@ -199,7 +199,7 @@ const PayrollRuns = () => {
       </div>
 
       {result && (
-        <div className="rounded-xl border border-slate-200 bg-white p-5 text-sm">
+        <div className="rounded border border-slate-200 bg-white p-5 text-sm">
           {result?.type === "generate" && (
             <div className="space-y-3">
               <p>Created: {result.created ?? 0} | Updated: {result.updated ?? 0}</p>
@@ -230,7 +230,7 @@ const PayrollRuns = () => {
         </div>
       )}
 
-      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
+      <div className="overflow-hidden rounded border border-slate-200 bg-white">
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 px-4 py-3">
           <div>
             <h2 className="text-sm font-semibold text-slate-900">Payslips</h2>

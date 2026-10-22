@@ -1,7 +1,7 @@
 import { Loader2 } from "lucide-react";
 
 export const inputClass =
-  "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100";
+  "w-full rounded border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100";
 
 export const Field = ({ label, hint, children }) => (
   <label className="block">
@@ -12,7 +12,7 @@ export const Field = ({ label, hint, children }) => (
 );
 
 export const ErrorBox = ({ message }) =>
-  message ? <p className="mb-4 rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-600">{message}</p> : null;
+  message ? <p className="mb-4 rounded bg-rose-50 px-3 py-2 text-sm text-rose-600">{message}</p> : null;
 
 export const NoteBox = ({ tone = "info", children }) => {
   const tones = {
@@ -20,7 +20,7 @@ export const NoteBox = ({ tone = "info", children }) => {
     warn: "bg-amber-50 text-amber-700",
     danger: "bg-rose-50 text-rose-600",
   };
-  return <div className={`mb-4 rounded-lg px-3 py-2.5 text-sm ${tones[tone]}`}>{children}</div>;
+  return <div className={`mb-4 rounded px-3 py-2.5 text-sm ${tones[tone]}`}>{children}</div>;
 };
 
 export const SectionTitle = ({ children, hint }) => (
@@ -43,7 +43,7 @@ export const ModalFooter = ({
       type="button"
       onClick={onCancel}
       disabled={busy}
-      className="rounded-lg border border-slate-300 px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50 disabled:opacity-60"
+      className="rounded border border-slate-300 px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50 disabled:opacity-60"
     >
       Cancel
     </button>
@@ -51,8 +51,8 @@ export const ModalFooter = ({
       type="button"
       onClick={onConfirm}
       disabled={busy || disabled}
-      className={`flex items-center justify-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold text-white transition disabled:cursor-not-allowed disabled:opacity-60 ${
-        danger ? "bg-rose-600 hover:bg-rose-700" : "bg-indigo-600 hover:bg-indigo-700"
+      className={`flex items-center justify-center gap-2 rounded px-5 py-2.5 text-sm font-semibold text-white transition disabled:cursor-not-allowed disabled:opacity-60 ${
+        danger ? "bg-rose-600 hover:bg-rose-700" : "bg-black "
       }`}
     >
       {busy && <Loader2 size={16} className="animate-spin" />}

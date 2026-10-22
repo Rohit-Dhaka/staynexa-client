@@ -74,7 +74,7 @@ const PHONE_REGEX = /^[0-9+\-\s()]{7,20}$/;
 
 const inputClass =
 
-  "w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 disabled:opacity-60";
+  "w-full rounded border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 disabled:opacity-60";
 
 
 
@@ -82,7 +82,7 @@ const labelClass = "mb-1.5 block text-xs font-medium text-slate-700";
 
 
 
-// Date value for <input type="date"> in the user's own time zone.
+
 
 const toDateInput = (value) => {
 
@@ -216,7 +216,7 @@ const buildPayload = (form, isEdit) => {
         : null,
   };
 
-  // Password is sent only when creating a staff account.
+  
   if (!isEdit) payload.password = form.password;
 
   return payload;
@@ -224,7 +224,7 @@ const buildPayload = (form, isEdit) => {
 
 const SectionCard = ({ title, description, children }) => (
 
-  <section className="rounded-xl border border-slate-200 bg-white p-5 sm:p-6">
+  <section className="rounded border border-slate-200 bg-white p-5 sm:p-6">
 
     <div className="mb-5">
 
@@ -460,7 +460,7 @@ const StaffForm = () => {
 
         toast.success("Staff account created successfully");
 
-        // Keep the password on screen once: it cannot be read back later.
+        
 
         setCreated({
 
@@ -538,7 +538,7 @@ const StaffForm = () => {
 
       <div className=" space-y-6 w-full max-w-none ">
 
-        <div className="rounded-xl border border-slate-200 bg-white p-6 text-center sm:p-8">
+        <div className="rounded border border-slate-200 bg-white p-6 text-center sm:p-8">
 
           <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-emerald-50 text-emerald-600">
 
@@ -564,7 +564,7 @@ const StaffForm = () => {
 
 
 
-          <dl className="mt-6 space-y-3 rounded-lg bg-slate-50 p-4 text-left text-sm">
+          <dl className="mt-6 space-y-3 rounded bg-slate-50 p-4 text-left text-sm">
 
             <div className="flex flex-col gap-1 sm:flex-row sm:justify-between">
 
@@ -612,7 +612,7 @@ const StaffForm = () => {
 
               onClick={handleCopyCredentials}
 
-              className="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-300 px-5 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+              className="inline-flex items-center justify-center gap-2 rounded border border-slate-300 px-5 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
 
             >
 
@@ -636,7 +636,7 @@ const StaffForm = () => {
 
               onClick={addAnother}
 
-              className="rounded-lg border border-slate-300 px-5 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+              className="rounded border border-slate-300 px-5 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
 
             >
 
@@ -650,7 +650,7 @@ const StaffForm = () => {
 
               onClick={() => navigate(BACK_PATH)}
 
-              className="rounded-lg bg-[#1a1a1a] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-700"
+              className="rounded bg-[#1a1a1a] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-700"
 
             >
 
@@ -716,7 +716,7 @@ const StaffForm = () => {
 
       {loading ? (
 
-        <div className="rounded-xl border border-slate-200 bg-white p-5 sm:p-6">
+        <div className="rounded border border-slate-200 bg-white p-5 sm:p-6">
 
           <FormSkeleton fields={8} />
 
@@ -909,7 +909,7 @@ const StaffForm = () => {
 
                       }
 
-                      className="absolute right-1.5 top-1/2 -translate-y-1/2 rounded-md p-1.5 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
+                      className="absolute right-1.5 top-1/2 -translate-y-1/2 rounded p-1.5 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
 
                     >
 
@@ -1412,7 +1412,7 @@ const StaffForm = () => {
 
           {/* Actions */}
 
-          <div className="flex flex-col-reverse gap-3 rounded-xl border border-slate-200 bg-white p-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-col-reverse gap-3 rounded border border-slate-200 bg-white p-4 sm:flex-row sm:items-center sm:justify-between">
 
             <p className="text-xs text-slate-500">
 
@@ -1432,7 +1432,7 @@ const StaffForm = () => {
 
                 disabled={submitting}
 
-                className="rounded-lg border border-slate-300 px-5 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50 disabled:opacity-60"
+                className="rounded border border-slate-300 px-5 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50 disabled:opacity-60"
 
               >
 
@@ -1446,7 +1446,7 @@ const StaffForm = () => {
 
                 disabled={submitting}
 
-                className="flex items-center justify-center gap-2 rounded-lg bg-[#1a1a1a] px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-70"
+                className="flex items-center justify-center gap-2 rounded bg-[#1a1a1a] px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-70"
 
               >
 

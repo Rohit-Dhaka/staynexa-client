@@ -22,7 +22,7 @@ import {
 } from "../../../utils/attendanceUi";
 
 const StatCard = ({ label, value, tone = "text-slate-900" }) => (
-  <div className="rounded-2xl border border-slate-200 bg-white p-4">
+  <div className="rounded border border-slate-200 bg-white p-4">
     <p className="text-xs text-slate-500">{label}</p>
     <p className={`text-xl font-semibold ${tone}`}>{value}</p>
   </div>
@@ -104,14 +104,14 @@ const MyAttendance = () => {
     <div className="flex gap-2">
       <Link
         to="/attendance/leaves"
-        className="rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
+        className="rounded border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
       >
         My Leaves
       </Link>
       {/* <button
         type="button"
         onClick={() => setApplying(true)}
-        className="flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-indigo-700"
+        className="flex items-center gap-2 rounded bg-black px-4 py-2.5 text-sm font-semibold text-white "
       >
         <CalendarPlus size={16} /> Apply for Leave
       </button> */}
@@ -119,13 +119,13 @@ const MyAttendance = () => {
   </div>
 
   {error && (
-    <p className="rounded-lg bg-rose-50 px-4 py-3 text-sm text-rose-600">
+    <p className="rounded bg-rose-50 px-4 py-3 text-sm text-rose-600">
       {error}
     </p>
   )}
 
   {today && (
-    <div className="rounded-2xl border border-slate-200 bg-white p-6">
+    <div className="rounded border border-slate-200 bg-white p-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <p className="flex items-center gap-2 text-3xl font-semibold text-slate-900">
@@ -159,7 +159,7 @@ const MyAttendance = () => {
             type="button"
             disabled={!today.canClockIn || busy}
             onClick={() => act(clockIn)}
-            className="flex items-center gap-2 rounded-lg bg-emerald-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-40"
+            className="flex items-center gap-2 rounded bg-emerald-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-40"
           >
             <LogIn size={16} /> Clock In
           </button>
@@ -167,7 +167,7 @@ const MyAttendance = () => {
             type="button"
             disabled={!today.canClockOut || busy}
             onClick={() => act(clockOut)}
-            className="flex items-center gap-2 rounded-lg bg-rose-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-rose-700 disabled:cursor-not-allowed disabled:opacity-40"
+            className="flex items-center gap-2 rounded bg-rose-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-rose-700 disabled:cursor-not-allowed disabled:opacity-40"
           >
             <LogOut size={16} /> Clock Out
           </button>
@@ -228,7 +228,7 @@ const MyAttendance = () => {
         />
       </div>
 
-      <div className="flex flex-wrap gap-1.5 rounded-2xl border border-slate-200 bg-white p-4">
+      <div className="flex flex-wrap gap-1.5 rounded border border-slate-200 bg-white p-4">
         {row.days.map((c) => {
           const meta = ATTENDANCE_META[c.status] || null;
           return (
@@ -253,7 +253,7 @@ const MyAttendance = () => {
       </div>
     </>
   ) : (
-    <p className="rounded-2xl border border-slate-200 bg-white px-5 py-6 text-sm text-slate-500">
+    <p className="rounded border border-slate-200 bg-white px-5 py-6 text-sm text-slate-500">
       Attendance is not tracked for this account. Attendance tracking is only
       available for staff members and managers.
     </p>
@@ -268,7 +268,7 @@ const MyAttendance = () => {
         {["casual", "sick", "paid"].map((type) => (
           <div
             key={type}
-            className="rounded-2xl border border-slate-200 bg-white p-4"
+            className="rounded border border-slate-200 bg-white p-4"
           >
             <p className="text-xs capitalize text-slate-500">
               {type} Leave
@@ -287,7 +287,7 @@ const MyAttendance = () => {
             </p>
           </div>
         ))}
-        <div className="rounded-2xl border border-slate-200 bg-white p-4">
+        <div className="rounded border border-slate-200 bg-white p-4">
           <p className="text-xs text-slate-500">Unpaid Leave Taken</p>
           <p className="text-xl font-semibold text-slate-900">
             {formatUnits(balance.unpaidTaken)}

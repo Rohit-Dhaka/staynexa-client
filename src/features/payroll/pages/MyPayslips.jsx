@@ -52,20 +52,20 @@ const MyPayslips = () => {
       </div>
 
       {outstanding > 0 && (
-        <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+        <div className="rounded border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
           You have {formatINR(outstanding)} of salary advance still to be recovered
           {advances[0] ? `, deducted in installments from ${periodLabel(advances[0].firstRecoveryPeriod)}` : ""}.
         </div>
       )}
 
-      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
+      <div className="overflow-hidden rounded border border-slate-200 bg-white">
         {loading ? (
           <div className="flex justify-center py-16 text-slate-400">
             <Loader2 className="animate-spin" />
           </div>
         ) : payslips.length === 0 ? (
           <div className="flex flex-col items-center gap-3 px-4 py-16 text-center">
-            <div className="rounded-xl bg-slate-100 p-4 text-slate-500">
+            <div className="rounded bg-slate-100 p-4 text-slate-500">
               <ReceiptText size={28} />
             </div>
             <p className="text-sm text-slate-500">No payslips are available yet.</p>

@@ -149,7 +149,7 @@ const BanquetBookingDetail = () => {
           <ArrowLeft size={16} />
           Back to Banquet
         </Link>
-        <p className="rounded-lg bg-rose-50 px-4 py-3 text-sm text-rose-600">{loadError || "Booking not found"}</p>
+        <p className="rounded bg-rose-50 px-4 py-3 text-sm text-rose-600">{loadError || "Booking not found"}</p>
       </div>
     );
   }
@@ -194,7 +194,7 @@ const BanquetBookingDetail = () => {
       </div>
 
       {holdActive && (
-        <p className="rounded-lg bg-amber-50 px-4 py-3 text-sm text-amber-700">
+        <p className="rounded bg-amber-50 px-4 py-3 text-sm text-amber-700">
           This hall is on hold until {formatDateTime(booking.holdExpiresAt)}. Receive the advance of{" "}
           {formatINR(booking.advanceRequired)} to confirm the booking, otherwise the hold is released automatically.
         </p>
@@ -254,21 +254,21 @@ const BanquetBookingDetail = () => {
       </div>
 
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <div className="rounded-xl border border-slate-200 bg-white p-4">
+        <div className="rounded border border-slate-200 bg-white p-4">
           <p className="text-xs text-slate-500">Total</p>
           <p className="text-xl font-bold text-slate-900">{formatINR(booking.totalAmount)}</p>
         </div>
-        <div className="rounded-xl border border-slate-200 bg-white p-4">
+        <div className="rounded border border-slate-200 bg-white p-4">
           <p className="text-xs text-slate-500">Paid</p>
           <p className="text-xl font-bold text-emerald-600">{formatINR(net)}</p>
         </div>
-        <div className="rounded-xl border border-slate-200 bg-white p-4">
+        <div className="rounded border border-slate-200 bg-white p-4">
           <p className="text-xs text-slate-500">Balance</p>
           <p className={`text-xl font-bold ${booking.balanceAmount > 0 && booking.status !== "cancelled" ? "text-rose-600" : "text-slate-900"}`}>
             {booking.status === "cancelled" ? "-" : formatINR(booking.balanceAmount)}
           </p>
         </div>
-        <div className="rounded-xl border border-slate-200 bg-white p-4">
+        <div className="rounded border border-slate-200 bg-white p-4">
           <p className="text-xs text-slate-500">Advance required</p>
           <p className="text-xl font-bold text-slate-900">{formatINR(booking.advanceRequired)}</p>
         </div>
@@ -504,7 +504,7 @@ const BanquetBookingDetail = () => {
       >
         {booking.balanceAmount > 0 ? (
           <div className="space-y-3">
-            <p className="rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-700">
+            <p className="rounded bg-amber-50 px-3 py-2 text-sm text-amber-700">
               A balance of {formatINR(booking.balanceAmount)} is still pending. Collect it first, or complete the event with dues.
             </p>
             <label className="flex items-center gap-2 text-sm text-slate-700">

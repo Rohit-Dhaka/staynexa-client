@@ -167,7 +167,7 @@ const Leaves = () => {
             }}
             className={`whitespace-nowrap rounded-full px-4 py-1.5 text-sm font-medium transition ${
               status === t.value
-                ? "bg-indigo-600 text-white"
+                ? "bg-black text-white"
                 : "bg-white text-slate-600 ring-1 ring-slate-200 hover:bg-slate-50"
             }`}
           >
@@ -178,10 +178,10 @@ const Leaves = () => {
       </div>
 
       {error && (
-        <p className="rounded-lg bg-rose-50 px-4 py-3 text-sm text-rose-600">{error}</p>
+        <p className="rounded bg-rose-50 px-4 py-3 text-sm text-rose-600">{error}</p>
       )}
 
-      <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white">
+      <div className="overflow-x-auto rounded border border-slate-200 bg-white">
         <table className="w-full min-w-[820px] text-left text-sm">
           <thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
             <tr>
@@ -245,7 +245,7 @@ const Leaves = () => {
                     <button
                       type="button"
                       onClick={() => setViewing(item)}
-                      className="rounded-lg border border-slate-300 px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50"
+                      className="rounded border border-slate-300 px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50"
                     >
                       {isManager && item.status === "pending" ? "Review Request" : "View Details"}
                     </button>
@@ -258,7 +258,7 @@ const Leaves = () => {
                           setCancelReason("");
                           setCancelError("");
                         }}
-                        className="rounded-lg px-3 py-1.5 text-xs font-medium text-rose-600 hover:bg-rose-50"
+                        className="rounded px-3 py-1.5 text-xs font-medium text-rose-600 hover:bg-rose-50"
                       >
                         Cancel Request
                       </button>
@@ -278,7 +278,7 @@ const Leaves = () => {
             type="button"
             disabled={page <= 1 || loading}
             onClick={() => setPage((p) => p - 1)}
-            className="flex items-center gap-1 rounded-lg border border-slate-300 bg-white px-3 py-1.5 hover:bg-slate-50 disabled:opacity-40"
+            className="flex items-center gap-1 rounded border border-slate-300 bg-white px-3 py-1.5 hover:bg-slate-50 disabled:opacity-40"
           >
             <ChevronLeft size={16} /> Previous
           </button>
@@ -286,7 +286,7 @@ const Leaves = () => {
             type="button"
             disabled={page >= data.pages || loading}
             onClick={() => setPage((p) => p + 1)}
-            className="flex items-center gap-1 rounded-lg border border-slate-300 bg-white px-3 py-1.5 hover:bg-slate-50 disabled:opacity-40"
+            className="flex items-center gap-1 rounded border border-slate-300 bg-white px-3 py-1.5 hover:bg-slate-50 disabled:opacity-40"
           >
             Next <ChevronRight size={16} />
           </button>

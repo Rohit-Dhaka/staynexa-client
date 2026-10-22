@@ -52,7 +52,7 @@ const ACTIONS = {
 };
 
 const TONES = {
-  primary: "bg-indigo-600 text-white hover:bg-indigo-700",
+  primary: "bg-black text-white ",
   default: "border border-slate-300 bg-white text-slate-700 hover:bg-slate-50",
   danger: "border border-rose-200 bg-white text-rose-600 hover:bg-rose-50",
 };
@@ -85,7 +85,7 @@ const Info = ({ label, children }) => (
 
 const Card = ({ title, children, className = "" }) => (
   <div
-    className={`rounded-2xl border border-slate-200 bg-white p-5 ${className}`}
+    className={`rounded border border-slate-200 bg-white p-5 ${className}`}
   >
     {title && (
       <h3 className="mb-3 text-sm font-semibold text-slate-900">{title}</h3>
@@ -208,7 +208,7 @@ const BookingDetail = () => {
         >
           Back to Bookings
         </button>
-        <p className="rounded-lg bg-rose-50 px-4 py-3 text-sm text-rose-600">
+        <p className="rounded bg-rose-50 px-4 py-3 text-sm text-rose-600">
           {error || "No booking found."}
         </p>
       </div>
@@ -248,7 +248,7 @@ const BookingDetail = () => {
           <button
             type="button"
             onClick={() => navigate("/bookings")}
-            className="mt-1 rounded-lg p-2 text-slate-500 transition hover:bg-slate-100"
+            className="mt-1 rounded p-2 text-slate-500 transition hover:bg-slate-100"
           >
             <ArrowLeft size={18} />
           </button>
@@ -281,7 +281,7 @@ const BookingDetail = () => {
           <button
             type="button"
             onClick={() => navigate(`/bookings/${booking._id}/invoice`)}
-            className="flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+            className="flex items-center gap-2 rounded border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
           >
             <FileText size={16} /> Invoice
           </button>
@@ -289,7 +289,7 @@ const BookingDetail = () => {
       </div>
 
       {notice && (
-        <div className="flex items-start justify-between gap-4 rounded-lg bg-amber-50 px-4 py-3 text-sm text-amber-700">
+        <div className="flex items-start justify-between gap-4 rounded bg-amber-50 px-4 py-3 text-sm text-amber-700">
           <span>{notice}</span>
           <button
             type="button"
@@ -302,7 +302,7 @@ const BookingDetail = () => {
       )}
 
       {booking.status === "hold" && (
-        <div className="flex items-start gap-3 rounded-2xl bg-indigo-50 px-4 py-3 text-sm text-indigo-700">
+        <div className="flex items-start gap-3 rounded bg-indigo-50 px-4 py-3 text-sm text-indigo-700">
           <Timer size={18} className="mt-0.5 shrink-0" />
           <div>
             <p className="font-medium">
@@ -336,7 +336,7 @@ const BookingDetail = () => {
                 key={key}
                 type="button"
                 onClick={() => setAction(key)}
-                className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition ${TONES[tone]}`}
+                className={`flex items-center gap-2 rounded px-4 py-2 text-sm font-medium transition ${TONES[tone]}`}
               >
                 <Icon size={16} /> {label}
               </button>
@@ -346,19 +346,19 @@ const BookingDetail = () => {
       )}
 
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <div className="rounded-2xl border border-slate-200 bg-white p-4">
+        <div className="rounded border border-slate-200 bg-white p-4">
           <p className="text-xs text-slate-500">Total</p>
           <p className="text-xl font-semibold text-slate-900">
             {billPending ? "Check-out par" : formatINR(booking.totalAmount)}
           </p>
         </div>
-        <div className="rounded-2xl border border-slate-200 bg-white p-4">
+        <div className="rounded border border-slate-200 bg-white p-4">
           <p className="text-xs text-slate-500">Paid</p>
           <p className="text-xl font-semibold text-emerald-600">
             {formatINR(netPaid)}
           </p>
         </div>
-        <div className="rounded-2xl border border-slate-200 bg-white p-4">
+        <div className="rounded border border-slate-200 bg-white p-4">
           <p className="text-xs text-slate-500">Balance</p>
           <p
             className={`text-xl font-semibold ${balance > 0 && !closed && !billPending ? "text-rose-600" : "text-slate-900"}`}
@@ -366,7 +366,7 @@ const BookingDetail = () => {
             {closed || billPending ? "-" : formatINR(balance)}
           </p>
         </div>
-        <div className="rounded-2xl border border-slate-200 bg-white p-4">
+        <div className="rounded border border-slate-200 bg-white p-4">
           <p className="text-xs text-slate-500">
             {booking.advanceRequired > 0
               ? "Advance Payment Required"
@@ -782,7 +782,7 @@ const BookingDetail = () => {
               type="button"
               onClick={() => setVoidTarget(null)}
               disabled={voidBusy}
-              className="rounded-lg border border-slate-300 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-60"
+              className="rounded border border-slate-300 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-60"
             >
               Cancel
             </button>
@@ -790,7 +790,7 @@ const BookingDetail = () => {
               type="button"
               onClick={submitVoid}
               disabled={voidBusy}
-              className="flex items-center justify-center gap-2 rounded-lg bg-rose-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-rose-700 disabled:opacity-70"
+              className="flex items-center justify-center gap-2 rounded bg-rose-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-rose-700 disabled:opacity-70"
             >
               {voidBusy && <Loader2 size={16} className="animate-spin" />}
               Void Payment
@@ -799,7 +799,7 @@ const BookingDetail = () => {
         }
       >
         {voidError && (
-          <p className="mb-3 rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-600">
+          <p className="mb-3 rounded bg-rose-50 px-3 py-2 text-sm text-rose-600">
             {voidError}
           </p>
         )}
@@ -812,7 +812,7 @@ const BookingDetail = () => {
           value={voidReason}
           onChange={(e) => setVoidReason(e.target.value)}
           placeholder="Reason for Voiding (Required)"
-          className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+          className="w-full rounded border border-slate-300 px-3 py-2 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
         />
       </Modal>
     </div>

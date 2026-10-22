@@ -1,6 +1,12 @@
 import api from "../../../api/axiosInstance";
 
-const unwrap = (res) => res.data.data;
+const unwrap = (res) => {
+  if (!res) {
+    throw new Error("API returned an empty response.");
+  }
+
+  return res.data?.data ?? res.data;
+};
 
 // { guest, stays }  (guest is null when the phone number is new)
 export const lookupGuest = (phone) =>
@@ -27,3 +33,4 @@ export const updateGuestFlags = (id, data) =>
 // Get the logged-in guest's own profile
 export const getMyGuestProfile = () =>
   api.get("/guests/me").then(unwrap);
+

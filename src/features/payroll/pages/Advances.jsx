@@ -191,7 +191,7 @@ const Advances = () => {
             }}
             className={`whitespace-nowrap rounded-full px-4 py-1.5 text-sm font-medium transition ${
               status === tab.value
-                ? "bg-indigo-600 text-white"
+                ? "bg-black text-white"
                 : "bg-white text-slate-600 ring-1 ring-slate-200 hover:bg-slate-50"
             }`}
           >
@@ -200,7 +200,7 @@ const Advances = () => {
         ))}
       </div>
 
-      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
+      <div className="overflow-hidden rounded border border-slate-200 bg-white">
         {loading ? (
           <div className="flex justify-center py-16 text-slate-400">
             <Loader2 className="animate-spin" />
@@ -299,7 +299,7 @@ const Advances = () => {
                 type="button"
                 disabled={page <= 1 || loading}
                 onClick={() => setPage((current) => current - 1)}
-                className="rounded-lg border border-slate-300 px-3 py-1.5 disabled:opacity-40"
+                className="rounded border border-slate-300 px-3 py-1.5 disabled:opacity-40"
               >
                 Previous
               </button>
@@ -307,7 +307,7 @@ const Advances = () => {
                 type="button"
                 disabled={page >= data.pages || loading}
                 onClick={() => setPage((current) => current + 1)}
-                className="rounded-lg border border-slate-300 px-3 py-1.5 disabled:opacity-40"
+                className="rounded border border-slate-300 px-3 py-1.5 disabled:opacity-40"
               >
                 Next
               </button>

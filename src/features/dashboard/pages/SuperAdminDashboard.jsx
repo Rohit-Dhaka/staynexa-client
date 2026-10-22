@@ -1,591 +1,743 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+
+import { useCallback, useEffect, useState } from "react";
 import {
   Activity,
   AlertCircle,
-  ArrowRight,
-  ArrowUpRight,
-  Banknote,
   BedDouble,
   CalendarCheck,
-  CalendarClock,
-  CalendarDays,
   CheckCircle2,
-  ClipboardCheck,
   Clock3,
   CreditCard,
-  House,
-  Percent,
+  DollarSign,
+  Download,
+  LayoutDashboard,
+  PartyPopper,
   RefreshCw,
-  ReceiptText,
-  Sparkles,
+  Star,
+  TicketPercent,
   Users,
-  Utensils,
   Wallet,
-  UserCheck,
-  BriefcaseBusiness,
+  Wrench,
 } from "lucide-react";
-import {
-  ResponsiveContainer,
-  LineChart,
-  Line,
-  AreaChart,
-  Area,
-  BarChart,
-  Bar,
-  PieChart,
-  Pie,
-  Cell,
-  Tooltip,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Legend,
-} from "recharts";
-import toast from "react-hot-toast";
+
 import { getDashboardData } from "../services/dashboard.service";
 
-const CHART_COLORS = ["#6366f1", "#10b981", "#3b82f6", "#f43f5e", "#f59e0b", "#94a3b8"];
-
 const money = (value) =>
-  value == null || value === "" || !Number.isFinite(Number(value))
-    ? "—"
-    : `₹${Number(value).toLocaleString("en-IN", { maximumFractionDigits: 0 })}`;
+  new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency: "INR",
+    maximumFractionDigits: 0,
+  }).format(Number(value) || 0);
 
 const number = (value) =>
-  value == null || value === "" || !Number.isFinite(Number(value))
-    ? "—"
-    : Number(value).toLocaleString("en-IN");
+  new Intl.NumberFormat("en-IN").format(Number(value) || 0);
 
-const localDateKey = (value) => {
-  if (!value) return "";
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "";
-  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+const readValue = (data, paths) => {
+  for (const path of paths) {
+    const value = path.split(".").reduce((obj, key) => obj?.[key], data);
+
+    if (
+      value !== undefined &&
+      value !== null &&
+      value !== "" &&
+      Number.isFinite(Number(value))
+    ) {
+      return Number(value);
+    }
+  }
+
+  return null;
+};
+
+const readText = (data, paths, fallback = "—") => {
+  for (const path of paths) {
+    const value = path.split(".").reduce((obj, key) => obj?.[key], data);
+
+    if (value !== undefined && value !== null && value !== "") {
+      return value;
+    }
+  }
+
+  return fallback;
+};
+
+const readItems = (module) => module?.data?.items || [];
+
+const readCount = (module) => {
+  if (!module?.ok) return null;
+
+  if (module.data?.total !== null && module.data?.total !== undefined) {
+    return module.data.total;
+  }
+
+  return readItems(module).length;
 };
 
 const dateLabel = (value) => {
   if (!value) return "—";
+
   const date = new Date(value);
-  return Number.isNaN(date.getTime())
-    ? "—"
-    : date.toLocaleDateString("en-IN", { day: "2-digit", month: "short" });
+
+  if (Number.isNaN(date.getTime())) return "—";
+
+  return date.toLocaleDateString("en-IN", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
 };
 
-const objectOf = (value) => {
-  if (!value || typeof value !== "object") return {};
-  let current = value;
-  for (let i = 0; i < 3; i += 1) {
-    if (current?.data && typeof current.data === "object" && !Array.isArray(current.data)) {
-      current = current.data;
-    } else {
-      break;
-    }
+const statusStyle = (status) => {
+  const value = String(status || "").toLowerCase();
+
+  if (
+    ["confirmed", "checked_in", "active", "paid", "completed", "approved"].includes(value)
+  ) {
+    return "bg-emerald-50 text-emerald-700";
   }
-  return current?.summary && typeof current.summary === "object"
-    ? { ...current, ...current.summary }
-    : current;
-};
 
-const arrayOf = (value, keys = []) => {
-  if (Array.isArray(value)) return value;
-  if (!value || typeof value !== "object") return [];
-  for (const key of keys) if (Array.isArray(value[key])) return value[key];
-  for (const key of ["items", "results", "staff", "guests", "expenses", "bookings", "tasks", "leaves", "payslips", "offers", "data"]) {
-    if (Array.isArray(value[key])) return value[key];
+  if (
+    ["pending", "hold", "on_hold", "requested", "in_progress", "assigned"].includes(value)
+  ) {
+    return "bg-amber-50 text-amber-700";
   }
-  return [];
-};
 
-const pick = (sources, keys) => {
-  for (const source of sources) {
-    if (!source || typeof source !== "object") continue;
-    for (const key of keys) {
-      const value = source[key];
-      if (value !== undefined && value !== null && value !== "" && Number.isFinite(Number(value))) {
-        return Number(value);
-      }
-    }
+  if (
+    ["cancelled", "canceled", "failed", "inactive", "rejected", "void"].includes(value)
+  ) {
+    return "bg-rose-50 text-rose-700";
   }
-  return null;
+
+  return "bg-slate-100 text-slate-600";
 };
 
-const firstText = (...values) =>
-  values.find((value) => value !== undefined && value !== null && String(value).trim()) ?? "—";
+function StatCard({ title, value, subtitle, icon: Icon, color }) {
+  return (
+    <div className="rounded border border-slate-200 bg-white p-5  transition hover:-translate-y-0.5 hover:">
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <p className="text-sm font-medium text-slate-500">{title}</p>
+          <p className="mt-3 break-words text-2xl font-bold tracking-tight text-slate-900">
+            {value}
+          </p>
+          <p className="mt-2 text-xs text-slate-500">{subtitle}</p>
+        </div>
 
-const statusOf = (item) =>
-  String(item?.status || item?.bookingStatus || item?.paymentStatus || "UNKNOWN")
-    .toUpperCase()
-    .replace(/[\s-]+/g, "_");
+        <div className={`rounded p-3 ${color}`}>
+          <Icon size={22} />
+        </div>
+      </div>
+    </div>
+  );
+}
 
-const normalizeBookingStatus = (status) => {
-  if (status === "CHECKEDIN") return "CHECKED_IN";
-  if (status === "CHECKEDOUT") return "CHECKED_OUT";
-  if (status === "CANCELED") return "CANCELLED";
-  return status;
-};
+function Panel({ title, subtitle, children, action }) {
+  return (
+    <section className="overflow-hidden rounded border border-slate-200 bg-white ">
+      <div className="flex flex-col gap-2 border-b border-slate-100 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h2 className="font-bold text-slate-900">{title}</h2>
+          {subtitle && (
+            <p className="mt-1 text-sm text-slate-500">{subtitle}</p>
+          )}
+        </div>
+        {action}
+      </div>
+      {children}
+    </section>
+  );
+}
 
-const isActive = (item) =>
-  item?.isActive === true || ["ACTIVE", "PUBLISHED", "ENABLED"].includes(statusOf(item));
+function EmptyState({ message }) {
+  return (
+    <div className="px-5 py-10 text-center text-sm text-slate-500">
+      {message}
+    </div>
+  );
+}
+
+function ModuleHealth({ name, module }) {
+  return (
+    <div className="flex items-start justify-between gap-3 border-b border-slate-100 py-3 last:border-0">
+      <div className="min-w-0">
+        <p className="text-sm font-medium capitalize text-slate-800">
+          {name.replace(/([A-Z])/g, " $1")}
+        </p>
+        {!module?.ok && (
+          <p className="mt-1 break-words text-xs text-rose-600">
+            {module?.error || "Request failed"}
+          </p>
+        )}
+      </div>
+
+      <span
+        className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-semibold ${
+          module?.ok
+            ? "bg-emerald-50 text-emerald-700"
+            : "bg-rose-50 text-rose-700"
+        }`}
+      >
+        {module?.ok ? "Loaded" : "Failed"}
+      </span>
+    </div>
+  );
+}
+
+function RecentBookings({ bookings }) {
+  const items = readItems(bookings);
+
+  return (
+    <Panel
+      title="Recent Bookings"
+      subtitle="Latest booking records returned by the API"
+    >
+      {items.length === 0 ? (
+        <EmptyState
+          message={
+            bookings?.ok
+              ? "No booking records were returned."
+              : "Booking data is currently unavailable."
+          }
+        />
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[620px] text-left text-sm">
+            <thead className="bg-slate-50 text-xs uppercase text-slate-500">
+              <tr>
+                <th className="px-5 py-3 font-semibold">Booking</th>
+                <th className="px-5 py-3 font-semibold">Guest</th>
+                <th className="px-5 py-3 font-semibold">Check-in</th>
+                <th className="px-5 py-3 font-semibold">Amount</th>
+                <th className="px-5 py-3 font-semibold">Status</th>
+              </tr>
+            </thead>
+
+            <tbody className="divide-y divide-slate-100">
+              {items.slice(0, 10).map((booking, index) => (
+                <tr
+                  key={booking._id || booking.id || index}
+                  className="hover:bg-slate-50"
+                >
+                  <td className="px-5 py-4 font-semibold text-slate-800">
+                    {readText(booking, ["bookingNumber", "_id", "id"])}
+                  </td>
+                  <td className="px-5 py-4 text-slate-600">
+                    {readText(booking, [
+                      "guestDetails.name",
+                      "guest.name",
+                      "guestName",
+                    ], "Guest")}
+                  </td>
+                  <td className="px-5 py-4 text-slate-600">
+                    {dateLabel(booking.checkIn)}
+                  </td>
+                  <td className="px-5 py-4 font-medium text-slate-800">
+                    {money(booking.totalAmount)}
+                  </td>
+                  <td className="px-5 py-4">
+                    <span
+                      className={`rounded-full px-2.5 py-1 text-xs font-semibold ${statusStyle(booking.status)}`}
+                    >
+                      {String(booking.status || "Unknown").replaceAll("_", " ")}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </Panel>
+  );
+}
+
+function RecentGuests({ guests }) {
+  const items = readItems(guests);
+
+  return (
+    <Panel title="Recent Guests" subtitle="Guest records from the guest module">
+      {items.length === 0 ? (
+        <EmptyState
+          message={
+            guests?.ok
+              ? "No guest records were returned."
+              : "Guest data is currently unavailable."
+          }
+        />
+      ) : (
+        <div className="divide-y divide-slate-100">
+          {items.slice(0, 5).map((guest, index) => (
+            <div
+              key={guest._id || guest.id || index}
+              className="flex items-center gap-3 px-5 py-4"
+            >
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-indigo-50 font-bold text-indigo-700">
+                {String(guest.name || guest.guestDetails?.name || "G")
+                  .charAt(0)
+                  .toUpperCase()}
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-sm font-semibold text-slate-800">
+                  {readText(guest, ["name", "guestDetails.name"], "Guest")}
+                </p>
+                <p className="mt-1 truncate text-xs text-slate-500">
+                  {readText(guest, ["phone", "guestDetails.phone"], "No phone number")}
+                </p>
+              </div>
+              <span className="shrink-0 text-xs text-slate-400">
+                {dateLabel(guest.createdAt)}
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
+    </Panel>
+  );
+}
 
 export default function SuperAdminDashboard() {
-  const [result, setResult] = useState({});
+  const [dashboard, setDashboard] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [lastUpdated, setLastUpdated] = useState(null);
+  const [refreshing, setRefreshing] = useState(false);
+  const [pageError, setPageError] = useState("");
 
-  const load = useCallback(async () => {
-    setLoading(true);
+  const loadDashboard = useCallback(async (isRefresh = false) => {
+    if (isRefresh) {
+      setRefreshing(true);
+    } else {
+      setLoading(true);
+    }
+
+    setPageError("");
+
     try {
-      const next = await getDashboardData();
-      setResult(next);
-      setLastUpdated(new Date());
-
-      const entries = Object.values(next);
-      const failed = entries.filter((item) => !item.ok).length;
-      if (failed === entries.length) {
-        toast.error("Dashboard APIs load nahi hui. API access aur endpoints check karein.");
-      } else if (failed) {
-        toast.error(`${failed} dashboard module(s) load nahi ho sake. Baaki data available hai.`);
-      } else {
-        toast.success("Dashboard data updated");
-      }
+      const result = await getDashboardData();
+      setDashboard(result);
     } catch (error) {
-      toast.error(error?.message || "Dashboard load nahi ho saka");
+      setPageError(
+        error.response?.data?.message ||
+          error.message ||
+          "Unable to load the dashboard."
+      );
     } finally {
       setLoading(false);
+      setRefreshing(false);
     }
   }, []);
 
   useEffect(() => {
-    load();
-  }, [load]);
+    loadDashboard();
+  }, [loadDashboard]);
 
-  const data = useCallback((key) => objectOf(result[key]?.data), [result]);
-  const list = useCallback((key, keys) => arrayOf(result[key]?.data, keys), [result]);
+  if (loading && !dashboard) {
+    return (
+      <div className="flex min-h-[60vh] items-center justify-center gap-3 bg-slate-50 text-slate-600">
+        <RefreshCw size={20} className="animate-spin" />
+        <span className="text-sm font-medium">Loading dashboard...</span>
+      </div>
+    );
+  }
 
-  const frontDesk = data("frontDesk");
-  const rooms = data("rooms");
-  const payments = data("payments");
-  const revenue = data("revenue");
-  const housekeepingSummary = data("housekeepingSummary");
-  const banquet = data("banquet");
-  const payroll = data("payroll");
-  const attendance = data("attendanceToday");
-
-  const bookings = list("bookings", ["bookings"]);
-  const expenses = list("expenses", ["expenses"]);
-  const staffResponse = data("staff");
-  const staff = list("staff", ["items", "staff"]);
-  const leaves = list("leaves", ["leaves"]);
-  const housekeepingTasks = list("housekeeping", ["tasks"]);
-  const banquetBookings = list("banquetBookings", ["bookings"]);
-  const guests = list("guests", ["guests"]);
-  const offers = list("offers", ["offers"]);
-  const payslips = list("payrollList", ["payslips"]);
-
-  const revenueTotal = pick([revenue, revenue.summary, revenue.totals, payments, payments.summary], [
-    "totalRevenue", "revenue", "grandTotal", "totalBilled", "roomRevenue", "total",
-  ]);
-  const collected = pick([payments, payments.summary, revenue, revenue.summary], [
-    "totalCollected", "collectedAmount", "totalPaid", "paidAmount", "collected",
-  ]);
-  const outstanding = pick([payments, payments.summary, revenue, revenue.summary], [
-    "totalOutstanding", "outstandingAmount", "balanceAmount", "pendingAmount", "totalDue",
-  ]);
-  const totalRooms = pick([rooms, rooms.summary], ["totalRooms", "total", "roomCount", "totalRoomCount"]);
-  const occupiedRooms = pick([rooms, rooms.summary, frontDesk], ["occupiedRooms", "occupied", "roomsOccupied", "checkedInRooms"]);
-  const occupancyRaw = pick([rooms, rooms.summary, frontDesk], ["occupancyRate", "occupancyPercentage", "occupancy"]);
-  const occupancy = occupancyRaw == null && totalRooms > 0 && occupiedRooms != null
-    ? Math.round((occupiedRooms / totalRooms) * 100)
-    : occupancyRaw;
-  const arrivals = pick([frontDesk, frontDesk.summary], ["todayArrivals", "arrivalsToday", "arrivals", "expectedArrivals"]);
-  const departures = pick([frontDesk, frontDesk.summary], ["todayDepartures", "departuresToday", "departures", "expectedDepartures"]);
-  const inHouse = pick([frontDesk, frontDesk.summary], ["inHouse", "inHouseGuests", "currentlyCheckedIn", "currentStays"]);
-  const pendingTasks = pick(
-    [housekeepingSummary, housekeepingSummary.byStatus],
-    ["pending", "pendingTasks", "pendingCount", "totalPending"],
-  );
-  const upcomingEvents = pick([banquet, banquet.summary], ["upcomingEvents", "upcomingBookings", "upcoming", "totalUpcoming"]);
-  const expensesTotal = expenses.length
-    ? expenses.reduce((sum, item) => sum + (Number(item.amount ?? item.totalAmount ?? item.total ?? 0) || 0), 0)
-    : pick([data("expenses")], ["totalAmount", "totalExpenses", "total"]);
-  const activeStaff = pick([staffResponse], ["activeCount", "totalActive", "totalStaff"]) ??
-    (staff.length ? staff.filter((item) => item.isActive !== false && statusOf(item) !== "INACTIVE").length : null);
-  const attendancePresent = pick([attendance, attendance.summary], ["present", "presentCount", "checkedIn", "totalPresent"]);
-  const pendingLeaves = leaves.filter((item) => ["PENDING", "SUBMITTED", "REQUESTED"].includes(statusOf(item))).length;
-  const activeOffers = offers.filter(isActive).length;
-  const pendingPayroll = payslips.filter((item) => ["PENDING", "DRAFT", "GENERATED", "APPROVED"].includes(statusOf(item))).length;
-
-  const bookingStats = useMemo(() => {
-    const counts = { CONFIRMED: 0, CHECKED_IN: 0, CHECKED_OUT: 0, CANCELLED: 0, PENDING: 0, OTHER: 0 };
-    bookings.forEach((item) => {
-      const status = normalizeBookingStatus(statusOf(item));
-      if (status in counts) counts[status] += 1;
-      else counts.OTHER += 1;
-    });
-    return counts;
-  }, [bookings]);
-
-  const bookingStatusData = useMemo(
-    () => [
-      { name: "Confirmed", value: bookingStats.CONFIRMED },
-      { name: "Checked in", value: bookingStats.CHECKED_IN },
-      { name: "Checked out", value: bookingStats.CHECKED_OUT },
-      { name: "Cancelled", value: bookingStats.CANCELLED },
-      { name: "Pending", value: bookingStats.PENDING },
-      { name: "Other", value: bookingStats.OTHER },
-    ].filter((item) => item.value > 0),
-    [bookingStats],
-  );
-
-  const recentBookings = useMemo(
-    () => [...bookings]
-      .sort((a, b) => new Date(b.createdAt || b.bookingDate || b.checkIn || 0) - new Date(a.createdAt || a.bookingDate || a.checkIn || 0))
-      .slice(0, 6),
-    [bookings],
-  );
-
-  const bookingTrend = useMemo(() => {
-    const grouped = new Map();
-    const now = new Date();
-    for (let offset = 6; offset >= 0; offset -= 1) {
-      const date = new Date(now);
-      date.setDate(now.getDate() - offset);
-      grouped.set(localDateKey(date), { date: localDateKey(date), label: date.toLocaleDateString("en-IN", { day: "2-digit", month: "short" }), bookings: 0 });
-    }
-    bookings.forEach((item) => {
-      const rawDate = item.createdAt || item.bookingDate || item.checkIn || item.checkInDate;
-      const key = localDateKey(rawDate);
-      if (grouped.has(key)) grouped.get(key).bookings += 1;
-    });
-    return [...grouped.values()];
-  }, [bookings]);
-
-  const financeChart = useMemo(() => [
-    { name: "Revenue", amount: revenueTotal ?? 0 },
-    { name: "Collected", amount: collected ?? 0 },
-    { name: "Outstanding", amount: outstanding ?? 0 },
-    { name: "Expenses", amount: expensesTotal ?? 0 },
-  ], [revenueTotal, collected, outstanding, expensesTotal]);
-
-  const moduleStates = [
-    ["Front desk", "frontDesk"], ["Rooms", "rooms"], ["Bookings", "bookings"],
-    ["Payments", "payments"], ["Billing revenue", "revenue"], ["Expenses", "expenses"],
-    ["Housekeeping summary", "housekeepingSummary"], ["Housekeeping tasks", "housekeeping"],
-    ["Banquet", "banquet"], ["Banquet bookings", "banquetBookings"], ["Staff", "staff"],
-    ["Attendance", "attendanceToday"], ["Leave requests", "leaves"],
-    ["Payroll summary", "payroll"], ["Payslips", "payrollList"], ["Guests", "guests"], ["Offers", "offers"],
-  ];
-
-  const cards = [
-    { title: "Total revenue", value: money(revenueTotal), subtitle: "Billing summary", icon: Wallet, tone: "violet" },
-    { title: "Payments collected", value: money(collected), subtitle: "Recorded collections", icon: CreditCard, tone: "emerald" },
-    { title: "Outstanding dues", value: money(outstanding), subtitle: "Unpaid bill balance", icon: ReceiptText, tone: "amber" },
-    { title: "Room occupancy", value: occupancy == null ? "—" : `${occupancy}%`, subtitle: totalRooms != null && occupiedRooms != null ? `${number(occupiedRooms)} of ${number(totalRooms)} rooms occupied` : "Room performance", icon: BedDouble, tone: "blue" },
-  ];
-
-  const quickLinks = [
-    ["Bookings", "Manage reservations", "/bookings", CalendarCheck],
-    ["Front desk", "Arrivals and departures", "/front-desk", UserCheck],
-    ["Rooms", "Rooms and room types", "/rooms", BedDouble],
-    ["Billing", "Invoices and collections", "/billing", ReceiptText],
-    ["Expenses", "Track business expenses", "/expenses", Wallet],
-    ["Guests", "Guest records", "/guests", Users],
-    ["Staff", "Staff administration", "/staff", BriefcaseBusiness],
-    ["Attendance", "Attendance and leaves", "/attendance", CalendarDays],
-    ["Payroll", "Salary and payslips", "/payroll", Banknote],
-    ["Housekeeping", "Tasks and inspections", "/housekeeping", House],
-    ["Banquet", "Events and halls", "/banquet", Utensils],
-    ["Offers", "Promotions and coupons", "/offers", Percent],
-  ];
-
-  return (
-    <main className="min-h-screen space-y-6 ">
-      <header className="flex flex-col justify-between gap-4 xl:flex-row xl:items-center">
-        <div>
-          <div className="flex items-center gap-2 text-sm font-semibold text-indigo-600">
-            <Sparkles size={16} /> STAYNEXA / ADMIN CONSOLE
-          </div>
-          <h1 className="mt-2 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl"> Dashboard</h1>
-          <p className="mt-1 text-sm text-slate-500">Hotel operations, finance, staff and performance at a glance.</p>
-          <p className="mt-2 text-xs text-slate-400">
-            {new Date().toLocaleDateString("en-IN", { weekday: "long", day: "2-digit", month: "long", year: "numeric" })}
-          </p>
-        </div>
-        <div className="flex flex-wrap items-center gap-3">
-          <div className="rounded-xl border border-slate-200 bg-white px-4 py-2.5">
-            <p className="text-xs text-slate-400">Last refreshed</p>
-            <p className="mt-0.5 text-sm font-semibold text-slate-700">
-              {lastUpdated ? lastUpdated.toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" }) : "Not yet"}
-            </p>
-          </div>
-          <button onClick={load} disabled={loading} className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white shadow-sm hover:bg-slate-700 disabled:opacity-50">
-            <RefreshCw size={16} className={loading ? "animate-spin" : ""} /> {loading ? "Refreshing…" : "Refresh data"}
+  if (!dashboard && pageError) {
+    return (
+      <main className="min-h-[60vh] bg-slate-50 p-6">
+        <div className="mx-auto max-w-xl rounded border border-rose-200 bg-white p-6 ">
+          <AlertCircle className="text-rose-600" size={28} />
+          <h1 className="mt-4 text-xl font-bold text-slate-900">
+            Dashboard Unavailable
+          </h1>
+          <p className="mt-2 text-sm text-slate-600">{pageError}</p>
+          <button
+            onClick={() => loadDashboard()}
+            className="mt-5 rounded bg-black px-4 py-2.5 text-sm font-semibold text-white "
+          >
+            Try Again
           </button>
         </div>
-      </header>
+      </main>
+    );
+  }
 
-      {Object.keys(result).length > 0 && moduleStates.some(([, key]) => !result[key]?.ok) && (
-        <div className="flex items-start gap-3 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
-          <AlertCircle size={18} className="mt-0.5 shrink-0" />
-          <div>
-            <p className="font-semibold">Some dashboard modules are unavailable</p>
-            <p className="mt-1 text-amber-800">A failed endpoint does not stop the other dashboard modules from loading. Check API module health below.</p>
-          </div>
-        </div>
-      )}
+  const d = dashboard || {};
+  const rooms = d.rooms?.data;
+  const frontDesk = d.frontDesk?.data;
+  const payments = d.payments?.data;
+  const revenue = d.revenue?.data;
+  const payroll = d.payroll?.data;
+  const banquet = d.banquet?.data;
+  const housekeeping = d.housekeeping?.data;
+  const guestRequests = d.guestRequests?.data;
+  const reviews = d.reviews?.data;
+  const offers = d.offers?.data;
+  const expenses = d.expenses?.data;
 
-      <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 2xl:grid-cols-4">
-        {cards.map((card) => {
-          const Icon = card.icon;
-          const tones = { violet: "bg-violet-50 text-violet-700", emerald: "bg-emerald-50 text-emerald-700", amber: "bg-amber-50 text-amber-700", blue: "bg-blue-50 text-blue-700" };
-          return (
-            <article key={card.title} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
-              <div className="flex items-start justify-between gap-3">
-                <div>
-                  <p className="text-sm font-medium text-slate-500">{card.title}</p>
-                  <p className="mt-3 text-2xl font-bold tracking-tight text-slate-900">{loading ? "…" : card.value}</p>
-                </div>
-                <div className={`rounded-xl p-3 ${tones[card.tone]}`}><Icon size={21} /></div>
-              </div>
-              <p className="mt-4 text-xs text-slate-500">{card.subtitle}</p>
-            </article>
-          );
-        })}
-      </section>
+  const totalRooms = readValue(rooms, [
+    "totalRooms", "total", "stats.totalRooms", "summary.totalRooms",
+  ]);
 
-      <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <SmallStat icon={CalendarDays} label="Today's arrivals" value={arrivals} description="Front desk overview" tone="indigo" />
-        <SmallStat icon={CalendarClock} label="Today's departures" value={departures} description="Front desk overview" tone="blue" />
-        <SmallStat icon={Users} label="Guests in house" value={inHouse} description="Current stays" tone="emerald" />
-        <SmallStat icon={ClipboardCheck} label="Pending housekeeping" value={pendingTasks} description="Open tasks" tone="amber" />
-      </section>
+  const availableRooms = readValue(rooms, [
+    "availableRooms", "available", "stats.availableRooms", "summary.availableRooms",
+  ]);
 
-      <section className="grid grid-cols-1 gap-6 xl:grid-cols-3">
-        <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm xl:col-span-2">
-          <div className="flex flex-wrap items-start justify-between gap-3">
+  const occupiedRooms = readValue(rooms, [
+    "occupiedRooms", "occupied", "stats.occupiedRooms", "summary.occupiedRooms",
+  ]);
+
+  const bookingsCount = readCount(d.bookings);
+  const guestsCount = readCount(d.guests);
+  const staffCount = readCount(d.staff);
+
+  const occupancyRate =
+    readValue(rooms, ["occupancyRate", "stats.occupancyRate", "summary.occupancyRate"]) ??
+    (totalRooms > 0 && occupiedRooms !== null
+      ? Math.round((occupiedRooms / totalRooms) * 100)
+      : null);
+
+  const revenueAmount = readValue(revenue, [
+    "totalRevenue", "revenue", "total", "summary.totalRevenue", "collectedAmount",
+  ]);
+
+  const collectedAmount = readValue(payments, [
+    "totalCollected", "collectedAmount", "totalPaid", "summary.totalCollected",
+  ]);
+
+  const outstandingAmount = readValue(payments, [
+    "outstandingAmount", "totalOutstanding", "balanceAmount", "summary.outstandingAmount",
+  ]);
+
+  const payrollAmount = readValue(payroll, [
+    "totalPayable", "netPayable", "totalSalary", "summary.totalPayable",
+  ]);
+
+  const banquetCount = readValue(banquet, [
+    "totalBookings", "bookingsCount", "summary.totalBookings",
+  ]);
+
+  const housekeepingCount =
+    readValue(housekeeping, ["total", "totalTasks", "summary.total"]) ??
+    readCount(d.housekeeping);
+
+  const guestRequestCount = readValue(guestRequests, [
+    "total", "totalRequests", "summary.totalRequests",
+  ]);
+
+  const reviewCount = readValue(reviews, [
+    "total", "totalReviews", "summary.totalReviews",
+  ]);
+
+  const offerCount = readCount(d.offers);
+  const expenseCount = readCount(d.expenses);
+
+  const moduleEntries = [
+    ["rooms", d.rooms],
+    ["bookings", d.bookings],
+    ["guests", d.guests],
+    ["frontDesk", d.frontDesk],
+    ["payments", d.payments],
+    ["revenue", d.revenue],
+    ["bills", d.bills],
+    ["staff", d.staff],
+    ["attendance", d.attendance],
+    ["payroll", d.payroll],
+    ["banquet", d.banquet],
+    ["housekeeping", d.housekeeping],
+    ["guestRequests", d.guestRequests],
+    ["reviews", d.reviews],
+    ["offers", d.offers],
+    ["expenses", d.expenses],
+  ];
+
+  const failedCount = d.failedModules || 0;
+  const currentPeriod = new Date().toLocaleDateString("en-IN", {
+    month: "long",
+    year: "numeric",
+  });
+
+  const displayMetric = (value, formatter = number) =>
+    value === null || value === undefined ? "—" : formatter(value);
+
+  return (
+    <main className="min-h-screen">
+      <div className="mx-auto max-w-[1600px] space-y-6">
+        <header className="flex flex-col justify-between gap-4 lg:flex-row lg:items-center">
+          <div className="flex items-start gap-3">
+            <div className="rounded bg-black p-3 text-white ">
+              <LayoutDashboard size={26} />
+            </div>
             <div>
-              <h2 className="text-lg font-semibold text-slate-900">Booking activity</h2>
-              <p className="mt-1 text-sm text-slate-500">Last 7 days · booking records returned by the API</p>
+              <p className="text-sm font-semibold text-indigo-600">
+                StayNexa Management
+              </p>
+              <h1 className="mt-1 text-2xl font-bold tracking-tight text-slate-900 md:text-3xl">
+                Super Admin Dashboard
+              </h1>
+              <p className="mt-2 text-sm text-slate-500">
+                Property performance, hotel operations and business overview.
+              </p>
             </div>
-            <Link to="/bookings" className="inline-flex items-center gap-1 text-sm font-semibold text-indigo-600 hover:text-indigo-800">All bookings <ArrowRight size={15} /></Link>
           </div>
-          <div className="mt-5 h-72">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={bookingTrend} margin={{ top: 10, right: 10, left: -18, bottom: 0 }}>
-                <defs><linearGradient id="bookingFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#6366f1" stopOpacity={0.28} /><stop offset="95%" stopColor="#6366f1" stopOpacity={0.02} /></linearGradient></defs>
-                <CartesianGrid strokeDasharray="4 4" stroke="#e2e8f0" />
-                <XAxis dataKey="label" tick={{ fontSize: 12, fill: "#64748b" }} axisLine={false} tickLine={false} />
-                <YAxis allowDecimals={false} tick={{ fontSize: 12, fill: "#64748b" }} axisLine={false} tickLine={false} />
-                <Tooltip contentStyle={{ borderRadius: 12, borderColor: "#e2e8f0" }} />
-                <Area type="monotone" dataKey="bookings" name="Bookings" stroke="#6366f1" strokeWidth={3} fill="url(#bookingFill)" activeDot={{ r: 5 }} />
-              </AreaChart>
-            </ResponsiveContainer>
+
+          <div className="flex flex-wrap items-center gap-3">
+            <div className="rounded border border-slate-200 bg-white px-4 py-2.5">
+              <p className="text-xs text-slate-500">Reporting period</p>
+              <p className="mt-0.5 text-sm font-semibold text-slate-800">
+                {currentPeriod}
+              </p>
+            </div>
+            <button
+              onClick={() => loadDashboard(true)}
+              disabled={refreshing}
+              className="inline-flex items-center gap-2 rounded bg-black px-4 py-3 text-sm font-semibold text-white  transition  disabled:opacity-60"
+            >
+              <RefreshCw size={16} className={refreshing ? "animate-spin" : ""} />
+              {refreshing ? "Refreshing..." : "Refresh Data"}
+            </button>
           </div>
-          <p className="mt-2 text-xs text-slate-400">This chart counts records whose booking/creation date falls within the last seven days. The API request currently fetches the latest 100 records.</p>
-        </article>
+        </header>
 
-        <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-          <h2 className="text-lg font-semibold text-slate-900">Booking status</h2>
-          <p className="mt-1 text-sm text-slate-500">Status distribution for returned bookings</p>
-          {bookingStatusData.length ? (
-            <>
-              <div className="mt-3 h-56">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie data={bookingStatusData} dataKey="value" nameKey="name" cx="50%" cy="50%" innerRadius={52} outerRadius={82} paddingAngle={3}>
-                      {bookingStatusData.map((entry, index) => <Cell key={entry.name} fill={CHART_COLORS[index % CHART_COLORS.length]} />)}
-                    </Pie>
-                    <Tooltip />
-                    <Legend verticalAlign="bottom" height={34} wrapperStyle={{ fontSize: 11 }} />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
-              <p className="text-center text-sm text-slate-500">{number(bookings.length)} bookings in response</p>
-            </>
-          ) : (
-            <EmptyState icon={Activity} title="No booking status data" description="No booking records were returned from the API." />
-          )}
-        </article>
-      </section>
+        {pageError && (
+          <div className="rounded border border-rose-200 bg-rose-50 p-4 text-sm text-rose-700">
+            {pageError}
+          </div>
+        )}
 
-      <section className="grid grid-cols-1 gap-6 xl:grid-cols-3">
-        <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm xl:col-span-2">
-          <div className="flex items-start justify-between gap-3">
+        {failedCount > 0 && (
+          <div className="flex items-start gap-3 rounded border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
+            <AlertCircle size={20} className="mt-0.5 shrink-0" />
             <div>
-              <h2 className="text-lg font-semibold text-slate-900">Finance overview</h2>
-              <p className="mt-1 text-sm text-slate-500">Revenue, collections, outstanding dues and expense records</p>
-            </div>
-            <Link to="/billing" className="text-sm font-semibold text-indigo-600 hover:text-indigo-800">Open billing</Link>
-          </div>
-          <div className="mt-5 h-72">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={financeChart} margin={{ top: 8, right: 8, left: 4, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="4 4" stroke="#e2e8f0" />
-                <XAxis dataKey="name" tick={{ fontSize: 11, fill: "#64748b" }} axisLine={false} tickLine={false} />
-                <YAxis tickFormatter={(value) => `₹${Number(value).toLocaleString("en-IN", { notation: "compact", maximumFractionDigits: 1 })}`} tick={{ fontSize: 11, fill: "#64748b" }} axisLine={false} tickLine={false} width={70} />
-                <Tooltip formatter={(value) => money(value)} contentStyle={{ borderRadius: 12, borderColor: "#e2e8f0" }} />
-                <Bar dataKey="amount" name="Amount" radius={[7, 7, 0, 0]}>
-                  {financeChart.map((entry, index) => <Cell key={entry.name} fill={CHART_COLORS[index]} />)}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </article>
-        <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-          <h2 className="text-lg font-semibold text-slate-900">Operations snapshot</h2>
-          <p className="mt-1 text-sm text-slate-500">Daily operations and team activity</p>
-          <div className="mt-5 space-y-4">
-            <ProgressRow label="Room occupancy" value={occupancy} suffix="%" />
-            <ProgressRow label="Attendance present" value={attendancePresent} max={activeStaff} suffix="" />
-            <ProgressRow label="Pending housekeeping" value={pendingTasks} max={Math.max(housekeepingTasks.length, Number(pendingTasks) || 0, 1)} suffix="" />
-            <div className="rounded-xl bg-slate-50 p-4">
-              <p className="text-xs font-medium text-slate-500">Upcoming banquet events</p>
-              <p className="mt-1 text-2xl font-bold text-slate-900">{upcomingEvents == null ? number(banquetBookings.length || null) : number(upcomingEvents)}</p>
+              <p className="font-semibold">
+                {failedCount} dashboard module(s) could not be loaded.
+              </p>
+              <p className="mt-1">
+                Other available data is displayed below. Check Module Health for failed requests.
+              </p>
             </div>
           </div>
-        </article>
-      </section>
+        )}
 
-      <section className="grid grid-cols-1 gap-6 xl:grid-cols-3">
-        <article className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm xl:col-span-2">
-          <div className="flex items-center justify-between border-b border-slate-100 p-5">
-            <div><h2 className="text-lg font-semibold text-slate-900">Recent bookings</h2><p className="mt-1 text-sm text-slate-500">Latest booking records returned by the API</p></div>
-            <Link to="/bookings" className="text-sm font-semibold text-indigo-600 hover:text-indigo-800">View all</Link>
+        <section>
+          <div className="mb-4 flex items-center gap-2">
+            <Activity size={18} className="text-indigo-600" />
+            <h2 className="font-bold text-slate-900">Property Overview</h2>
           </div>
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[700px] text-left text-sm">
-              <thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
-                <tr>{["Booking", "Guest", "Check-in", "Check-out", "Amount", "Status"].map((title) => <th key={title} className="px-5 py-3.5 font-semibold">{title}</th>)}</tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                {loading ? <tr><td colSpan={6} className="px-5 py-12 text-center text-slate-400">Loading bookings…</td></tr>
-                  : recentBookings.length === 0 ? <tr><td colSpan={6} className="px-5 py-12 text-center text-slate-400">No bookings returned by the API.</td></tr>
-                    : recentBookings.map((booking, index) => (
-                      <tr key={booking._id || booking.bookingNumber || index} className="hover:bg-slate-50">
-                        <td className="px-5 py-4 font-semibold text-slate-900">{firstText(booking.bookingNumber, booking._id?.slice(-8))}</td>
-                        <td className="px-5 py-4 text-slate-700">{firstText(booking.guestDetails?.name, booking.guest?.name, booking.guestName, booking.customerName)}</td>
-                        <td className="px-5 py-4 text-slate-600">{dateLabel(booking.checkIn || booking.checkInDate)}</td>
-                        <td className="px-5 py-4 text-slate-600">{dateLabel(booking.checkOut || booking.checkOutDate)}</td>
-                        <td className="px-5 py-4 font-semibold text-slate-900">{money(booking.totalAmount ?? booking.grandTotal ?? booking.amount)}</td>
-                        <td className="px-5 py-4"><StatusPill status={normalizeBookingStatus(statusOf(booking))} /></td>
-                      </tr>
-                    ))}
-              </tbody>
-            </table>
-          </div>
-        </article>
-        <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-          <h2 className="text-lg font-semibold text-slate-900">Quick actions</h2>
-          <p className="mt-1 text-sm text-slate-500">Open a frequently used module</p>
-          <div className="mt-4 space-y-2">
-            {quickLinks.map(([title, description, href, Icon]) => (
-              <Link key={title} to={href} className="group flex items-center gap-3 rounded-xl border border-slate-100 p-3 transition hover:border-slate-200 hover:bg-slate-50">
-                <div className="rounded-lg bg-slate-100 p-2.5 text-slate-700 group-hover:bg-white"><Icon size={18} /></div>
-                <div className="min-w-0 flex-1"><p className="text-sm font-semibold text-slate-800">{title}</p><p className="mt-0.5 text-xs text-slate-500">{description}</p></div>
-                <ArrowRight size={16} className="text-slate-300 transition group-hover:translate-x-0.5 group-hover:text-slate-600" />
-              </Link>
-            ))}
-          </div>
-        </article>
-      </section>
 
-      <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <InfoCard icon={Utensils} title="Upcoming banquet events" value={upcomingEvents == null ? number(banquetBookings.length || null) : number(upcomingEvents)} description="Banquet summary" href="/banquet" />
-        <InfoCard icon={Wallet} title="Expenses in response" value={money(expensesTotal)} description={`${number(expenses.length)} expense records returned`} href="/expenses" />
-        <InfoCard icon={BriefcaseBusiness} title="Active staff" value={activeStaff == null ? "—" : number(activeStaff)} description="Staff directory" href="/staff" />
-        <InfoCard icon={CalendarCheck} title="Attendance present" value={attendancePresent == null ? "—" : number(attendancePresent)} description="Today's attendance sheet" href="/attendance" />
-        <InfoCard icon={CalendarDays} title="Pending leave requests" value={number(pendingLeaves)} description="Pending/submitted leave records returned" href="/attendance/leaves" />
-        <InfoCard icon={Banknote} title="Payroll records pending" value={number(pendingPayroll)} description="Payslips in draft/approval stages" href="/payroll" />
-        <InfoCard icon={Users} title="Guests returned" value={number(guests.length)} description="Guest records in current response" href="/guests" />
-        <InfoCard icon={Percent} title="Active offers" value={number(activeOffers)} description="Offers marked active by API" href="/offers" />
-      </section>
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            <StatCard
+              title="Total Rooms"
+              value={displayMetric(totalRooms)}
+              subtitle="Registered property rooms"
+              icon={BedDouble}
+              color="bg-indigo-50 text-indigo-600"
+            />
+            <StatCard
+              title="Available Rooms"
+              value={displayMetric(availableRooms)}
+              subtitle="Availability reported by the API"
+              icon={CheckCircle2}
+              color="bg-emerald-50 text-emerald-600"
+            />
+            <StatCard
+              title="Occupied Rooms"
+              value={displayMetric(occupiedRooms)}
+              subtitle="Occupancy reported by the API"
+              icon={Users}
+              color="bg-sky-50 text-sky-600"
+            />
+            <StatCard
+              title="Occupancy Rate"
+              value={occupancyRate === null ? "—" : `${occupancyRate}%`}
+              subtitle="Current room occupancy"
+              icon={Activity}
+              color="bg-violet-50 text-violet-600"
+            />
+          </div>
+        </section>
 
-      <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-        <div className="flex flex-wrap items-start justify-between gap-3">
-          <div><h2 className="text-lg font-semibold text-slate-900">API module health</h2><p className="mt-1 text-sm text-slate-500">Live status of each dashboard data source</p></div>
-          <span className="rounded-lg bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-600">{moduleStates.filter(([, key]) => result[key]?.ok).length}/{moduleStates.length} connected</span>
-        </div>
-        <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {moduleStates.map(([name, key]) => (
-            <div key={key} className="flex items-center justify-between gap-2 rounded-xl border border-slate-100 px-3 py-3">
-              <span className="text-sm text-slate-700">{name}</span>
-              {result[key]?.ok ? <span className="inline-flex items-center gap-1 text-xs font-medium text-emerald-700"><CheckCircle2 size={14} /> Connected</span>
-                : result[key] ? <span title={result[key].error} className="inline-flex items-center gap-1 text-xs font-medium text-rose-600"><AlertCircle size={14} /> Unavailable</span>
-                  : <span className="text-xs text-slate-400">Loading</span>}
+        <section>
+          <div className="mb-4 flex items-center gap-2">
+            <CalendarCheck size={18} className="text-indigo-600" />
+            <h2 className="font-bold text-slate-900">Bookings & Guests</h2>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            <StatCard
+              title="Total Bookings"
+              value={displayMetric(bookingsCount)}
+              subtitle="Count reported by booking API"
+              icon={CalendarCheck}
+              color="bg-black text-blue-600"
+            />
+            <StatCard
+              title="Registered Guests"
+              value={displayMetric(guestsCount)}
+              subtitle="Count reported by guest API"
+              icon={Users}
+              color="bg-teal-50 text-teal-600"
+            />
+            <StatCard
+              title="Banquet Bookings"
+              value={displayMetric(banquetCount)}
+              subtitle="Banquet module summary"
+              icon={PartyPopper}
+              color="bg-purple-50 text-purple-600"
+            />
+            <StatCard
+              title="Guest Requests"
+              value={displayMetric(guestRequestCount)}
+              subtitle="Guest service requests"
+              icon={Clock3}
+              color="bg-orange-50 text-orange-600"
+            />
+          </div>
+        </section>
+
+        <section>
+          <div className="mb-4 flex items-center gap-2">
+            <DollarSign size={18} className="text-indigo-600" />
+            <h2 className="font-bold text-slate-900">Financial Overview</h2>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            <StatCard
+              title="Revenue"
+              value={displayMetric(revenueAmount, money)}
+              subtitle="Revenue summary returned by the API"
+              icon={Wallet}
+              color="bg-emerald-50 text-emerald-600"
+            />
+            <StatCard
+              title="Payments Collected"
+              value={displayMetric(collectedAmount, money)}
+              subtitle="Collection summary returned by the API"
+              icon={CreditCard}
+              color="bg-sky-50 text-sky-600"
+            />
+            <StatCard
+              title="Outstanding Balance"
+              value={displayMetric(outstandingAmount, money)}
+              subtitle="Outstanding amount reported by the API"
+              icon={DollarSign}
+              color="bg-amber-50 text-amber-600"
+            />
+            <StatCard
+              title="Monthly Payroll"
+              value={displayMetric(payrollAmount, money)}
+              subtitle="Current period payroll summary"
+              icon={Wallet}
+              color="bg-rose-50 text-rose-600"
+            />
+          </div>
+        </section>
+
+        <section>
+          <div className="mb-4 flex items-center gap-2">
+            <Activity size={18} className="text-indigo-600" />
+            <h2 className="font-bold text-slate-900">Operations & Business</h2>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            <StatCard
+              title="Staff Records"
+              value={displayMetric(staffCount)}
+              subtitle="Count reported by staff API"
+              icon={Users}
+              color="bg-indigo-50 text-indigo-600"
+            />
+            <StatCard
+              title="Housekeeping Tasks"
+              value={displayMetric(housekeepingCount)}
+              subtitle="Housekeeping module records"
+              icon={Wrench}
+              color="bg-orange-50 text-orange-600"
+            />
+            <StatCard
+              title="Active Business Offers"
+              value={displayMetric(offerCount)}
+              subtitle="Offer records returned by the API"
+              icon={TicketPercent}
+              color="bg-pink-50 text-pink-600"
+            />
+            <StatCard
+              title="Reviews"
+              value={displayMetric(reviewCount)}
+              subtitle="Review summary returned by the API"
+              icon={Star}
+              color="bg-yellow-50 text-yellow-600"
+            />
+          </div>
+        </section>
+
+        <section className="grid gap-6 xl:grid-cols-[1.6fr_1fr]">
+          <RecentBookings bookings={d.bookings} />
+          <RecentGuests guests={d.guests} />
+        </section>
+
+        <section className="grid gap-6 xl:grid-cols-2">
+          <Panel
+            title="Staff & Operational Summary"
+            subtitle="Data available from staff, attendance and operations modules"
+          >
+            <div className="divide-y divide-slate-100 px-5">
+              <div className="flex items-center justify-between gap-4 py-4">
+                <span className="text-sm text-slate-600">Staff records</span>
+                <span className="font-semibold text-slate-900">
+                  {displayMetric(staffCount)}
+                </span>
+              </div>
+              <div className="flex items-center justify-between gap-4 py-4">
+                <span className="text-sm text-slate-600">Housekeeping tasks</span>
+                <span className="font-semibold text-slate-900">
+                  {displayMetric(housekeepingCount)}
+                </span>
+              </div>
+              <div className="flex items-center justify-between gap-4 py-4">
+                <span className="text-sm text-slate-600">Guest service requests</span>
+                <span className="font-semibold text-slate-900">
+                  {displayMetric(guestRequestCount)}
+                </span>
+              </div>
+              <div className="flex items-center justify-between gap-4 py-4">
+                <span className="text-sm text-slate-600">Business expenses records</span>
+                <span className="font-semibold text-slate-900">
+                  {displayMetric(expenseCount)}
+                </span>
+              </div>
             </div>
-          ))}
-        </div>
-      </section>
+          </Panel>
 
-      <footer className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-slate-200 bg-white px-4 py-3 text-xs text-slate-500">
-        <span className="inline-flex items-center gap-2"><Clock3 size={14} /> Dashboard data comes from backend GET endpoints.</span>
-        <span>{lastUpdated ? `Updated ${lastUpdated.toLocaleTimeString("en-IN")}` : "Waiting for data"}</span>
-      </footer>
+          <Panel
+            title="Module Health"
+            subtitle={`${d.totalModules || moduleEntries.length} connected dashboard modules`}
+            action={
+              failedCount === 0 ? (
+                <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700">
+                  <CheckCircle2 size={14} /> All loaded
+                </span>
+              ) : (
+                <span className="rounded-full bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-700">
+                  {failedCount} failed
+                </span>
+              )
+            }
+          >
+            <div className="px-5 py-1">
+              {moduleEntries.map(([name, module]) => (
+                <ModuleHealth key={name} name={name} module={module} />
+              ))}
+            </div>
+          </Panel>
+        </section>
+
+        <footer className="flex flex-col gap-2 border-t border-slate-200 pt-5 text-xs text-slate-400 sm:flex-row sm:items-center sm:justify-between">
+          <span>StayNexa Super Admin Dashboard</span>
+          <span>
+            Last updated:{" "}
+            {d.generatedAt
+              ? new Date(d.generatedAt).toLocaleString("en-IN")
+              : "Not available"}
+          </span>
+        </footer>
+      </div>
     </main>
-  );
-}
-
-function SmallStat({ icon: Icon, label, value, description, tone }) {
-  const styles = { indigo: "bg-indigo-50 text-indigo-700", blue: "bg-blue-50 text-blue-700", emerald: "bg-emerald-50 text-emerald-700", amber: "bg-amber-50 text-amber-700" };
-  return (
-    <article className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-      <div className="flex items-center gap-3">
-        <div className={`rounded-xl p-3 ${styles[tone]}`}><Icon size={20} /></div>
-        <div className="min-w-0"><p className="text-sm text-slate-500">{label}</p><p className="mt-1 text-xl font-bold text-slate-900">{value == null ? "—" : number(value)}</p></div>
-      </div>
-      <p className="mt-3 text-xs text-slate-400">{description}</p>
-    </article>
-  );
-}
-
-function InfoCard({ icon: Icon, title, value, description, href }) {
-  return (
-    <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
-      <Link to={href} className="block">
-        <div className="flex items-start justify-between gap-3">
-          <div><p className="text-sm font-medium text-slate-500">{title}</p><p className="mt-2 text-2xl font-bold text-slate-900">{value}</p><p className="mt-1 text-xs leading-5 text-slate-500">{description}</p></div>
-          <div className="rounded-xl bg-slate-100 p-3 text-slate-700"><Icon size={20} /></div>
-        </div>
-        <div className="mt-4 flex items-center gap-1 text-sm font-semibold text-indigo-600">Open module <ArrowUpRight size={15} /></div>
-      </Link>
-    </article>
-  );
-}
-
-function StatusPill({ status }) {
-  const styles = {
-    CONFIRMED: "bg-indigo-50 text-indigo-700",
-    CHECKED_IN: "bg-emerald-50 text-emerald-700",
-    CHECKED_OUT: "bg-blue-50 text-blue-700",
-    CANCELLED: "bg-rose-50 text-rose-700",
-    PENDING: "bg-amber-50 text-amber-700",
-    COMPLETED: "bg-emerald-50 text-emerald-700",
-  };
-  return <span className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${styles[status] || "bg-slate-100 text-slate-600"}`}>{status.replace(/_/g, " ")}</span>;
-}
-
-function ProgressRow({ label, value, max, suffix = "" }) {
-  const numeric = value == null || !Number.isFinite(Number(value)) ? null : Number(value);
-  const denominator = max == null || !Number.isFinite(Number(max)) || Number(max) <= 0 ? null : Number(max);
-  const percent = numeric == null ? 0 : denominator ? Math.min(100, Math.max(0, (numeric / denominator) * 100)) : Math.min(100, Math.max(0, numeric));
-  return (
-    <div>
-      <div className="mb-2 flex items-center justify-between gap-3 text-sm">
-        <span className="text-slate-600">{label}</span>
-        <span className="font-semibold text-slate-900">{numeric == null ? "—" : `${number(numeric)}${suffix}`}</span>
-      </div>
-      <div className="h-2 overflow-hidden rounded-full bg-slate-100"><div className="h-full rounded-full bg-indigo-500 transition-all" style={{ width: `${percent}%` }} /></div>
-    </div>
-  );
-}
-
-function EmptyState({ icon: Icon, title, description }) {
-  return (
-    <div className="flex min-h-40 flex-col items-center justify-center rounded-xl bg-slate-50 px-5 text-center">
-      <div className="rounded-xl bg-white p-3 text-slate-400 shadow-sm"><Icon size={24} /></div>
-      <p className="mt-3 font-semibold text-slate-700">{title}</p>
-      <p className="mt-1 max-w-sm text-sm text-slate-500">{description}</p>
-    </div>
   );
 }

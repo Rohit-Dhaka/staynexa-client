@@ -185,7 +185,7 @@ export default function OffersPage() {
           />
           <Link
             to="/offers/new"
-            className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-blue-700"
+            className="inline-flex items-center gap-2 rounded bg-black px-4 py-2.5 text-sm font-semibold text-white hover:bg-black"
           >
             <Plus size={17} />
             Create offer
@@ -200,7 +200,7 @@ export default function OffersPage() {
         <SummaryCard title="Paused (current page)" value={pausedCount} icon={<Pause size={20} />} />
       </section>
 
-      <section className="rounded-2xl border border-slate-200 bg-white shadow-sm">
+      <section className="rounded border border-slate-200 bg-white ">
         <div className="flex flex-col gap-3 border-b border-slate-100 p-4 lg:flex-row lg:items-center">
           <div className="relative min-w-0 flex-1">
             <Search size={17} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -212,7 +212,7 @@ export default function OffersPage() {
               }}
               placeholder="Search offer name or coupon code..."
               aria-label="Search offers"
-              className="w-full rounded-lg border border-slate-200 py-2.5 pl-9 pr-3 text-sm outline-none focus:border-slate-400"
+              className="w-full rounded border border-slate-200 py-2.5 pl-9 pr-3 text-sm outline-none focus:border-slate-400"
             />
           </div>
 
@@ -223,7 +223,7 @@ export default function OffersPage() {
               setPage(1);
             }}
             aria-label="Filter offer status"
-            className="rounded-lg border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-slate-400"
+            className="rounded border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-slate-400"
           >
             <option value="">All statuses</option>
             <option value="ACTIVE">Active</option>
@@ -236,7 +236,7 @@ export default function OffersPage() {
             type="button"
             onClick={loadOffers}
             disabled={loading}
-            className="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 px-3 py-2.5 text-sm hover:bg-slate-50 disabled:opacity-50"
+            className="inline-flex items-center justify-center gap-2 rounded border border-slate-200 px-3 py-2.5 text-sm hover:bg-slate-50 disabled:opacity-50"
           >
             <RefreshCw size={15} className={loading ? "animate-spin" : ""} />
             Refresh
@@ -300,7 +300,7 @@ export default function OffersPage() {
                           to={`/offers/${offer._id}/edit`}
                           title="Edit offer"
                           aria-label="Edit offer"
-                          className="rounded-lg border border-slate-200 p-2 hover:bg-slate-100"
+                          className="rounded border border-slate-200 p-2 hover:bg-slate-100"
                         >
                           <Pencil size={15} />
                         </Link>
@@ -310,7 +310,7 @@ export default function OffersPage() {
                           disabled={busyId === offer._id}
                           title={offer.status === "ACTIVE" ? "Pause offer" : "Activate offer"}
                           aria-label={offer.status === "ACTIVE" ? "Pause offer" : "Activate offer"}
-                          className="rounded-lg border border-slate-200 p-2 hover:bg-slate-100 disabled:opacity-50"
+                          className="rounded border border-slate-200 p-2 hover:bg-slate-100 disabled:opacity-50"
                         >
                           {offer.status === "ACTIVE" ? <Pause size={15} /> : <Play size={15} />}
                         </button>
@@ -320,7 +320,7 @@ export default function OffersPage() {
                           disabled={busyId === offer._id}
                           title="Delete offer"
                           aria-label="Delete offer"
-                          className="rounded-lg border border-rose-200 p-2 text-rose-600 hover:bg-rose-50 disabled:opacity-50"
+                          className="rounded border border-rose-200 p-2 text-rose-600 hover:bg-rose-50 disabled:opacity-50"
                         >
                           <Trash2 size={15} />
                         </button>
@@ -340,7 +340,7 @@ export default function OffersPage() {
               type="button"
               onClick={() => setPage((current) => Math.max(1, current - 1))}
               disabled={page <= 1 || loading}
-              className="rounded-lg border border-slate-200 px-3 py-2 text-sm disabled:opacity-40"
+              className="rounded border border-slate-200 px-3 py-2 text-sm disabled:opacity-40"
             >
               Previous
             </button>
@@ -348,7 +348,7 @@ export default function OffersPage() {
               type="button"
               onClick={() => setPage((current) => Math.min(meta.pages || 1, current + 1))}
               disabled={page >= (meta.pages || 1) || loading}
-              className="rounded-lg border border-slate-200 px-3 py-2 text-sm disabled:opacity-40"
+              className="rounded border border-slate-200 px-3 py-2 text-sm disabled:opacity-40"
             >
               Next
             </button>
@@ -361,8 +361,8 @@ export default function OffersPage() {
 
 function SummaryCard({ title, value, icon }) {
   return (
-    <div className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-      <div className="rounded-xl bg-slate-100 p-3 text-slate-700">{icon}</div>
+    <div className="flex items-center gap-4 rounded border border-slate-200 bg-white p-5 ">
+      <div className="rounded bg-slate-100 p-3 text-slate-700">{icon}</div>
       <div>
         <p className="text-sm text-slate-500">{title}</p>
         <p className="mt-1 text-2xl font-bold text-slate-900">{value}</p>

@@ -51,7 +51,7 @@ const toForm = (room) => ({
 });
 
 const fieldClass =
-  "w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-800 outline-none transition-all duration-200 placeholder:text-slate-400 hover:border-slate-300 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 disabled:cursor-not-allowed disabled:bg-slate-50 disabled:opacity-70";
+  "w-full rounded border border-slate-200 bg-white px-4 py-3 text-sm text-slate-800 outline-none transition-all duration-200 placeholder:text-slate-400 hover:border-slate-300 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 disabled:cursor-not-allowed disabled:bg-slate-50 disabled:opacity-70";
 
 const labelClass =
   "mb-2 block text-sm font-semibold text-slate-700";
@@ -188,7 +188,7 @@ const RoomForm = () => {
             </Link>
 
             <div className="flex items-start gap-4">
-              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-blue-50 text-blue-600 ring-1 ring-blue-100">
+              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded bg-black text-blue-600 ring-1 ring-blue-100">
                 <BedDouble size={27} strokeWidth={1.8} />
               </div>
 
@@ -198,7 +198,7 @@ const RoomForm = () => {
                     {isEdit ? "Edit Room" : "Add New Room"}
                   </h1>
 
-                  <span className="inline-flex items-center gap-1 rounded-full bg-blue-50 px-2.5 py-1 text-xs font-semibold text-blue-700">
+                  <span className="inline-flex items-center gap-1 rounded-full bg-black px-2.5 py-1 text-xs font-semibold text-blue-700">
                     <Sparkles size={13} />
                     {isEdit ? "Update Details" : "Room Setup"}
                   </span>
@@ -213,8 +213,8 @@ const RoomForm = () => {
             </div>
           </div>
 
-          <div className="hidden items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 lg:flex">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-slate-600 shadow-sm ring-1 ring-slate-200">
+          <div className="hidden items-center gap-3 rounded border border-slate-200 bg-slate-50 px-4 py-3 lg:flex">
+            <div className="flex h-10 w-10 items-center justify-center rounded bg-white text-slate-600  ring-1 ring-slate-200">
               <Building2 size={20} />
             </div>
             <div>
@@ -232,7 +232,7 @@ const RoomForm = () => {
       {/* Main Content */}
       <div className="w-full px-4 py-6 sm:px-6 lg:px-10 lg:py-8">
         {loading ? (
-          <div className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-10">
+          <div className="rounded border border-slate-200 bg-white p-6 sm:p-10">
             <FormSkeleton fields={6} />
           </div>
         ) : (
@@ -241,9 +241,9 @@ const RoomForm = () => {
               {/* Form Sections */}
               <div className="min-w-0 space-y-6">
                 {/* Basic Information */}
-                <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm shadow-slate-200/40">
+                <section className="overflow-hidden rounded border border-slate-200 bg-white ">
                   <div className="flex items-center gap-3 border-b border-slate-100 px-5 py-5 sm:px-7">
-                    <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
+                    <div className="flex h-11 w-11 items-center justify-center rounded bg-black text-blue-600">
                       <DoorOpen size={22} />
                     </div>
 
@@ -338,7 +338,7 @@ const RoomForm = () => {
                       </select>
 
                       {roomTypes.length === 0 && (
-                        <div className="mt-3 flex flex-col gap-2 rounded-xl border border-amber-200 bg-amber-50 p-4 sm:flex-row sm:items-center sm:justify-between">
+                        <div className="mt-3 flex flex-col gap-2 rounded border border-amber-200 bg-amber-50 p-4 sm:flex-row sm:items-center sm:justify-between">
                           <p className="text-sm text-amber-800">
                             No room types are available yet.
                           </p>
@@ -360,9 +360,9 @@ const RoomForm = () => {
                 </section>
 
                 {/* Pricing & Status */}
-                <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm shadow-slate-200/40">
+                <section className="overflow-hidden rounded border border-slate-200 bg-white ">
                   <div className="flex items-center gap-3 border-b border-slate-100 px-5 py-5 sm:px-7">
-                    <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
+                    <div className="flex h-11 w-11 items-center justify-center rounded bg-emerald-50 text-emerald-600">
                       <IndianRupee size={22} />
                     </div>
 
@@ -429,7 +429,7 @@ const RoomForm = () => {
                                 ? "border-amber-500 bg-amber-50 ring-2 ring-amber-500/10"
                                 : "border-slate-200 hover:border-amber-300",
                               blue: active
-                                ? "border-blue-500 bg-blue-50 ring-2 ring-blue-500/10"
+                                ? "border-blue-500 bg-black ring-2 ring-blue-500/10"
                                 : "border-slate-200 hover:border-blue-300",
                               rose: active
                                 ? "border-rose-500 bg-rose-50 ring-2 ring-rose-500/10"
@@ -439,7 +439,7 @@ const RoomForm = () => {
                             const dotColors = {
                               emerald: "bg-emerald-500",
                               amber: "bg-amber-500",
-                              blue: "bg-blue-500",
+                              blue: "bg-black0",
                               rose: "bg-rose-500",
                             };
 
@@ -454,7 +454,7 @@ const RoomForm = () => {
                                     status: item.value,
                                   }))
                                 }
-                                className={`flex items-center justify-between rounded-xl border p-4 text-left transition-all ${colors[item.color]}`}
+                                className={`flex items-center justify-between rounded border p-4 text-left transition-all ${colors[item.color]}`}
                               >
                                 <span className="flex items-center gap-3">
                                   <span
@@ -481,9 +481,9 @@ const RoomForm = () => {
                 </section>
 
                 {/* Notes */}
-                <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm shadow-slate-200/40">
+                <section className="overflow-hidden rounded border border-slate-200 bg-white ">
                   <div className="flex items-center gap-3 border-b border-slate-100 px-5 py-5 sm:px-7">
-                    <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-violet-50 text-violet-600">
+                    <div className="flex h-11 w-11 items-center justify-center rounded bg-violet-50 text-violet-600">
                       <ClipboardList size={22} />
                     </div>
 
@@ -525,10 +525,10 @@ const RoomForm = () => {
 
               {/* Right Summary Panel */}
               <aside className="space-y-5">
-                <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm shadow-slate-200/40 xl:sticky xl:top-6">
+                <div className="overflow-hidden rounded border border-slate-200 bg-white  xl:sticky xl:top-6">
                   <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-blue-950 p-6 text-white">
                     <div className="mb-5 flex items-center justify-between">
-                      <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/15 bg-white/10">
+                      <div className="flex h-12 w-12 items-center justify-center rounded border border-white/15 bg-white/10">
                         <BedDouble size={25} />
                       </div>
 
@@ -605,7 +605,7 @@ const RoomForm = () => {
                               : selectedStatus.color === "amber"
                                 ? "bg-amber-500"
                                 : selectedStatus.color === "blue"
-                                  ? "bg-blue-500"
+                                  ? "bg-black0"
                                   : "bg-rose-500"
                           }`}
                         />
@@ -615,7 +615,7 @@ const RoomForm = () => {
                       </span>
                     </div>
 
-                    <div className="rounded-xl border border-blue-100 bg-blue-50/70 p-4">
+                    <div className="rounded border border-blue-100 bg-black/70 p-4">
                       <div className="flex gap-3">
                         <div className="mt-0.5 text-blue-600">
                           <Wrench size={18} />
@@ -648,7 +648,7 @@ const RoomForm = () => {
                     type="button"
                     onClick={() => navigate("/rooms")}
                     disabled={submitting}
-                    className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60"
+                    className="inline-flex items-center justify-center gap-2 rounded border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     <ArrowLeft size={16} />
                     Cancel
@@ -657,7 +657,7 @@ const RoomForm = () => {
                   <button
                     type="submit"
                     disabled={submitting || roomTypes.length === 0}
-                    className="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-7 py-3 text-sm font-bold text-white shadow-lg shadow-blue-600/20 transition hover:bg-blue-700 hover:shadow-blue-600/30 disabled:cursor-not-allowed disabled:opacity-60"
+                    className="inline-flex items-center justify-center gap-2 rounded bg-black px-7 py-3 text-sm font-bold text-white  transition hover:bg-black  disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     {submitting ? (
                       <Loader2 size={17} className="animate-spin" />

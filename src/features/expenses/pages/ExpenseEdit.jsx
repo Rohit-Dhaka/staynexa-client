@@ -28,7 +28,7 @@ const paymentMethods = [
 ];
 
 const inputClass =
-  "w-full rounded-lg border border-slate-300 px-3 py-2.5 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100";
+  "w-full rounded border border-slate-300 px-3 py-2.5 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100";
 
 export default function ExpenseEdit() {
   const { id } = useParams();
@@ -115,7 +115,7 @@ export default function ExpenseEdit() {
         <button
           type="button"
           onClick={() => navigate(`/expenses/${id}`)}
-          className="rounded-lg border p-2 hover:bg-slate-50"
+          className="rounded border p-2 hover:bg-slate-50"
           aria-label="Back"
         >
           <ArrowLeft size={20} />
@@ -128,7 +128,7 @@ export default function ExpenseEdit() {
 
       <form
         onSubmit={handleSubmit}
-        className="w-full rounded-xl border border-slate-200 bg-white p-5 shadow-sm"
+        className="w-full rounded border border-slate-200 bg-white p-5 "
       >
         <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
           <label className="block">
@@ -249,14 +249,14 @@ export default function ExpenseEdit() {
           <button
             type="button"
             onClick={() => navigate(`/expenses/${id}`)}
-            className="rounded-lg border px-4 py-2.5 hover:bg-slate-50"
+            className="rounded border px-4 py-2.5 hover:bg-slate-50"
           >
             Cancel
           </button>
           <button
             type="submit"
             disabled={saving}
-            className="flex items-center gap-2 rounded-lg bg-blue-600 px-5 py-2.5 text-white hover:bg-blue-700 disabled:opacity-60"
+            className="flex items-center gap-2 rounded bg-black px-5 py-2.5 text-white hover:bg-black disabled:opacity-60"
           >
             <Save size={17} />
             {saving ? "Saving..." : "Save Changes"}

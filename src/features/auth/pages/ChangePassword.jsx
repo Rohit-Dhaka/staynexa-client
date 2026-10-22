@@ -12,7 +12,7 @@ const passwordChecks = [
 ];
 
 const inputClass =
-  "w-full rounded-lg border border-gray-300 px-4 py-2.5 pr-11 text-sm outline-none transition focus:border-blue-600 focus:ring-2 focus:ring-blue-100";
+  "w-full rounded border border-gray-300 px-4 py-2.5 pr-11 text-sm outline-none transition focus:border-blue-600 focus:ring-2 focus:ring-blue-100";
 
 const PasswordField = ({ label, name, value, onChange, show, onToggle }) => (
   <div>
@@ -91,7 +91,7 @@ const ChangePassword = () => {
 
   return (
     <div className="mx-auto w-full max-w-lg">
-      <div className="rounded-2xl border border-gray-100 bg-white p-8 shadow-sm">
+      <div className="rounded border border-gray-100 bg-white p-8 ">
         <h2 className="text-xl font-bold text-gray-900">Change password</h2>
         <p className="mt-1 text-sm text-gray-500">
           You will be logged out from all devices after changing your password
@@ -144,7 +144,7 @@ const ChangePassword = () => {
           <button
             type="submit"
             disabled={submitting}
-            className="flex w-full items-center justify-center gap-2 rounded-lg bg-blue-600 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-70"
+            className="flex w-full items-center justify-center gap-2 rounded bg-black py-2.5 text-sm font-semibold text-white transition hover:bg-black disabled:cursor-not-allowed disabled:opacity-70"
           >
             {submitting && <Loader2 size={16} className="animate-spin" />}
             {submitting ? "Updating..." : "Update password"}

@@ -149,7 +149,7 @@ const FrontDesk = () => {
         {TABS.map((item) => (
           <div
             key={item.key}
-            className="rounded-xl border border-slate-200 bg-white p-4"
+            className="rounded border border-slate-200 bg-white p-4"
           >
             <p className="text-xs text-slate-500">
               {item.key === "arrivals"
@@ -202,7 +202,7 @@ const FrontDesk = () => {
         />
       </div>
 
-      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
+      <div className="overflow-hidden rounded border border-slate-200 bg-white">
         {loading ? (
           <Spinner />
         ) : list.length === 0 ? (
@@ -271,7 +271,7 @@ const FrontDesk = () => {
                                 type="button"
                                 onClick={() => handleCheckIn(booking)}
                                 disabled={busy}
-                                className="flex items-center gap-1.5 rounded-lg bg-emerald-600 px-3 py-2 text-xs font-semibold text-white transition hover:bg-emerald-700 disabled:opacity-60"
+                                className="flex items-center gap-1.5 rounded bg-black px-3 py-2 text-xs font-semibold text-white transition hover:bg-emerald-700 disabled:opacity-60"
                               >
                                 {busy ? (
                                   <Loader2 size={14} className="animate-spin" />
@@ -286,7 +286,7 @@ const FrontDesk = () => {
                               type="button"
                               onClick={() => handleCheckOut(booking)}
                               disabled={busy}
-                              className="flex items-center gap-1.5 rounded-lg bg-[#1a1a1a] px-3 py-2 text-xs font-semibold text-white transition hover:bg-slate-700 disabled:opacity-60"
+                              className="flex items-center gap-1.5 rounded bg-[#1a1a1a] px-3 py-2 text-xs font-semibold text-white transition hover:bg-slate-700 disabled:opacity-60"
                             >
                               {busy ? (
                                 <Loader2 size={14} className="animate-spin" />

@@ -131,8 +131,8 @@ const Halls = () => {
           ))}
         </div>
       ) : halls.length === 0 ? (
-        <div className="flex flex-col items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-16 text-center">
-          <div className="rounded-xl bg-slate-100 p-4 text-slate-500">
+        <div className="flex flex-col items-center gap-3 rounded border border-slate-200 bg-white px-4 py-16 text-center">
+          <div className="rounded bg-slate-100 p-4 text-slate-500">
             <Building2 size={28} />
           </div>
           <h3 className="font-semibold text-slate-800">No halls yet</h3>
@@ -153,7 +153,7 @@ const Halls = () => {
           {halls.map((hall) => (
             <div
               key={hall._id || hall.id || hall.code || hall.name}
-              className={`rounded-xl border bg-white p-5 ${
+              className={`rounded border bg-white p-5 ${
                 hall.isActive
                   ? "border-slate-200"
                   : "border-slate-200 opacity-60"
@@ -216,7 +216,7 @@ const Halls = () => {
                   onClick={() => setEditing(hall)}
                   aria-label={`Edit ${hall.name || "hall"}`}
                   title="Edit hall"
-                  className="rounded-md p-2 text-slate-500 hover:bg-slate-100"
+                  className="rounded p-2 text-slate-500 hover:bg-slate-100"
                 >
                   <Pencil size={16} />
                 </button>
@@ -226,7 +226,7 @@ const Halls = () => {
                     onClick={() => setRemoving(hall)}
                     aria-label={`Remove ${hall.name || "hall"}`}
                     title="Remove hall"
-                    className="rounded-md p-2 text-rose-500 hover:bg-rose-50"
+                    className="rounded p-2 text-rose-500 hover:bg-rose-50"
                   >
                     <Trash2 size={16} />
                   </button>

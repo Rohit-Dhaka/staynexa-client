@@ -29,7 +29,7 @@ const PRIORITY_STYLE = {
 const label = (v) => String(v).replace(/_/g, " ");
 
 const inputClass =
-  "w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100";
+  "w-full rounded border border-slate-300 bg-white px-3.5 py-2.5 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100";
 
 const emptyForm = {
   bookingNumber: "",
@@ -119,7 +119,7 @@ const GuestServices = () => {
         </div>
         {/* <button
           onClick={() => setOpen(true)}
-          className="flex items-center justify-center gap-2 rounded-lg bg-[#1a1a1a] px-5 py-2.5 text-sm font-semibold text-white hover:bg-slate-700"
+          className="flex items-center justify-center gap-2 rounded bg-[#1a1a1a] px-5 py-2.5 text-sm font-semibold text-white hover:bg-slate-700"
         >
           <Plus size={16} />
           New request
@@ -132,7 +132,7 @@ const GuestServices = () => {
             <button
               key={s}
               onClick={() => setStatus(status === s ? "" : s)}
-              className={`rounded-xl border bg-white p-4 text-left transition ${
+              className={`rounded border bg-white p-4 text-left transition ${
                 status === s ? "border-indigo-500 ring-2 ring-indigo-100" : "border-slate-200"
               }`}
             >
@@ -143,7 +143,7 @@ const GuestServices = () => {
         </div>
       )}
 
-      <div className="flex gap-3 rounded-xl border border-slate-200 bg-white p-4">
+      <div className="flex gap-3 rounded border border-slate-200 bg-white p-4">
         <select value={type} onChange={(e) => setType(e.target.value)} className={`${inputClass} sm:w-56`}>
           <option value="">All types</option>
           {TYPES.map((t) => (
@@ -154,7 +154,7 @@ const GuestServices = () => {
         </select>
       </div>
 
-      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
+      <div className="overflow-hidden rounded border border-slate-200 bg-white">
         <div className="overflow-x-auto">
           <table className="w-full min-w-[860px] text-left text-sm">
             <thead className="border-b border-slate-100 bg-slate-50 text-xs uppercase tracking-wider text-slate-500">
@@ -213,7 +213,7 @@ const GuestServices = () => {
                               onClick={() => changeStatus(r, "in_progress")}
                               disabled={busyId === r._id}
                               title="Start"
-                              className="rounded-lg p-2 text-slate-500 hover:bg-slate-100 hover:text-sky-600"
+                              className="rounded p-2 text-slate-500 hover:bg-slate-100 hover:text-sky-600"
                             >
                               <Play size={16} />
                             </button>
@@ -224,7 +224,7 @@ const GuestServices = () => {
                                 onClick={() => changeStatus(r, "done")}
                                 disabled={busyId === r._id}
                                 title="Mark done"
-                                className="rounded-lg p-2 text-slate-500 hover:bg-slate-100 hover:text-emerald-600"
+                                className="rounded p-2 text-slate-500 hover:bg-slate-100 hover:text-emerald-600"
                               >
                                 <CheckCircle2 size={16} />
                               </button>
@@ -232,7 +232,7 @@ const GuestServices = () => {
                                 onClick={() => changeStatus(r, "cancelled")}
                                 disabled={busyId === r._id}
                                 title="Cancel"
-                                className="rounded-lg p-2 text-slate-500 hover:bg-rose-50 hover:text-rose-600"
+                                className="rounded p-2 text-slate-500 hover:bg-rose-50 hover:text-rose-600"
                               >
                                 <XCircle size={16} />
                               </button>
@@ -250,7 +250,7 @@ const GuestServices = () => {
 
       {open && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-          <div className="w-full max-w-md space-y-4 rounded-2xl bg-white p-6 shadow-xl">
+          <div className="w-full max-w-md space-y-4 rounded bg-white p-6 ">
             <h2 className="text-lg font-bold text-slate-900">New request</h2>
 
             <input
@@ -311,14 +311,14 @@ const GuestServices = () => {
               <button
                 onClick={() => setOpen(false)}
                 disabled={saving}
-                className="rounded-lg border border-slate-300 px-5 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
+                className="rounded border border-slate-300 px-5 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
               >
                 Cancel
               </button>
               <button
                 onClick={submit}
                 disabled={saving}
-                className="flex items-center gap-2 rounded-lg bg-[#1a1a1a] px-5 py-2.5 text-sm font-semibold text-white hover:bg-slate-700 disabled:opacity-70"
+                className="flex items-center gap-2 rounded bg-[#1a1a1a] px-5 py-2.5 text-sm font-semibold text-white hover:bg-slate-700 disabled:opacity-70"
               >
                 {saving && <Loader2 size={16} className="animate-spin" />}
                 Create

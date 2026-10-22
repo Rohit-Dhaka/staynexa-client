@@ -90,7 +90,7 @@ const Switch = ({ checked, disabled, onChange, label }) => (
     }`}
   >
     <span
-      className={`inline-block h-5 w-5 rounded-full bg-white shadow transition-transform ${
+      className={`inline-block h-5 w-5 rounded-full bg-white  transition-transform ${
         checked ? "translate-x-[22px]" : "translate-x-0.5"
       }`}
     />
@@ -556,7 +556,7 @@ const NewBooking = () => {
           type="button"
           onClick={() => navigate("/bookings")}
           aria-label="Back to bookings"
-          className="rounded-lg p-2 text-slate-500 transition hover:bg-slate-100"
+          className="rounded p-2 text-slate-500 transition hover:bg-slate-100"
         >
           <ArrowLeft size={18} />
         </button>
@@ -580,7 +580,7 @@ const NewBooking = () => {
                   done
                     ? "bg-emerald-500 text-white"
                     : active
-                      ? "bg-indigo-600 text-white"
+                      ? "bg-black text-white"
                       : "bg-slate-200 text-slate-500"
                 }`}
               >
@@ -603,12 +603,12 @@ const NewBooking = () => {
 
       {step === 1 && (
         <div className="space-y-5">
-          <div className="rounded-2xl border border-slate-200 bg-white p-5">
+          <div className="rounded border border-slate-200 bg-white p-5">
             {/* Switch between "check-in & check-out" and "check-in only" */}
             <div
               role="group"
               aria-label="Stay type"
-              className="mb-2 inline-flex rounded-lg bg-slate-100 p-1"
+              className="mb-2 inline-flex rounded bg-slate-100 p-1"
             >
               {[
                 { value: "fixed", label: "Check-in & Check-out" },
@@ -619,9 +619,9 @@ const NewBooking = () => {
                   type="button"
                   onClick={() => changeStayMode(mode.value)}
                   aria-pressed={stayMode === mode.value}
-                  className={`rounded-md px-4 py-2 text-sm font-medium transition ${
+                  className={`rounded px-4 py-2 text-sm font-medium transition ${
                     stayMode === mode.value
-                      ? "bg-white text-slate-900 shadow-sm"
+                      ? "bg-white text-slate-900 "
                       : "text-slate-500 hover:text-slate-800"
                   }`}
                 >
@@ -698,7 +698,7 @@ const NewBooking = () => {
               type="button"
               onClick={runSearch}
               disabled={searching}
-              className="mt-4 flex items-center gap-2 rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-700 disabled:opacity-60"
+              className="mt-4 flex items-center gap-2 rounded bg-black px-5 py-2.5 text-sm font-semibold text-white transition  disabled:opacity-60"
             >
               {searching && <Loader2 size={16} className="animate-spin" />}
               Available rooms
@@ -706,7 +706,7 @@ const NewBooking = () => {
           </div>
 
           {availability && availability.options.length === 0 && (
-            <p className="rounded-2xl border border-slate-200 bg-white px-5 py-10 text-center text-sm text-slate-500">
+            <p className="rounded border border-slate-200 bg-white px-5 py-10 text-center text-sm text-slate-500">
               No rooms are available for these dates and guest count
             </p>
           )}
@@ -716,7 +716,7 @@ const NewBooking = () => {
             return (
               <div
                 key={opt.roomType._id}
-                className={`rounded-2xl border bg-white p-5 transition ${
+                className={`rounded border bg-white p-5 transition ${
                   active
                     ? "border-indigo-500 ring-2 ring-indigo-100"
                     : "border-slate-200"
@@ -781,9 +781,9 @@ const NewBooking = () => {
                           onClick={() =>
                             setSelected((s) => ({ ...s, roomId: r._id }))
                           }
-                          className={`rounded-lg px-3 py-1.5 text-sm transition ${
+                          className={`rounded px-3 py-1.5 text-sm transition ${
                             selected.roomId === r._id
-                              ? "bg-indigo-600 text-white"
+                              ? "bg-black text-white"
                               : "bg-slate-100 text-slate-700 hover:bg-slate-200"
                           }`}
                         >
@@ -804,7 +804,7 @@ const NewBooking = () => {
                         roomId: opt.rooms[0]?._id || "",
                       })
                     }
-                    className="mt-4 rounded-lg border border-indigo-200 px-4 py-2 text-sm font-medium text-indigo-600 transition hover:bg-indigo-50"
+                    className="mt-4 rounded border border-indigo-200 px-4 py-2 text-sm font-medium text-indigo-600 transition hover:bg-indigo-50"
                   >
                     Choose a Room Type
                   </button>
@@ -818,7 +818,7 @@ const NewBooking = () => {
               type="button"
               onClick={goStep2}
               disabled={!selected.roomId}
-              className="rounded-lg bg-indigo-600 px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-700 disabled:opacity-50"
+              className="rounded bg-black px-6 py-2.5 text-sm font-semibold text-white transition  disabled:opacity-50"
             >
               Next
             </button>
@@ -828,7 +828,7 @@ const NewBooking = () => {
 
       {step === 2 && (
         <div className="space-y-5">
-          <div className="rounded-2xl border border-slate-200 bg-white p-5">
+          <div className="rounded border border-slate-200 bg-white p-5">
             <h2 className="mb-4 text-base font-semibold text-slate-900">
               Primary guest
             </h2>
@@ -868,7 +868,7 @@ const NewBooking = () => {
               </div>
 
               {showSuggestions && suggestQuery.trim().length >= 2 && (
-                <div className="absolute z-20 mt-1 max-h-64 w-full overflow-y-auto rounded-lg border border-slate-200 bg-white shadow-lg">
+                <div className="absolute z-20 mt-1 max-h-64 w-full overflow-y-auto rounded border border-slate-200 bg-white ">
                   {suggestions.length === 0 ? (
                     <p className="px-4 py-3 text-sm text-slate-500">
                       {suggesting ? "Searching..." : "No guests found"}
@@ -912,7 +912,7 @@ const NewBooking = () => {
 
             {/* Result of the phone number lookup */}
             {matchedGuest?.isBlacklisted && (
-              <div className="mb-4 flex items-start gap-3 rounded-lg border border-rose-200 bg-rose-50 p-3.5 text-sm text-rose-800">
+              <div className="mb-4 flex items-start gap-3 rounded border border-rose-200 bg-rose-50 p-3.5 text-sm text-rose-800">
                 <AlertTriangle size={18} className="mt-0.5 shrink-0" />
                 <p>
                   <span className="font-semibold">{matchedGuest.name}</span> is
@@ -926,7 +926,7 @@ const NewBooking = () => {
             )}
 
             {matchedGuest && !matchedGuest.isBlacklisted && !usingSavedGuest && (
-              <div className="mb-4 flex flex-col gap-3 rounded-lg border border-indigo-200 bg-indigo-50 p-3.5 text-sm text-indigo-900 sm:flex-row sm:items-center sm:justify-between">
+              <div className="mb-4 flex flex-col gap-3 rounded border border-indigo-200 bg-indigo-50 p-3.5 text-sm text-indigo-900 sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex items-start gap-3">
                   <UserCheck size={18} className="mt-0.5 shrink-0" />
                   <p>
@@ -940,7 +940,7 @@ const NewBooking = () => {
                 <button
                   type="button"
                   onClick={() => applyGuest(matchedGuest, lookup.stays)}
-                  className="shrink-0 rounded-lg bg-indigo-600 px-4 py-2 text-xs font-semibold text-white transition hover:bg-indigo-700"
+                  className="shrink-0 rounded bg-black px-4 py-2 text-xs font-semibold text-white transition "
                 >
                   Fill saved details
                 </button>
@@ -948,7 +948,7 @@ const NewBooking = () => {
             )}
 
             {usingSavedGuest && !matchedGuest.isBlacklisted && (
-              <div className="mb-4 flex items-start gap-3 rounded-lg border border-emerald-200 bg-emerald-50 p-3.5 text-sm text-emerald-800">
+              <div className="mb-4 flex items-start gap-3 rounded border border-emerald-200 bg-emerald-50 p-3.5 text-sm text-emerald-800">
                 <UserCheck size={18} className="mt-0.5 shrink-0" />
                 <p>
                   Using the saved profile of{" "}
@@ -1056,7 +1056,7 @@ const NewBooking = () => {
             </div>
           </div>
 
-          <div className="rounded-2xl border border-slate-200 bg-white p-5">
+          <div className="rounded border border-slate-200 bg-white p-5">
             <div className="mb-4 flex items-center justify-between">
               <h2 className="text-base font-semibold text-slate-900">
                 Additional guests
@@ -1066,7 +1066,7 @@ const NewBooking = () => {
                 onClick={() =>
                   setExtraGuests((l) => [...l, { ...emptyExtraGuest }])
                 }
-                className="flex items-center gap-1.5 rounded-lg border border-slate-300 px-3 py-1.5 text-sm text-slate-700 transition hover:bg-slate-50"
+                className="flex items-center gap-1.5 rounded border border-slate-300 px-3 py-1.5 text-sm text-slate-700 transition hover:bg-slate-50"
               >
                 <Plus size={15} /> Add Guest
               </button>
@@ -1078,7 +1078,7 @@ const NewBooking = () => {
 
             <div className="space-y-4">
               {extraGuests.map((g, i) => (
-                <div key={i} className="rounded-xl border border-slate-200 p-4">
+                <div key={i} className="rounded border border-slate-200 p-4">
                   <div className="grid gap-3 md:grid-cols-4">
                     <Field label="Name *">
                       <input
@@ -1159,7 +1159,7 @@ const NewBooking = () => {
                       onClick={() =>
                         setExtraGuests((l) => l.filter((_, idx) => idx !== i))
                       }
-                      className="flex items-center justify-center gap-1.5 self-end rounded-lg px-3 py-2 text-sm text-rose-600 transition hover:bg-rose-50"
+                      className="flex items-center justify-center gap-1.5 self-end rounded px-3 py-2 text-sm text-rose-600 transition hover:bg-rose-50"
                     >
                       <Trash2 size={15} /> Remove
                     </button>
@@ -1169,7 +1169,7 @@ const NewBooking = () => {
             </div>
           </div>
 
-          <div className="rounded-2xl border border-slate-200 bg-white p-5">
+          <div className="rounded border border-slate-200 bg-white p-5">
             <h2 className="mb-4 text-base font-semibold text-slate-900">
               Booking details
             </h2>
@@ -1244,14 +1244,14 @@ const NewBooking = () => {
             <button
               type="button"
               onClick={() => setStep(1)}
-              className="rounded-lg border border-slate-300 px-5 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+              className="rounded border border-slate-300 px-5 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
             >
               Back
             </button>
             <button
               type="button"
               onClick={goStep3}
-              className="rounded-lg bg-indigo-600 px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-700"
+              className="rounded bg-black px-6 py-2.5 text-sm font-semibold text-white transition "
             >
               Next
             </button>
@@ -1261,7 +1261,7 @@ const NewBooking = () => {
 
       {step === 3 && option && (
         <div className="space-y-5">
-          <div className="rounded-2xl border border-slate-200 bg-white p-5">
+          <div className="rounded border border-slate-200 bg-white p-5">
             <h2 className="mb-3 text-base font-semibold text-slate-900">
               Booking type
             </h2>
@@ -1282,7 +1282,7 @@ const NewBooking = () => {
                   key={o.title}
                   type="button"
                   onClick={() => setHoldOpts({ ...holdOpts, isHold: o.value })}
-                  className={`rounded-xl border p-4 text-left transition ${
+                  className={`rounded border p-4 text-left transition ${
                     isHold === o.value
                       ? "border-indigo-500 bg-indigo-50 ring-2 ring-indigo-100"
                       : "border-slate-200 hover:bg-slate-50"
@@ -1298,7 +1298,7 @@ const NewBooking = () => {
           </div>
 
           {canOfferCheckIn && (
-            <div className="rounded-2xl border border-slate-200 bg-white p-5">
+            <div className="rounded border border-slate-200 bg-white p-5">
               <div className="flex items-start justify-between gap-4">
                 <div className="min-w-0">
                   <h2 className="text-base font-semibold text-slate-900">
@@ -1325,7 +1325,7 @@ const NewBooking = () => {
             </div>
           )}
 
-          <div className="rounded-2xl border border-slate-200 bg-white p-5">
+          <div className="rounded border border-slate-200 bg-white p-5">
             <h2 className="mb-4 text-base font-semibold text-slate-900">
               Booking summary
             </h2>
@@ -1411,7 +1411,7 @@ const NewBooking = () => {
           </div>
 
           {isManager && (
-            <div className="rounded-2xl border border-slate-200 bg-white p-5">
+            <div className="rounded border border-slate-200 bg-white p-5">
               <h2 className="mb-1 text-base font-semibold text-slate-900">
                 Manager options
               </h2>
@@ -1471,7 +1471,7 @@ const NewBooking = () => {
           )}
 
           {isHold ? (
-            <div className="rounded-2xl border border-slate-200 bg-white p-5">
+            <div className="rounded border border-slate-200 bg-white p-5">
               <h2 className="mb-1 text-base font-semibold text-slate-900">
                 Hold Details
               </h2>
@@ -1507,7 +1507,7 @@ const NewBooking = () => {
               </div>
             </div>
           ) : (
-            <div className="rounded-2xl border border-slate-200 bg-white p-5">
+            <div className="rounded border border-slate-200 bg-white p-5">
               <h2 className="mb-1 text-base font-semibold text-slate-900">
                 Advance payment
               </h2>
@@ -1564,7 +1564,7 @@ const NewBooking = () => {
               type="button"
               onClick={() => setStep(2)}
               disabled={saving}
-              className="rounded-lg border border-slate-300 px-5 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50 disabled:opacity-60"
+              className="rounded border border-slate-300 px-5 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50 disabled:opacity-60"
             >
               Back
             </button>
@@ -1572,7 +1572,7 @@ const NewBooking = () => {
               type="button"
               onClick={submit}
               disabled={saving}
-              className="flex items-center gap-2 rounded-lg bg-indigo-600 px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-700 disabled:opacity-60"
+              className="flex items-center gap-2 rounded bg-black px-6 py-2.5 text-sm font-semibold text-white transition  disabled:opacity-60"
             >
               {saving && <Loader2 size={16} className="animate-spin" />}
               {isHold

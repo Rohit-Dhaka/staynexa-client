@@ -19,7 +19,7 @@ const BACK_PATH = "/housekeeping";
 const MAX_CHECKLIST_ITEMS = 100;
 
 const inputClass =
-  "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 disabled:opacity-60";
+  "w-full rounded border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 disabled:opacity-60";
 const labelClass = "mb-1 block text-xs font-medium text-slate-700";
 
 const CHECKLIST_TEMPLATES = {
@@ -110,7 +110,7 @@ const Field = ({ label, htmlFor, required, children }) => (
 
 const Section = ({ title, children, className = "" }) => (
   <section
-    className={`rounded-xl border border-slate-200 bg-white p-4 ${className}`}
+    className={`rounded border border-slate-200 bg-white p-4 ${className}`}
   >
     <h2 className="mb-3 text-sm font-semibold text-slate-900">{title}</h2>
     {children}
@@ -322,7 +322,7 @@ const HousekeepingForm = () => {
           <Link
             to={BACK_PATH}
             aria-label="Back to housekeeping"
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded border border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
           >
             <ArrowLeft size={17} />
           </Link>
@@ -338,7 +338,7 @@ const HousekeepingForm = () => {
       </header>
 
       {loading ? (
-        <div className="rounded-xl border border-slate-200 bg-white p-4">
+        <div className="rounded border border-slate-200 bg-white p-4">
           <FormSkeleton fields={5} />
         </div>
       ) : (
@@ -517,7 +517,7 @@ const HousekeepingForm = () => {
                       type="button"
                       onClick={() => addItem(item)}
                       disabled={submitting || checklist.length >= MAX_CHECKLIST_ITEMS}
-                      className="inline-flex items-center gap-1 rounded-md border border-slate-200 px-2.5 py-1.5 text-xs text-slate-700 hover:border-indigo-300 hover:bg-indigo-50 disabled:opacity-50"
+                      className="inline-flex items-center gap-1 rounded border border-slate-200 px-2.5 py-1.5 text-xs text-slate-700 hover:border-indigo-300 hover:bg-indigo-50 disabled:opacity-50"
                     >
                       <Plus size={12} />
                       {item}
@@ -547,7 +547,7 @@ const HousekeepingForm = () => {
                 type="button"
                 onClick={handleAddItem}
                 disabled={submitting || !newItem.trim() || checklist.length >= MAX_CHECKLIST_ITEMS}
-                className="inline-flex shrink-0 items-center gap-1 rounded-lg bg-slate-900 px-3 text-sm font-medium text-white hover:bg-slate-700 disabled:opacity-50"
+                className="inline-flex shrink-0 items-center gap-1 rounded bg-slate-900 px-3 text-sm font-medium text-white hover:bg-slate-700 disabled:opacity-50"
               >
                 <Plus size={15} />
                 Add
@@ -559,7 +559,7 @@ const HousekeepingForm = () => {
                 {checklist.map((item, index) => (
                   <li
                     key={`${item}-${index}`}
-                    className="flex min-w-0 items-center gap-2 rounded-lg bg-slate-50 px-2.5 py-2"
+                    className="flex min-w-0 items-center gap-2 rounded bg-slate-50 px-2.5 py-2"
                   >
                     <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-white text-[11px] font-medium text-slate-500 ring-1 ring-slate-200">
                       {index + 1}
@@ -600,19 +600,19 @@ const HousekeepingForm = () => {
             />
           </Section>
 
-          <div className="flex items-center justify-end gap-2 rounded-xl border border-slate-200 bg-white p-3">
+          <div className="flex items-center justify-end gap-2 rounded border border-slate-200 bg-white p-3">
             <button
               type="button"
               onClick={() => navigate(BACK_PATH)}
               disabled={submitting}
-              className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-60"
+              className="rounded border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-60"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={submitting || loading}
-              className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-70"
+              className="inline-flex items-center justify-center gap-2 rounded bg-black px-4 py-2 text-sm font-semibold text-white hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-70"
             >
               {submitting && <Loader2 size={15} className="animate-spin" />}
               Create Task

@@ -19,7 +19,7 @@ const CATEGORIES = [
 ];
 
 const inputClass =
-  "w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100";
+  "w-full rounded border border-slate-300 bg-white px-3.5 py-2.5 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100";
 
 const Stars = ({ value, size = 14 }) => (
   <span className="inline-flex">
@@ -139,18 +139,12 @@ const Reviews = () => {
           <h1 className="text-2xl font-bold text-slate-900">Reviews &amp; Feedback</h1>
           <p className="text-sm text-slate-500">Guest ratings and comments after check-out</p>
         </div>
-        <button
-          onClick={() => setOpen(true)}
-          className="flex items-center justify-center gap-2 rounded-lg bg-[#1a1a1a] px-5 py-2.5 text-sm font-semibold text-white hover:bg-slate-700"
-        >
-          <Plus size={16} />
-          Add review
-        </button>
+    
       </div>
 
       {summary && (
         <div className="grid gap-3 lg:grid-cols-3">
-          <div className="rounded-xl border border-slate-200 bg-white p-5">
+          <div className="rounded border border-slate-200 bg-white p-5">
             <p className="text-xs text-slate-500">Average rating</p>
             <p className="mt-1 text-3xl font-bold text-slate-900">{summary.average || "-"}</p>
             <div className="mt-1 flex items-center gap-2">
@@ -161,7 +155,7 @@ const Reviews = () => {
             </div>
           </div>
 
-          <div className="rounded-xl border border-slate-200 bg-white p-5 lg:col-span-2">
+          <div className="rounded border border-slate-200 bg-white p-5 lg:col-span-2">
             {[5, 4, 3, 2, 1].map((n) => {
               const count = summary.distribution[n] || 0;
               const pct = summary.total ? (count / summary.total) * 100 : 0;
@@ -179,7 +173,7 @@ const Reviews = () => {
         </div>
       )}
 
-      <div className="flex flex-col gap-3 rounded-xl border border-slate-200 bg-white p-4 sm:flex-row">
+      <div className="flex flex-col gap-3 rounded border border-slate-200 bg-white p-4 sm:flex-row">
         <select
           value={ratingFilter}
           onChange={(e) => setRatingFilter(e.target.value)}
@@ -208,7 +202,7 @@ const Reviews = () => {
           <Loader2 className="animate-spin" />
         </div>
       ) : items.length === 0 ? (
-        <p className="rounded-xl border border-slate-200 bg-white px-4 py-16 text-center text-sm text-slate-500">
+        <p className="rounded border border-slate-200 bg-white px-4 py-16 text-center text-sm text-slate-500">
           No reviews yet
         </p>
       ) : (
@@ -216,7 +210,7 @@ const Reviews = () => {
           {items.map((r) => (
             <div
               key={r._id}
-              className={`rounded-xl border bg-white p-5 ${
+              className={`rounded border bg-white p-5 ${
                 r.status === "hidden" ? "border-slate-200 opacity-70" : "border-slate-200"
               }`}
             >
@@ -242,7 +236,7 @@ const Reviews = () => {
                       setReplyText(r.reply?.text || "");
                     }}
                     title="Reply"
-                    className="rounded-lg p-2 text-slate-500 hover:bg-slate-100 hover:text-indigo-600"
+                    className="rounded p-2 text-slate-500 hover:bg-slate-100 hover:text-indigo-600"
                   >
                     <MessageSquare size={16} />
                   </button>
@@ -250,7 +244,7 @@ const Reviews = () => {
                     onClick={() => toggleStatus(r)}
                     disabled={busyId === r._id}
                     title={r.status === "published" ? "Hide" : "Publish"}
-                    className="rounded-lg p-2 text-slate-500 hover:bg-slate-100 hover:text-amber-600 disabled:opacity-40"
+                    className="rounded p-2 text-slate-500 hover:bg-slate-100 hover:text-amber-600 disabled:opacity-40"
                   >
                     {r.status === "published" ? <EyeOff size={16} /> : <Eye size={16} />}
                   </button>
@@ -270,7 +264,7 @@ const Reviews = () => {
               )}
 
               {r.reply?.text && (
-                <div className="mt-3 rounded-lg bg-slate-50 px-4 py-3 text-sm text-slate-700">
+                <div className="mt-3 rounded bg-slate-50 px-4 py-3 text-sm text-slate-700">
                   <p className="text-xs font-semibold text-slate-500">Hotel reply</p>
                   {r.reply.text}
                 </div>
@@ -289,14 +283,14 @@ const Reviews = () => {
                   <div className="flex justify-end gap-2">
                     <button
                       onClick={() => setReplyFor(null)}
-                      className="rounded-lg border border-slate-300 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50"
+                      className="rounded border border-slate-300 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50"
                     >
                       Cancel
                     </button>
                     <button
                       onClick={saveReply}
                       disabled={busyId === r._id}
-                      className="rounded-lg bg-[#1a1a1a] px-4 py-2 text-sm font-semibold text-white hover:bg-slate-700 disabled:opacity-70"
+                      className="rounded bg-[#1a1a1a] px-4 py-2 text-sm font-semibold text-white hover:bg-slate-700 disabled:opacity-70"
                     >
                       Save reply
                     </button>
@@ -310,7 +304,7 @@ const Reviews = () => {
 
       {open && (
         <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/40 p-4">
-          <div className="w-full max-w-md space-y-4 rounded-2xl bg-white p-6 shadow-xl">
+          <div className="w-full max-w-md space-y-4 rounded bg-white p-6 ">
             <h2 className="text-lg font-bold text-slate-900">Add review</h2>
 
             <input
@@ -352,14 +346,14 @@ const Reviews = () => {
               <button
                 onClick={() => setOpen(false)}
                 disabled={saving}
-                className="rounded-lg border border-slate-300 px-5 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
+                className="rounded border border-slate-300 px-5 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
               >
                 Cancel
               </button>
               <button
                 onClick={submit}
                 disabled={saving}
-                className="flex items-center gap-2 rounded-lg bg-[#1a1a1a] px-5 py-2.5 text-sm font-semibold text-white hover:bg-slate-700 disabled:opacity-70"
+                className="flex items-center gap-2 rounded bg-[#1a1a1a] px-5 py-2.5 text-sm font-semibold text-white hover:bg-slate-700 disabled:opacity-70"
               >
                 {saving && <Loader2 size={16} className="animate-spin" />}
                 Save

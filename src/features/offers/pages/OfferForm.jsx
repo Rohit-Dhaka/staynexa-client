@@ -142,7 +142,7 @@ export default function OfferForm() {
   }
 
   const inputClass =
-    "mt-1.5 w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:border-slate-400";
+    "mt-1.5 w-full rounded border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:border-slate-400";
   const labelClass = "block text-sm font-medium text-slate-700";
 
   return (
@@ -164,7 +164,7 @@ export default function OfferForm() {
       </header>
 
       <form onSubmit={submit} className="space-y-6">
-        <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
+        <section className="rounded border border-slate-200 bg-white p-5  sm:p-7">
           <h2 className="mb-5 text-lg font-semibold text-slate-900">
             Basic information
           </h2>
@@ -213,7 +213,7 @@ export default function OfferForm() {
           </div>
         </section>
 
-        <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
+        <section className="rounded border border-slate-200 bg-white p-5  sm:p-7">
           <h2 className="mb-5 text-lg font-semibold text-slate-900">
             Discount rules
           </h2>
@@ -291,7 +291,7 @@ export default function OfferForm() {
           </div>
         </section>
 
-        <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
+        <section className="rounded border border-slate-200 bg-white p-5  sm:p-7">
           <h2 className="mb-5 text-lg font-semibold text-slate-900">
             Validity and usage
           </h2>
@@ -360,7 +360,7 @@ export default function OfferForm() {
         <div className="flex flex-wrap justify-end gap-3">
           <Link
             to="/offers"
-            className="rounded-lg border border-slate-200 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
+            className="rounded border border-slate-200 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
           >
             Cancel
           </Link>
@@ -368,7 +368,7 @@ export default function OfferForm() {
           <button
             type="submit"
             disabled={saving}
-            className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-slate-700 disabled:opacity-50"
+            className="inline-flex items-center gap-2 rounded bg-black px-5 py-2.5 text-sm font-semibold text-white hover:bg-slate-700 disabled:opacity-50"
           >
             <Save size={16} />
             {saving ? "Saving..." : editing ? "Save changes" : "Create draft"}

@@ -114,12 +114,12 @@ const PayrollSettings = () => {
       </header>
 
       {!canEdit && (
-        <div className="w-full rounded-lg bg-slate-100 px-4 py-3 text-sm text-slate-600">
+        <div className="w-full rounded bg-slate-100 px-4 py-3 text-sm text-slate-600">
           Only a super admin can change these rules.
         </div>
       )}
 
-      <div className="w-full rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm leading-6 text-amber-800">
+      <div className="w-full rounded border border-amber-200 bg-amber-50 px-4 py-3 text-sm leading-6 text-amber-800">
         PF and professional tax rates can change over time and may differ by
         state. Confirm the applicable rates with your accountant before
         enabling these deductions.
@@ -187,7 +187,7 @@ const PayrollSettings = () => {
 
       {/* Save Actions */}
       {canEdit && (
-        <div className="flex w-full flex-col-reverse gap-4 rounded-xl border border-slate-200 bg-white p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5">
+        <div className="flex w-full flex-col-reverse gap-4 rounded border border-slate-200 bg-white p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5">
           <p className="text-xs leading-5 text-slate-500">
             Changes will apply to payroll calculations that use these settings.
           </p>

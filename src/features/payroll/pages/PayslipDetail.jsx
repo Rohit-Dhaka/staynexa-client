@@ -141,7 +141,7 @@ const PayslipDetail = () => {
           <ArrowLeft size={16} />
           Back to Payroll
         </Link>
-        <p className="rounded-lg bg-rose-50 px-4 py-3 text-sm text-rose-600">{loadError || "Payslip not found"}</p>
+        <p className="rounded bg-rose-50 px-4 py-3 text-sm text-rose-600">{loadError || "Payslip not found"}</p>
       </div>
     );
   }
@@ -214,18 +214,18 @@ const PayslipDetail = () => {
       </div>
 
       {isManager && isDraft && att.notMarked > 0 && (
-        <p className="rounded-lg bg-amber-50 px-4 py-3 text-sm text-amber-700">
+        <p className="rounded bg-amber-50 px-4 py-3 text-sm text-amber-700">
                    {att.notMarked} working day(s) of this month have no attendance, so they are counted as unpaid. Sundays and
           holidays are not included here. Fix the attendance and regenerate the payroll, or approve with the override.
         </p>
       )}
       {slip.shortfall > 0 && (
-        <p className="rounded-lg bg-rose-50 px-4 py-3 text-sm text-rose-600">
+        <p className="rounded bg-rose-50 px-4 py-3 text-sm text-rose-600">
           Deductions are {formatINR(slip.shortfall)} more than the earnings. Adjust the deductions before approving.
         </p>
       )}
 
-      <div id="payslip-print" className="rounded-xl border border-slate-200 bg-white p-6 text-sm text-slate-800 sm:p-8">
+      <div id="payslip-print" className="rounded border border-slate-200 bg-white p-6 text-sm text-slate-800 sm:p-8">
         <div className="flex flex-wrap items-start justify-between gap-4 border-b border-slate-200 pb-5">
           <div>
             <h2 className="text-xl font-bold text-slate-900">{slip.hotel.name}</h2>
@@ -278,7 +278,7 @@ const PayslipDetail = () => {
             ["Late marks", att.lateCount],
             ["Overtime", formatHours(att.overtimeMinutes)],
           ].map(([label, value]) => (
-            <div key={label} className="rounded-lg bg-slate-50 p-2">
+            <div key={label} className="rounded bg-slate-50 p-2">
               <p className="text-xs text-slate-500">{label}</p>
               <p className="font-semibold text-slate-900">{value}</p>
             </div>
@@ -349,7 +349,7 @@ const PayslipDetail = () => {
           </div>
         </div>
 
-        <div className="flex items-center justify-between rounded-lg bg-slate-900 px-5 py-4 text-white">
+        <div className="flex items-center justify-between rounded bg-slate-900 px-5 py-4 text-white">
           <span className="text-sm">Net pay</span>
           <span className="text-2xl font-bold">{formatINR(slip.netPay)}</span>
         </div>
@@ -358,7 +358,7 @@ const PayslipDetail = () => {
       </div>
 
       {slip.status === "cancelled" && slip.cancelReason && (
-        <p className="rounded-lg bg-rose-50 px-4 py-3 text-sm text-rose-600">Cancelled: {slip.cancelReason}</p>
+        <p className="rounded bg-rose-50 px-4 py-3 text-sm text-rose-600">Cancelled: {slip.cancelReason}</p>
       )}
 
       <Modal

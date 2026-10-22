@@ -199,7 +199,7 @@ const LeaveBalances = () => {
             id="leave-year"
             value={year}
             onChange={(event) => setYear(Number(event.target.value))}
-            className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm outline-none focus:border-indigo-500"
+            className="rounded border border-slate-300 bg-white px-3 py-2 text-sm outline-none focus:border-indigo-500"
           >
             {[0, 1, 2].map((offset) => {
               const optionYear = new Date().getFullYear() - offset;
@@ -215,7 +215,7 @@ const LeaveBalances = () => {
             type="button"
             onClick={() => loadBalances({ silent: true })}
             disabled={loading || refreshing}
-            className="inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-50"
+            className="inline-flex items-center gap-2 rounded border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-50"
           >
             <RefreshCw size={15} className={refreshing ? "animate-spin" : ""} />
             Refresh
@@ -226,7 +226,7 @@ const LeaveBalances = () => {
       {error && (
         <div
           role="alert"
-          className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700"
+          className="flex flex-wrap items-center justify-between gap-3 rounded border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700"
         >
           <span>{error}</span>
           <button
@@ -239,7 +239,7 @@ const LeaveBalances = () => {
         </div>
       )}
 
-      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+      <div className="overflow-hidden rounded border border-slate-200 bg-white ">
         <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 px-4 py-3">
           <div>
             <h2 className="font-semibold text-slate-900">Staff leave summary</h2>
@@ -323,7 +323,7 @@ const LeaveBalances = () => {
                       <button
                         type="button"
                         onClick={() => openEdit(row)}
-                        className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-700 transition hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700"
+                        className="inline-flex items-center gap-2 rounded border border-slate-200 px-3 py-2 text-xs font-medium text-slate-700 transition hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700"
                         title="Edit leave balance"
                       >
                         <Pencil size={14} />
@@ -415,7 +415,7 @@ const LeaveBalances = () => {
                 </Field>
               </div>
 
-              <p className="rounded-lg bg-amber-50 px-3 py-2 text-xs leading-5 text-amber-800">
+              <p className="rounded bg-amber-50 px-3 py-2 text-xs leading-5 text-amber-800">
                 This form edits allowance and carry-forward. Unpaid leave taken
                 must be updated by the backend leave-approval workflow.
               </p>

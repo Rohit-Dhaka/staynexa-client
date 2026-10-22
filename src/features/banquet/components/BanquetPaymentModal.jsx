@@ -80,15 +80,15 @@ const BanquetPaymentModal = ({ booking, defaultType = "partial", canRefund, onCl
       }
     >
       <div className="mb-4 grid grid-cols-3 gap-3 text-center">
-        <div className="rounded-lg bg-slate-50 p-3">
+        <div className="rounded bg-slate-50 p-3">
           <p className="text-xs text-slate-500">Total</p>
           <p className="text-sm font-semibold text-slate-900">{formatINR(booking.totalAmount)}</p>
         </div>
-        <div className="rounded-lg bg-slate-50 p-3">
+        <div className="rounded bg-slate-50 p-3">
           <p className="text-xs text-slate-500">Paid</p>
           <p className="text-sm font-semibold text-emerald-600">{formatINR(net)}</p>
         </div>
-        <div className="rounded-lg bg-slate-50 p-3">
+        <div className="rounded bg-slate-50 p-3">
           <p className="text-xs text-slate-500">Balance</p>
           <p className="text-sm font-semibold text-rose-600">{formatINR(balance)}</p>
         </div>

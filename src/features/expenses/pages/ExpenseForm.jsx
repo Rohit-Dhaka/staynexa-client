@@ -83,7 +83,7 @@ export default function ExpenseForm() {
   };
 
   const inputClass =
-    "mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100";
+    "mt-2 w-full rounded border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100";
 
 
 return (
@@ -99,7 +99,7 @@ return (
       </button>
 
       <div className="mb-8 flex items-center gap-4">
-        <div className="rounded-2xl bg-indigo-100 p-4 text-indigo-600">
+        <div className="rounded bg-indigo-100 p-4 text-indigo-600">
           <Receipt size={28} />
         </div>
 
@@ -115,7 +115,7 @@ return (
 
       <form
         onSubmit={handleSubmit}
-        className="w-full space-y-8 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-8 lg:p-10"
+        className="w-full space-y-8 rounded border border-slate-200 bg-white p-5  sm:p-8 lg:p-10"
       >
         <div className="border-b border-slate-100 pb-5">
           <h2 className="text-lg font-semibold text-slate-900">
@@ -273,7 +273,7 @@ return (
           <button
             type="button"
             onClick={() => navigate("/expenses")}
-            className="rounded-xl border border-slate-200 px-6 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+            className="rounded border border-slate-200 px-6 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
           >
             Cancel
           </button>
@@ -281,7 +281,7 @@ return (
           <button
             type="submit"
             disabled={saving}
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-7 py-3 text-sm font-semibold text-white transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
+            className="inline-flex items-center justify-center gap-2 rounded bg-black px-7 py-3 text-sm font-semibold text-white transition  disabled:cursor-not-allowed disabled:opacity-60"
           >
             <Save size={18} />
             {saving ? "Saving..." : "Save Expense"}

@@ -80,7 +80,7 @@ const CheckOutModal = ({ booking, onClose, onDone }) => {
         <ModalFooter
           onCancel={onClose}
           onConfirm={submit}
-          confirmText="Check-out karo"
+          confirmText="Check-out"
           busy={saving}
           disabled={!summary || loading || blockedByDues}
         />
@@ -114,7 +114,7 @@ const CheckOutModal = ({ booking, onClose, onDone }) => {
             </NoteBox>
           )}
 
-          <div className="overflow-x-auto rounded-xl border border-slate-200">
+          <div className="overflow-x-auto rounded border border-slate-200">
             <table className="w-full min-w-[480px] text-left text-sm">
               <thead className="bg-slate-50 text-xs uppercase text-slate-500">
                 <tr>

@@ -55,19 +55,19 @@ const BanquetCalendar = () => {
       </div>
 
       <div className="flex items-center gap-2">
-        <button type="button" onClick={() => shift(-1)} aria-label="Previous month" className="rounded-lg border border-slate-300 bg-white p-2 hover:bg-slate-50">
+        <button type="button" onClick={() => shift(-1)} aria-label="Previous month" className="rounded border border-slate-300 bg-white p-2 hover:bg-slate-50">
           <ChevronLeft size={16} />
         </button>
         <h2 className="min-w-[170px] text-center text-lg font-semibold text-slate-900">
           {MONTH_NAMES[ym.month - 1]} {ym.year}
         </h2>
-        <button type="button" onClick={() => shift(1)} aria-label="Next month" className="rounded-lg border border-slate-300 bg-white p-2 hover:bg-slate-50">
+        <button type="button" onClick={() => shift(1)} aria-label="Next month" className="rounded border border-slate-300 bg-white p-2 hover:bg-slate-50">
           <ChevronRight size={16} />
         </button>
         <div className="ml-auto flex flex-wrap gap-3 text-xs text-slate-600">
           {["tentative", "confirmed", "completed"].map((s) => (
             <span key={s} className="flex items-center gap-1.5">
-              <span className={`h-2.5 w-2.5 rounded-sm border ${STATUS_META[s].chip}`} />
+              <span className={`h-2.5 w-2.5 rounded border ${STATUS_META[s].chip}`} />
               {STATUS_META[s].label}
             </span>
           ))}
@@ -82,7 +82,7 @@ const BanquetCalendar = () => {
 
       {data && !loading && (
         <div className="overflow-x-auto">
-          <div className="grid min-w-[760px] grid-cols-7 gap-px overflow-hidden rounded-xl border border-slate-200 bg-slate-200">
+          <div className="grid min-w-[760px] grid-cols-7 gap-px overflow-hidden rounded border border-slate-200 bg-slate-200">
             {WEEKDAYS.map((day) => (
               <div key={day} className="bg-slate-50 px-2 py-2 text-center text-xs font-medium text-slate-500">
                 {day}
@@ -101,7 +101,7 @@ const BanquetCalendar = () => {
               >
                 <p
                   className={`mb-1 inline-flex h-6 min-w-[24px] items-center justify-center rounded-full px-1 text-xs font-semibold ${
-                    day.date === today ? "bg-indigo-600 text-white" : "text-slate-700"
+                    day.date === today ? "bg-black text-white" : "text-slate-700"
                   }`}
                 >
                   {Number(day.date.split("-")[2])}

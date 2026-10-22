@@ -78,15 +78,15 @@ const PaymentModal = ({ booking, onClose, onDone }) => {
       <ErrorBox message={error} />
 
       <div className="mb-4 grid grid-cols-3 gap-3 text-sm">
-        <div className="rounded-xl bg-slate-50 p-3">
+        <div className="rounded bg-slate-50 p-3">
           <p className="text-xs text-slate-500">Total</p>
           <p className="font-semibold text-slate-900">{formatINR(booking.totalAmount)}</p>
         </div>
-        <div className="rounded-xl bg-slate-50 p-3">
+        <div className="rounded bg-slate-50 p-3">
           <p className="text-xs text-slate-500">Paid</p>
           <p className="font-semibold text-emerald-600">{formatINR(netPaid)}</p>
         </div>
-        <div className="rounded-xl bg-slate-50 p-3">
+        <div className="rounded bg-slate-50 p-3">
           <p className="text-xs text-slate-500">Balance</p>
           <p className="font-semibold text-rose-600">{formatINR(balance)}</p>
         </div>

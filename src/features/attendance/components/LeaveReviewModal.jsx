@@ -112,7 +112,7 @@ const LeaveReviewModal = ({ leaveId, canReview, onClose, onDone }) => {
               type="button"
               onClick={onClose}
               disabled={saving}
-              className="rounded-lg border border-slate-300 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-60"
+              className="rounded border border-slate-300 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-60"
             >
               Band karo
             </button>
@@ -120,7 +120,7 @@ const LeaveReviewModal = ({ leaveId, canReview, onClose, onDone }) => {
               type="button"
               onClick={rejectAll}
               disabled={saving}
-              className="rounded-lg border border-rose-200 px-4 py-2.5 text-sm font-semibold text-rose-600 hover:bg-rose-50 disabled:opacity-60"
+              className="rounded border border-rose-200 px-4 py-2.5 text-sm font-semibold text-rose-600 hover:bg-rose-50 disabled:opacity-60"
             >
               Poori reject karo
             </button>
@@ -128,7 +128,7 @@ const LeaveReviewModal = ({ leaveId, canReview, onClose, onDone }) => {
               type="button"
               onClick={approve}
               disabled={saving}
-              className="flex items-center justify-center gap-2 rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-indigo-700 disabled:opacity-60"
+              className="flex items-center justify-center gap-2 rounded bg-black px-5 py-2.5 text-sm font-semibold text-white  disabled:opacity-60"
             >
               {saving && <Loader2 size={16} className="animate-spin" />}
               Approve karo
@@ -138,7 +138,7 @@ const LeaveReviewModal = ({ leaveId, canReview, onClose, onDone }) => {
           <button
             type="button"
             onClick={onClose}
-            className="rounded-lg border border-slate-300 px-5 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
+            className="rounded border border-slate-300 px-5 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
           >
             Band karo
           </button>
@@ -161,25 +161,25 @@ const LeaveReviewModal = ({ leaveId, canReview, onClose, onDone }) => {
             </p>
             <LeaveStatusChip status={data.status} />
           </div>
-          <p className="rounded-lg bg-slate-50 px-3 py-2 text-sm text-slate-700">Reason: {data.reason}</p>
+          <p className="rounded bg-slate-50 px-3 py-2 text-sm text-slate-700">Reason: {data.reason}</p>
 
           {balanceYears.map((year) => {
             const b = data.balances[year];
             return (
               <div key={year} className="grid grid-cols-2 gap-2 text-center text-xs md:grid-cols-4">
-                <div className="rounded-lg bg-slate-50 p-2">
+                <div className="rounded bg-slate-50 p-2">
                   <p className="text-slate-500">{year} Casual baaki</p>
                   <p className="text-base font-semibold text-slate-900">{formatUnits(b.casual.remaining)}</p>
                 </div>
-                <div className="rounded-lg bg-slate-50 p-2">
+                <div className="rounded bg-slate-50 p-2">
                   <p className="text-slate-500">Sick baaki</p>
                   <p className="text-base font-semibold text-slate-900">{formatUnits(b.sick.remaining)}</p>
                 </div>
-                <div className="rounded-lg bg-slate-50 p-2">
+                <div className="rounded bg-slate-50 p-2">
                   <p className="text-slate-500">Paid baaki</p>
                   <p className="text-base font-semibold text-slate-900">{formatUnits(b.paid.remaining)}</p>
                 </div>
-                <div className="rounded-lg bg-slate-50 p-2">
+                <div className="rounded bg-slate-50 p-2">
                   <p className="text-slate-500">Unpaid le chuke</p>
                   <p className="text-base font-semibold text-slate-900">{formatUnits(b.unpaidTaken)}</p>
                 </div>
@@ -187,7 +187,7 @@ const LeaveReviewModal = ({ leaveId, canReview, onClose, onDone }) => {
             );
           })}
 
-          <div className="overflow-x-auto rounded-xl border border-slate-200">
+          <div className="overflow-x-auto rounded border border-slate-200">
             <table className="w-full min-w-[480px] text-left text-sm">
               <thead className="bg-slate-50 text-xs uppercase text-slate-500">
                 <tr>
@@ -276,7 +276,7 @@ const LeaveReviewModal = ({ leaveId, canReview, onClose, onDone }) => {
           )}
 
           {!editable && data.reviewNote && (
-            <p className="rounded-lg bg-slate-50 px-3 py-2 text-sm text-slate-700">
+            <p className="rounded bg-slate-50 px-3 py-2 text-sm text-slate-700">
               {data.reviewedBy?.name ? `${data.reviewedBy.name}: ` : ""}
               {data.reviewNote}
             </p>

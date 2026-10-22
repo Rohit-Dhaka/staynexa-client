@@ -121,7 +121,7 @@ const StructureFormModal = ({ person, structure, mode, onClose, onSaved }) => {
 
 
 return (
-  <div className="rounded-lg border border-slate-200 bg-white">
+  <div className="rounded border border-slate-200 bg-white">
     {/* Compact header */}
     <div className="flex items-center justify-between gap-3 border-b border-slate-200 px-4 py-3">
       <div>
@@ -135,7 +135,7 @@ return (
         type="button"
         onClick={onClose}
         disabled={saving}
-        className="rounded-md px-3 py-1.5 text-sm text-slate-600 hover:bg-slate-100 disabled:opacity-50"
+        className="rounded px-3 py-1.5 text-sm text-slate-600 hover:bg-slate-100 disabled:opacity-50"
       >
         Cancel
       </button>
@@ -222,7 +222,7 @@ return (
       </div>
 
       {/* Allowances */}
-      <div className="rounded-md border border-slate-200 p-3">
+      <div className="rounded border border-slate-200 p-3">
         <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
           <p className="text-sm font-semibold text-slate-800">
             Allowances
@@ -236,7 +236,7 @@ return (
                 allowances: [...f.allowances, { name: "", amount: "" }],
               }))
             }
-            className="inline-flex items-center gap-1 rounded-md border border-slate-300 px-2.5 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50"
+            className="inline-flex items-center gap-1 rounded border border-slate-300 px-2.5 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50"
           >
             <Plus size={14} />
             Add allowance
@@ -286,7 +286,7 @@ return (
                     }))
                   }
                   aria-label="Remove allowance"
-                  className="col-span-1 flex justify-center rounded-md p-2 text-slate-400 hover:bg-rose-50 hover:text-rose-600"
+                  className="col-span-1 flex justify-center rounded p-2 text-slate-400 hover:bg-rose-50 hover:text-rose-600"
                 >
                   <Trash2 size={15} />
                 </button>
@@ -301,7 +301,7 @@ return (
       </div>
 
       {/* Statutory deductions */}
-      <div className="rounded-md border border-slate-200 p-3">
+      <div className="rounded border border-slate-200 p-3">
         <p className="mb-2 text-sm font-semibold text-slate-800">
           Statutory deductions
         </p>

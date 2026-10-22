@@ -8,7 +8,7 @@ import { Field, ErrorBox, NoteBox, SectionTitle, inputClass } from "./formUi";
 import { CHARGE_CATEGORIES, formatINR, getErrorMessage } from "../utils/bookingUi";
 
 const smallBtn =
-  "rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-indigo-700 disabled:opacity-60";
+  "rounded bg-black px-4 py-2 text-sm font-semibold text-white transition  disabled:opacity-60";
 
 const BillModal = ({ booking, onClose, onDone }) => {
   const { user } = useAuth();
@@ -103,7 +103,7 @@ const BillModal = ({ booking, onClose, onDone }) => {
     <button
       type="button"
       onClick={close}
-      className="rounded-lg border border-slate-300 px-5 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
+      className="rounded border border-slate-300 px-5 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
     >
       Close
     </button>
@@ -133,7 +133,7 @@ const BillModal = ({ booking, onClose, onDone }) => {
         </NoteBox>
       )}
 
-      <div className="overflow-x-auto rounded-xl border border-slate-200">
+      <div className="overflow-x-auto rounded border border-slate-200">
         <table className="w-full min-w-[560px] text-left text-sm">
           <thead className="bg-slate-50 text-xs uppercase text-slate-500">
             <tr>
@@ -183,7 +183,7 @@ const BillModal = ({ booking, onClose, onDone }) => {
       </div>
 
       {voiding.id && (
-        <div className="mt-3 flex flex-wrap items-end gap-3 rounded-xl bg-rose-50 p-3">
+        <div className="mt-3 flex flex-wrap items-end gap-3 rounded bg-rose-50 p-3">
           <div className="min-w-[220px] flex-1">
             <Field label="Reason for Voiding">
               <input
@@ -200,7 +200,7 @@ const BillModal = ({ booking, onClose, onDone }) => {
             type="button"
             onClick={submitVoid}
             disabled={busy}
-            className="rounded-lg bg-rose-600 px-4 py-2 text-sm font-semibold text-white hover:bg-rose-700 disabled:opacity-60"
+            className="rounded bg-rose-600 px-4 py-2 text-sm font-semibold text-white hover:bg-rose-700 disabled:opacity-60"
           >
             Void Charge
           </button>

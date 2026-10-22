@@ -39,18 +39,18 @@ import {
 const BACK_PATH = "/housekeeping";
 
 const inputClass =
-  "w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 disabled:opacity-60";
+  "w-full rounded border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 disabled:opacity-60";
 
 const labelClass = "mb-1.5 block text-xs font-medium text-slate-700";
 
 const primaryButton =
-  "inline-flex items-center justify-center gap-2 rounded-lg bg-[#1a1a1a] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-60";
+  "inline-flex items-center justify-center gap-2 rounded bg-[#1a1a1a] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-60";
 
 const outlineButton =
-  "inline-flex items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60";
+  "inline-flex items-center justify-center gap-2 rounded border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60";
 
 const dangerButton =
-  "inline-flex items-center justify-center gap-2 rounded-lg border border-rose-200 bg-white px-4 py-2.5 text-sm font-medium text-rose-600 transition hover:bg-rose-50 disabled:cursor-not-allowed disabled:opacity-60";
+  "inline-flex items-center justify-center gap-2 rounded border border-rose-200 bg-white px-4 py-2.5 text-sm font-medium text-rose-600 transition hover:bg-rose-50 disabled:cursor-not-allowed disabled:opacity-60";
 
 const ModalActions = ({
   onCancel,
@@ -70,7 +70,7 @@ const ModalActions = ({
       disabled={busy || disabled}
       className={
         danger
-          ? "inline-flex items-center justify-center gap-2 rounded-lg bg-rose-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-rose-700 disabled:cursor-not-allowed disabled:opacity-60"
+          ? "inline-flex items-center justify-center gap-2 rounded bg-rose-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-rose-700 disabled:cursor-not-allowed disabled:opacity-60"
           : primaryButton
       }
     >
@@ -81,7 +81,7 @@ const ModalActions = ({
 );
 
 const Card = ({ title, children }) => (
-  <section className="rounded-xl border border-slate-200 bg-white p-5">
+  <section className="rounded border border-slate-200 bg-white p-5">
     <h2 className="mb-4 text-sm font-semibold text-slate-900">{title}</h2>
     {children}
   </section>
@@ -282,7 +282,7 @@ const HousekeepingDetail = () => {
           <ArrowLeft size={16} />
           Back to Housekeeping
         </Link>
-        <p className="rounded-lg bg-rose-50 px-4 py-3 text-sm text-rose-600">
+        <p className="rounded bg-rose-50 px-4 py-3 text-sm text-rose-600">
           {loadError || "Task not found"}
         </p>
       </div>
@@ -399,7 +399,7 @@ const HousekeepingDetail = () => {
       )}
 
       {canComplete && !checklistDone && (
-        <p className="rounded-lg bg-amber-50 px-4 py-3 text-sm text-amber-700">
+        <p className="rounded bg-amber-50 px-4 py-3 text-sm text-amber-700">
           Complete every checklist step before marking this task as completed.
         </p>
       )}
@@ -430,7 +430,7 @@ const HousekeepingDetail = () => {
                   {checklist.map((item) => (
                     <li key={item._id}>
                       <label
-                        className={`flex items-center gap-3 rounded-lg border px-3 py-2.5 text-sm transition ${
+                        className={`flex items-center gap-3 rounded border px-3 py-2.5 text-sm transition ${
                           item.isCompleted
                             ? "border-emerald-200 bg-emerald-50/60"
                             : "border-slate-200 bg-white"
@@ -539,7 +539,7 @@ const HousekeepingDetail = () => {
             <Loader2 className="animate-spin" />
           </div>
         ) : staffError ? (
-          <p className="rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-600">
+          <p className="rounded bg-rose-50 px-3 py-2 text-sm text-rose-600">
             Could not load the staff list. Please try again.
           </p>
         ) : (

@@ -130,8 +130,8 @@ const CateringPackages = () => {
           ))}
         </div>
       ) : packages.length === 0 ? (
-        <div className="flex flex-col items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-16 text-center">
-          <div className="rounded-xl bg-slate-100 p-4 text-slate-500">
+        <div className="flex flex-col items-center gap-3 rounded border border-slate-200 bg-white px-4 py-16 text-center">
+          <div className="rounded bg-slate-100 p-4 text-slate-500">
             <UtensilsCrossed size={28} />
           </div>
           <h3 className="font-semibold text-slate-800">
@@ -154,7 +154,7 @@ const CateringPackages = () => {
           {packages.map((pkg) => (
             <div
               key={pkg._id || pkg.id || pkg.name}
-              className={`rounded-xl border border-slate-200 bg-white p-5 ${
+              className={`rounded border border-slate-200 bg-white p-5 ${
                 pkg.isActive ? "" : "opacity-60"
               }`}
             >
@@ -203,7 +203,7 @@ const CateringPackages = () => {
                   onClick={() => setEditing(pkg)}
                   aria-label={`Edit ${pkg.name || "package"}`}
                   title="Edit package"
-                  className="rounded-md p-2 text-slate-500 hover:bg-slate-100"
+                  className="rounded p-2 text-slate-500 hover:bg-slate-100"
                 >
                   <Pencil size={16} />
                 </button>
@@ -213,7 +213,7 @@ const CateringPackages = () => {
                     onClick={() => setRemoving(pkg)}
                     aria-label={`Remove ${pkg.name || "package"}`}
                     title="Remove package"
-                    className="rounded-md p-2 text-rose-500 hover:bg-rose-50"
+                    className="rounded p-2 text-rose-500 hover:bg-rose-50"
                   >
                     <Trash2 size={16} />
                   </button>

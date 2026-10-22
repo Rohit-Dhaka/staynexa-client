@@ -28,7 +28,7 @@ const SOURCES = [
 ];
 
 const inputClass =
-  "w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 disabled:cursor-not-allowed disabled:bg-slate-50 disabled:opacity-60";
+  "w-full rounded border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 disabled:cursor-not-allowed disabled:bg-slate-50 disabled:opacity-60";
 
 const labelClass = "mb-1.5 block text-xs font-medium text-slate-700";
 
@@ -75,7 +75,7 @@ const toForm = (booking) => ({
 
 const SectionHeader = ({ icon: Icon, title, description }) => (
   <div className="mb-5 flex items-start gap-3">
-    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600">
+    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded bg-indigo-50 text-indigo-600">
       <Icon size={18} />
     </div>
     <div>
@@ -340,14 +340,14 @@ const BookingForm = () => {
       </div>
 
       {loadingBooking ? (
-        <div className="rounded-xl border border-slate-200 bg-white p-5 sm:p-6">
+        <div className="rounded border border-slate-200 bg-white p-5 sm:p-6">
           <FormSkeleton fields={8} />
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-5">
           <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
             {/* Stay details */}
-            <section className="rounded-xl border border-slate-200 bg-white p-5 sm:p-6">
+            <section className="rounded border border-slate-200 bg-white p-5 sm:p-6">
               <SectionHeader
                 icon={CalendarDays}
                 title="Stay Details"
@@ -425,7 +425,7 @@ const BookingForm = () => {
                 </div>
               </div>
 
-              <div className="mt-5 flex items-center gap-3 rounded-lg bg-slate-50 p-3.5">
+              <div className="mt-5 flex items-center gap-3 rounded bg-slate-50 p-3.5">
                 <Users size={18} className="shrink-0 text-slate-500" />
                 <div>
                   <p className="text-sm font-medium text-slate-800">
@@ -440,7 +440,7 @@ const BookingForm = () => {
             </section>
 
             {/* Room selection */}
-            <section className="rounded-xl border border-slate-200 bg-white p-5 sm:p-6">
+            <section className="rounded border border-slate-200 bg-white p-5 sm:p-6">
               <SectionHeader
                 icon={BedDouble}
                 title="Room Selection"
@@ -490,7 +490,7 @@ const BookingForm = () => {
               )}
 
               {!loadingRooms && selectedRoom && (
-                <div className="mt-5 rounded-lg border border-indigo-100 bg-indigo-50/50 p-4">
+                <div className="mt-5 rounded border border-indigo-100 bg-indigo-50/50 p-4">
                   <div className="flex items-start justify-between gap-3">
                     <div>
                       <p className="text-xs font-medium text-slate-500">
@@ -505,7 +505,7 @@ const BookingForm = () => {
                       </p>
                     </div>
 
-                    <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-white text-indigo-600">
+                    <div className="flex h-9 w-9 items-center justify-center rounded bg-white text-indigo-600">
                       <Check size={18} />
                     </div>
                   </div>
@@ -534,7 +534,7 @@ const BookingForm = () => {
             </section>
 
             {/* Guest details */}
-            <section className="rounded-xl border border-slate-200 bg-white p-5 sm:p-6">
+            <section className="rounded border border-slate-200 bg-white p-5 sm:p-6">
               <SectionHeader
                 icon={Users}
                 title="Guest Details"
@@ -619,7 +619,7 @@ const BookingForm = () => {
             </section>
 
             {/* Payment and requests */}
-            <section className="rounded-xl border border-slate-200 bg-white p-5 sm:p-6">
+            <section className="rounded border border-slate-200 bg-white p-5 sm:p-6">
               <SectionHeader
                 icon={Save}
                 title="Payment & Requests"
@@ -680,7 +680,7 @@ const BookingForm = () => {
           </div>
 
           {/* Actions */}
-          <div className="flex flex-col-reverse gap-3 rounded-xl border border-slate-200 bg-white p-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-col-reverse gap-3 rounded border border-slate-200 bg-white p-4 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-xs text-slate-500">
               <span className="text-rose-500">*</span> Required fields
             </p>
@@ -690,7 +690,7 @@ const BookingForm = () => {
                 type="button"
                 onClick={() => navigate(BACK_PATH)}
                 disabled={submitting}
-                className="rounded-lg border border-slate-300 px-5 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50 disabled:opacity-60"
+                className="rounded border border-slate-300 px-5 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50 disabled:opacity-60"
               >
                 Cancel
               </button>
@@ -698,7 +698,7 @@ const BookingForm = () => {
               <button
                 type="submit"
                 disabled={submitting || loadingRooms}
-                className="flex items-center justify-center gap-2 rounded-lg bg-[#1a1a1a] px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-70"
+                className="flex items-center justify-center gap-2 rounded bg-[#1a1a1a] px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-70"
               >
                 {submitting ? (
                   <Loader2 size={16} className="animate-spin" />

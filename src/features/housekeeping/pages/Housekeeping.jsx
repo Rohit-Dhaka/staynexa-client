@@ -29,10 +29,10 @@ import {
 } from "../housekeeping.utils";
 
 const inputClass =
-  "rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100";
+  "rounded border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100";
 
 const primaryButton =
-  "inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-700";
+  "inline-flex items-center justify-center gap-2 rounded bg-black px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-700";
 
 const getPayload = (response) => response?.data ?? response ?? {};
 
@@ -118,7 +118,7 @@ const SummaryCards = ({ summary, activeStatus, onSelect }) => {
             type="button"
             onClick={() => onSelect(card.key)}
             aria-pressed={selected}
-            className={`flex items-center justify-center gap-2 rounded-lg border bg-white px-2 py-3 text-left transition hover:border-slate-300 ${
+            className={`flex items-center justify-center gap-2 rounded border bg-white px-2 py-3 text-left transition hover:border-slate-300 ${
               selected
                 ? "border-indigo-500 ring-2 ring-indigo-100"
                 : "border-slate-200"
@@ -154,7 +154,7 @@ const Pagination = ({ page, totalPages, total, onChange }) => {
           onClick={() => onChange(page - 1)}
           disabled={page <= 1}
           aria-label="Previous page"
-          className="rounded-lg border border-slate-300 p-2 text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
+          className="rounded border border-slate-300 p-2 text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
         >
           <ChevronLeft size={16} />
         </button>
@@ -163,7 +163,7 @@ const Pagination = ({ page, totalPages, total, onChange }) => {
           onClick={() => onChange(page + 1)}
           disabled={page >= totalPages}
           aria-label="Next page"
-          className="rounded-lg border border-slate-300 p-2 text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
+          className="rounded border border-slate-300 p-2 text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
         >
           <ChevronRight size={16} />
         </button>
@@ -380,7 +380,7 @@ const Housekeeping = () => {
           type="button"
           onClick={clearFilters}
           disabled={!hasFilters}
-          className="rounded-lg border border-slate-300 px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
+          className="rounded border border-slate-300 px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
         >
           Clear Filters
         </button>
@@ -392,12 +392,12 @@ const Housekeeping = () => {
         onSelect={selectStatus}
       />
 
-      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
+      <div className="overflow-hidden rounded border border-slate-200 bg-white">
         {loading ? (
           <TableSkeleton rows={6} columns={8} />
         ) : tasks.length === 0 ? (
           <div className="flex flex-col items-center justify-center gap-3 px-4 py-16 text-center">
-            <div className="rounded-xl bg-slate-100 p-4 text-slate-500">
+            <div className="rounded bg-slate-100 p-4 text-slate-500">
               <ClipboardCheck size={28} />
             </div>
             <h3 className="font-semibold text-slate-800">No tasks found</h3>
@@ -549,7 +549,7 @@ const Housekeeping = () => {
                             }}
                             aria-label="View task"
                             title="View task"
-                            className="rounded-md p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900"
+                            className="rounded p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900"
                           >
                             <Eye size={16} />
                           </button>

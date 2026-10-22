@@ -33,7 +33,7 @@ export const PRIORITY_BADGE = {
 export const STATUS_META = {
   pending: { label: "Pending", badge: "bg-amber-50 text-amber-700" },
   assigned: { label: "Assigned", badge: "bg-indigo-50 text-indigo-700" },
-  in_progress: { label: "In Progress", badge: "bg-blue-50 text-blue-700" },
+  in_progress: { label: "In Progress", badge: "bg-black text-blue-700" },
   completed: { label: "Completed", badge: "bg-emerald-50 text-emerald-700" },
   inspected: { label: "Inspected", badge: "bg-teal-50 text-teal-700" },
   cancelled: { label: "Cancelled", badge: "bg-rose-50 text-rose-700" },

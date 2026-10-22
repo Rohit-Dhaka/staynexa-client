@@ -24,7 +24,7 @@ import {
 const PAGE_SIZE = 15;
 
 const field =
-  "rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100";
+  "rounded border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100";
 
 const Bookings = () => {
   const navigate = useNavigate();
@@ -156,7 +156,7 @@ const Bookings = () => {
         <button
           type="button"
           onClick={() => navigate("/bookings/new")}
-          className="flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-700"
+          className="flex items-center gap-2 rounded bg-black px-4 py-2.5 text-sm font-semibold text-white transition "
         >
           <Plus size={16} /> New Booking
         </button>
@@ -171,7 +171,7 @@ const Bookings = () => {
             onClick={() => changeView(v.value)}
             className={`whitespace-nowrap rounded-full px-4 py-1.5 text-sm font-medium transition ${
               filters.view === v.value
-                ? "bg-indigo-600 text-white"
+                ? "bg-black text-white"
                 : "bg-white text-slate-600 ring-1 ring-slate-200 hover:bg-slate-50"
             }`}
           >
@@ -224,12 +224,12 @@ const Bookings = () => {
       </div>
 
       {error && (
-        <p className="rounded-lg bg-rose-50 px-4 py-3 text-sm text-rose-600">
+        <p className="rounded bg-rose-50 px-4 py-3 text-sm text-rose-600">
           {error}
         </p>
       )}
 
-      <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white">
+      <div className="overflow-x-auto rounded border border-slate-200 bg-white">
         <table className="w-full min-w-[860px] text-left text-sm">
           <thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
             <tr>
@@ -345,7 +345,7 @@ const Bookings = () => {
             type="button"
             disabled={filters.page <= 1 || loading}
             onClick={() => setFilters((f) => ({ ...f, page: f.page - 1 }))}
-            className="flex items-center gap-1 rounded-lg border border-slate-300 bg-white px-3 py-1.5 transition hover:bg-slate-50 disabled:opacity-40"
+            className="flex items-center gap-1 rounded border border-slate-300 bg-white px-3 py-1.5 transition hover:bg-slate-50 disabled:opacity-40"
           >
             <ChevronLeft size={16} /> Prev
           </button>
@@ -353,7 +353,7 @@ const Bookings = () => {
             type="button"
             disabled={filters.page >= data.pages || loading}
             onClick={() => setFilters((f) => ({ ...f, page: f.page + 1 }))}
-            className="flex items-center gap-1 rounded-lg border border-slate-300 bg-white px-3 py-1.5 transition hover:bg-slate-50 disabled:opacity-40"
+            className="flex items-center gap-1 rounded border border-slate-300 bg-white px-3 py-1.5 transition hover:bg-slate-50 disabled:opacity-40"
           >
             Next <ChevronRight size={16} />
           </button>

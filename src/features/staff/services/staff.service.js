@@ -1,6 +1,6 @@
 import api from "../../../api/axiosInstance";
 
-// Change this if your backend mounts the staff routes on a different path.
+
 const BASE = "/staff";
 
 export const getStaffList = async (params = {}) => {

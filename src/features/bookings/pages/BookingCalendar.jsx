@@ -59,13 +59,13 @@ const VIEWS = [
 ];
 
 const field =
-  " rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100";
+  " rounded border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100";
 
 const secondaryButton =
-  "inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-medium text-slate-600 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700";
+  "inline-flex items-center justify-center gap-2 rounded border border-slate-200 bg-white px-3 py-2.5 text-sm font-medium text-slate-600 transition hover:border-blue-200 hover:bg-black hover:text-blue-700";
 
 const primaryButton =
-  "inline-flex items-center justify-center gap-2 rounded-xl bg-[#3158e8] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-offset-2";
+  "inline-flex items-center justify-center gap-2 rounded bg-black px-4 py-2.5 text-sm font-semibold text-white  transition hover:bg-black focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-offset-2";
 
 const parseKey = (key) => {
   const [year, month, day] = key.split("-").map(Number);
@@ -128,7 +128,7 @@ const Status = ({ loading, error }) => (
 
     {error && (
       <div
-        className="rounded-xl border border-rose-100 bg-rose-50 px-4 py-3 text-sm text-rose-700"
+        className="rounded border border-rose-100 bg-rose-50 px-4 py-3 text-sm text-rose-700"
         role="alert"
       >
         {error}
@@ -138,12 +138,12 @@ const Status = ({ loading, error }) => (
 );
 
 const StatCard = ({ label, value, sub, icon: Icon }) => (
-  <div className="min-w-0 rounded-2xl border border-slate-100 bg-white p-3 shadow-sm sm:p-4">
+  <div className="min-w-0 rounded border border-slate-100 bg-white p-3  sm:p-4">
     <div className="flex items-start justify-between gap-2">
       <p className="text-xs font-medium text-slate-500">{label}</p>
 
       {Icon && (
-        <span className="rounded-lg bg-blue-50 p-2 text-[#3158e8]">
+        <span className="rounded bg-black p-2 text-[#3158e8]">
           <Icon size={17} />
         </span>
       )}
@@ -280,7 +280,7 @@ const MonthView = ({ onPickDay }) => {
             />
           </div>
 
-          <div className="overflow-x-auto rounded-2xl border border-slate-200">
+          <div className="overflow-x-auto rounded border border-slate-200">
             <div className="grid min-w-[630px] grid-cols-7 gap-px bg-slate-200">
               {WEEKDAYS.map((day) => (
                 <div
@@ -335,17 +335,17 @@ const MonthView = ({ onPickDay }) => {
 
           <div className="flex flex-wrap gap-3 text-xs text-slate-500">
             <span className="flex items-center gap-1.5">
-              <span className="h-2.5 w-2.5 rounded-sm bg-emerald-100" />
+              <span className="h-2.5 w-2.5 rounded bg-emerald-100" />
               Lower occupancy
             </span>
 
             <span className="flex items-center gap-1.5">
-              <span className="h-2.5 w-2.5 rounded-sm bg-amber-100" />
+              <span className="h-2.5 w-2.5 rounded bg-amber-100" />
               High occupancy
             </span>
 
             <span className="flex items-center gap-1.5">
-              <span className="h-2.5 w-2.5 rounded-sm bg-rose-100" />
+              <span className="h-2.5 w-2.5 rounded bg-rose-100" />
               Near full
             </span>
           </div>
@@ -478,7 +478,7 @@ const TimelineView = ({ search = "" }) => {
           (status) => (
             <span key={status} className="flex items-center gap-1.5">
               <span
-                className={`h-2.5 w-2.5 rounded-sm ${
+                className={`h-2.5 w-2.5 rounded ${
                   BOOKING_STATUS_META[status]?.bar || "bg-slate-400"
                 }`}
               />
@@ -498,7 +498,7 @@ const TimelineView = ({ search = "" }) => {
             </p>
           )}
 
-          <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white">
+          <div className="overflow-x-auto rounded border border-slate-200 bg-white">
             <div style={{ minWidth: 150 + span * 48 }}>
               <div
                 className="grid border-b border-slate-200 bg-slate-50 text-center text-xs"
@@ -515,7 +515,7 @@ const TimelineView = ({ search = "" }) => {
                     <div
                       key={key}
                       className={`border-l border-slate-200 py-2 ${
-                        key === today ? "bg-blue-50" : ""
+                        key === today ? "bg-black" : ""
                       }`}
                     >
                       <p className="text-[10px] text-slate-500">
@@ -559,7 +559,7 @@ const TimelineView = ({ search = "" }) => {
                     <div
                       key={key}
                       className={`min-h-[66px] border-l border-slate-100 ${
-                        key === today ? "bg-blue-50/50" : ""
+                        key === today ? "bg-black/50" : ""
                       }`}
                       style={{
                         gridColumn: index + 2,
@@ -575,11 +575,11 @@ const TimelineView = ({ search = "" }) => {
                       onClick={() => navigate(`/bookings/${booking._id}`)}
                       title={`${booking.bookingNumber}, ${booking.guestName}, ${formatDate(booking.checkIn)} to ${formatDate(booking.checkOut)}`}
                       aria-label={`Open booking for ${booking.guestName}`}
-                      className={`z-10 m-1 min-w-0 self-stretch truncate rounded-lg px-2 py-2 text-left text-[10px] font-semibold text-white shadow-sm transition hover:brightness-95 sm:text-xs ${
+                      className={`z-10 m-1 min-w-0 self-stretch truncate rounded px-2 py-2 text-left text-[10px] font-semibold text-white  transition hover:brightness-95 sm:text-xs ${
                         BOOKING_STATUS_META[booking.status]?.bar ||
-                        "bg-slate-400"
-                      } ${booking.startsBeforeRange ? "rounded-l-sm" : ""} ${
-                        booking.endsAfterRange ? "rounded-r-sm" : ""
+                        "bg-slate-100"
+                      } ${booking.startsBeforeRange ? "rounded" : ""} ${
+                        booking.endsAfterRange ? "rounded" : ""
                       }`}
                       style={{
                         gridColumn: `${booking.startOffset + 2} / span ${booking.span}`,
@@ -628,17 +628,17 @@ const TimelineView = ({ search = "" }) => {
 };
 
 const BookingRows = ({ title, items, onOpen }) => (
-  <section className="min-w-0 rounded-2xl border border-slate-100 bg-white p-4 shadow-sm sm:p-5">
+  <section className="min-w-0 rounded border border-slate-100 bg-white p-4  sm:p-5">
     <div className="mb-3 flex items-center justify-between gap-2">
       <h3 className="text-sm font-semibold text-[#13284d]">{title}</h3>
 
-      <span className="rounded-full bg-blue-50 px-2.5 py-1 text-xs font-semibold text-blue-700">
+      <span className="rounded-full bg-black px-2.5 py-1 text-xs font-semibold text-blue-700">
         {items.length}
       </span>
     </div>
 
     {items.length === 0 ? (
-      <p className="rounded-xl bg-slate-50 px-3 py-5 text-center text-sm text-slate-500">
+      <p className="rounded bg-slate-50 px-3 py-5 text-center text-sm text-slate-500">
         No bookings for this section.
       </p>
     ) : (
@@ -648,7 +648,7 @@ const BookingRows = ({ title, items, onOpen }) => (
             <button
               type="button"
               onClick={() => onOpen(booking._id)}
-              className="flex w-full min-w-0 flex-wrap items-center justify-between gap-3 py-3 text-left transition hover:bg-blue-50/60"
+              className="flex w-full min-w-0 flex-wrap items-center justify-between gap-3 py-3 text-left transition hover:bg-black/60"
             >
               <span className="min-w-0 flex-1">
                 <span className="block truncate text-sm font-medium text-[#13284d]">
@@ -796,7 +796,7 @@ const DayView = ({ date, setDate }) => {
             onOpen={open}
           />
 
-          <section className="rounded-2xl border border-slate-100 bg-white p-4 shadow-sm sm:p-5">
+          <section className="rounded border border-slate-100 bg-white p-4  sm:p-5">
             <div className="mb-4 flex items-center justify-between gap-2">
               <h3 className="text-sm font-semibold text-[#13284d]">
                 Vacant Rooms
@@ -811,7 +811,7 @@ const DayView = ({ date, setDate }) => {
               {data.availableRooms.map((room) => (
                 <span
                   key={room._id}
-                  className="rounded-xl border border-emerald-100 bg-emerald-50 px-3 py-2 text-sm text-emerald-800"
+                  className="rounded border border-emerald-100 bg-emerald-50 px-3 py-2 text-sm text-emerald-800"
                 >
                   <span className="font-semibold">{room.roomNumber}</span>
 
@@ -892,7 +892,7 @@ const AvailabilityView = () => {
 
       {data && !loading && (
         <>
-          <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white">
+          <div className="overflow-x-auto rounded border border-slate-200 bg-white">
             <table
               className="w-full text-center text-sm"
               style={{ minWidth: 180 + span * 48 }}
@@ -1020,7 +1020,7 @@ const MiniCalendar = ({ onPickDay, selectedDate }) => {
 
   return (
     <div className="space-y-3">
-      <div className="flex items-center justify-between gap-2">
+      <div className="flex items-center justify-between gap-2 ">
         <h3 className="text-sm font-semibold text-white">{title}</h3>
 
         <div className="flex gap-1">
@@ -1028,7 +1028,7 @@ const MiniCalendar = ({ onPickDay, selectedDate }) => {
             type="button"
             onClick={() => shift(-1)}
             aria-label="Previous month"
-            className="rounded-lg p-1.5 text-white transition hover:bg-white/15"
+            className="rounded p-1.5 text-white transition hover:bg-white/15"
           >
             <ChevronLeft size={17} />
           </button>
@@ -1037,7 +1037,7 @@ const MiniCalendar = ({ onPickDay, selectedDate }) => {
             type="button"
             onClick={() => shift(1)}
             aria-label="Next month"
-            className="rounded-lg p-1.5 text-white transition hover:bg-white/15"
+            className="rounded p-1.5 text-white transition hover:bg-white/15"
           >
             <ChevronRight size={17} />
           </button>
@@ -1085,7 +1085,7 @@ const MiniCalendar = ({ onPickDay, selectedDate }) => {
                     isSelected
                       ? "bg-white font-bold text-blue-700 ring-2 ring-blue-200"
                       : isToday
-                        ? "bg-blue-700 font-semibold text-white ring-1 ring-white/70"
+                        ? "bg-black font-semibold text-white ring-1 ring-white/70"
                         : "text-white hover:bg-white/20"
                   }`}
                 >
@@ -1101,8 +1101,8 @@ const MiniCalendar = ({ onPickDay, selectedDate }) => {
 };
 
 const CalendarSidebar = ({ onPickDay, selectedDate, search, setSearch }) => (
-  <aside className="flex min-w-0 flex-col gap-5 rounded-[26px] bg-[#3158e8] p-4 shadow-lg sm:p-5">
-    <label className="flex items-center gap-2 rounded-full bg-[#2448cb] px-3 py-3">
+  <aside className="flex min-w-0 flex-col gap-5 rounded bg-[#3158e8] p-4  sm:p-5">
+    <label className="flex items-center gap-2 full bg-[#2448cb] px-3 py-3">
       <Search size={16} className="shrink-0 text-blue-100" />
 
       <input
@@ -1142,11 +1142,11 @@ const BookingCalendar = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#f0f4ff] ">
-      <div className="mx-auto max-w-[1600px] space-y-5">
+    <div className="min-h-screen ">
+      <div className="mx-auto  space-y-5">
         <header className="flex flex-wrap items-center justify-between gap-4">
           <div className="flex min-w-0 items-center gap-3">
-            <div className="rounded-2xl bg-white p-3 text-[#3158e8] shadow-sm">
+            <div className="rounded bg-white p-3 text-[#3158e8] ">
               <CalendarDays size={23} />
             </div>
 
@@ -1172,7 +1172,7 @@ const BookingCalendar = () => {
         </header>
 
         <div className=" items-start gap-5 ">
-          <main className="min-w-0 overflow-hidden rounded-[24px] border border-white bg-white p-3 shadow-sm sm:p-5 lg:p-6">
+          <main className="min-w-0 overflow-hidden rounded border border-white bg-white ">
             <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
               <div>
                 <h2 className="text-lg font-semibold text-[#13284d]">
@@ -1183,16 +1183,16 @@ const BookingCalendar = () => {
                   View and manage your hotel calendar
                 </p>
               </div>
-              <div className="mb-5 grid grid-cols-2 gap-1 rounded-xl bg-slate-100 p-1 sm:grid-cols-4">
+              <div className="mb-5 grid grid-cols-2 gap-1 rounded bg-slate-100 p-1 sm:grid-cols-4">
                 {VIEWS.map((item) => (
                   <button
                     key={item.value}
                     type="button"
                     onClick={() => setView(item.value)}
                     aria-pressed={view === item.value}
-                    className={`rounded-lg px-2 py-2.5 text-xs font-medium transition sm:text-sm ${
+                    className={`rounded px-2 py-2.5 text-xs font-medium transition sm:text-sm ${
                       view === item.value
-                        ? "bg-white text-[#3158e8] shadow-sm"
+                        ? "bg-white text-[#3158e8] "
                         : "text-slate-500 hover:text-slate-800"
                     }`}
                   >

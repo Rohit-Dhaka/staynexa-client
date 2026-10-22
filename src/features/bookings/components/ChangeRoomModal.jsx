@@ -107,7 +107,7 @@ const ChangeRoomModal = ({ booking, onClose, onDone }) => {
           )}
 
           {!loading && options.length === 0 && (
-            <p className="rounded-lg bg-slate-50 px-4 py-6 text-center text-sm text-slate-500">
+            <p className="rounded bg-slate-50 px-4 py-6 text-center text-sm text-slate-500">
               No other rooms are available for the remaining dates.
             </p>
           )}
@@ -116,7 +116,7 @@ const ChangeRoomModal = ({ booking, onClose, onDone }) => {
             {options.map((opt) => {
               const diff = diffFor(opt);
               return (
-                <div key={opt.roomType._id} className="rounded-xl border border-slate-200 p-4">
+                <div key={opt.roomType._id} className="rounded border border-slate-200 p-4">
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <div>
                       <p className="font-medium text-slate-900">{opt.roomType.name}</p>
@@ -136,9 +136,9 @@ const ChangeRoomModal = ({ booking, onClose, onDone }) => {
                         key={r._id}
                         type="button"
                         onClick={() => setSelected({ roomId: r._id, opt })}
-                        className={`rounded-lg px-3 py-1.5 text-sm transition ${
+                        className={`rounded px-3 py-1.5 text-sm transition ${
                           selected.roomId === r._id
-                            ? "bg-indigo-600 text-white"
+                            ? "bg-black text-white"
                             : "bg-slate-100 text-slate-700 hover:bg-slate-200"
                         }`}
                       >
@@ -168,7 +168,7 @@ const ChangeRoomModal = ({ booking, onClose, onDone }) => {
             </Field>
 
             {isManager && (
-              <div className="rounded-xl bg-slate-50 p-4">
+              <div className="rounded bg-slate-50 p-4">
                 <p className="mb-3 text-sm font-medium text-slate-700">Manager options</p>
                 <div className="grid gap-3 md:grid-cols-2">
                   <Field label="Custom rate per night (optional)">

@@ -5,6 +5,7 @@ import {
   PartyPopper,
   X,
   PanelLeftClose,
+  ClipboardList,
   Building2,
   PanelLeftOpen,
   LayoutDashboard,
@@ -15,13 +16,11 @@ import {
   UtensilsCrossed,
   Users,
   HandHelping,
-  Receipt,
   UserCog,
   Wallet,
   Landmark,
   Tag,
   Star,
-  BarChart3,
   ChevronDown,
   UserCircle2,
   LogOut,
@@ -32,7 +31,6 @@ import {
   Settings,
   Banknote,
   HandCoins,
-  ReceiptText,
 } from "lucide-react";
 
 import useAuth from "../../hooks/useAuth";
@@ -41,6 +39,12 @@ import { ROLES } from "../../constants/roles";
 const { SUPER_ADMIN, MANAGER, STAFF } = ROLES;
 const ALL = [SUPER_ADMIN, MANAGER, STAFF];
 
+/*
+  Item options:
+  - path: link target
+  - activePrefix (optional): use this instead of `path` when deciding
+    whether the item is active (e.g. a section with several sub-pages)
+*/
 const menuGroups = [
   {
     title: "Workspace",
@@ -74,7 +78,7 @@ const menuGroups = [
     ],
   },
   {
-    title: "Banquet & Catering",
+    title: "Restaurant",
     items: [
       {
         label: "Banquet",
@@ -98,6 +102,37 @@ const menuGroups = [
         label: "Catering",
         path: "/banquet/catering",
         icon: UtensilsCrossed,
+        roles: [SUPER_ADMIN, MANAGER],
+      },
+    ],
+  },
+  {
+    title: "Restaurant Management",
+    items: [
+      {
+        label: "Restaurant Dashboard",
+        path: "/restaurant",
+        icon: LayoutDashboard,
+        roles: [SUPER_ADMIN, MANAGER, STAFF],
+      },
+      {
+        label: "Menu Management",
+        path: "/restaurant/manage/menu",
+        // Categories / Tables pages also live under /restaurant/manage
+        activePrefix: "/restaurant/manage",
+        icon: UtensilsCrossed,
+        roles: [SUPER_ADMIN, MANAGER, STAFF],
+      },
+      {
+        label: "Restaurant Orders",
+        path: "/restaurant/orders",
+        icon: ClipboardList,
+        roles: [SUPER_ADMIN, MANAGER, STAFF],
+      },
+      {
+        label: "Restaurant Settings",
+        path: "/restaurant/settings",
+        icon: Settings,
         roles: [SUPER_ADMIN, MANAGER],
       },
     ],
@@ -137,7 +172,7 @@ const menuGroups = [
         roles: [SUPER_ADMIN, MANAGER],
       },
       {
-        label: "Salary Structures",        
+        label: "Salary Structures",
         path: "/structures",
         icon: Wallet,
         roles: [SUPER_ADMIN, MANAGER],
@@ -149,14 +184,8 @@ const menuGroups = [
         roles: [SUPER_ADMIN, MANAGER, STAFF],
       },
       {
-        label: "My Payslips",
-        path: "/payrollmy",
-        icon: ReceiptText,
-        roles: [SUPER_ADMIN, MANAGER, STAFF],
-      },
-      {
         label: "Payroll Settings",
-        path: "payrollsettings",
+        path: "/payrollsettings",
         icon: Settings,
         roles: [SUPER_ADMIN, MANAGER],
       },
@@ -195,11 +224,13 @@ const menuGroups = [
         icon: Tag,
         roles: [SUPER_ADMIN, MANAGER],
       },
-      // { label: "Payments & Billing", path: "/billing", icon: Receipt, roles: ALL },
-      // { label: "Reports & Analytics", path: "/reports", icon: BarChart3, roles: [SUPER_ADMIN, MANAGER] },
     ],
   },
 ];
+
+/* =========================================================
+   HELPERS
+========================================================= */
 
 const getInitials = (name = "") => {
   const parts = String(name).trim().split(/\s+/).filter(Boolean);
@@ -216,14 +247,39 @@ const formatRole = (role = "") =>
     .toLowerCase()
     .replace(/\b\w/g, (char) => char.toUpperCase());
 
-const Avatar = ({ name, size = "h-10 w-10" }) => (
+const matchesPath = (pathname, base) =>
+  pathname === base || pathname.startsWith(`${base}/`);
+
+const getActivePath = (groups, pathname) => {
+  let bestPath = null;
+  let bestLength = -1;
+
+  groups.forEach((group) => {
+    group.items.forEach((item) => {
+      const base = item.activePrefix || item.path;
+
+      if (matchesPath(pathname, base) && base.length > bestLength) {
+        bestPath = item.path;
+        bestLength = base.length;
+      }
+    });
+  });
+
+  return bestPath;
+};
+
+const Avatar = ({ name, size = "h-8 w-8" }) => (
   <div
-    className={`relative flex ${size} shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-blue-600 to-indigo-700 font-bold text-white shadow-sm shadow-blue-200`}
+    className={`relative flex ${size} shrink-0 items-center justify-center rounded-full bg-white text-xs font-bold text-black`}
   >
     {getInitials(name)}
-    <span className="absolute -bottom-1 -right-1 h-3 w-3 rounded-full border-2 border-white bg-emerald-500" />
+    <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border-2 border-black bg-white" />
   </div>
 );
+
+/* =========================================================
+   SIDEBAR
+========================================================= */
 
 const Sidebar = ({ open, onClose, collapsed, onToggleCollapse }) => {
   const { user, logout } = useAuth();
@@ -233,7 +289,7 @@ const Sidebar = ({ open, onClose, collapsed, onToggleCollapse }) => {
   const [localCollapsed, setLocalCollapsed] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
-  const [teamManagementOpen, setTeamManagementOpen] = useState(false);
+
   const profileRef = useRef(null);
 
   const isCollapsed = collapsed ?? localCollapsed;
@@ -248,16 +304,8 @@ const Sidebar = ({ open, onClose, collapsed, onToggleCollapse }) => {
     }))
     .filter((group) => group.items.length > 0);
 
-  const teamGroup = visibleGroups.find(
-    (group) => group.title === "Team Management",
-  );
-  const isTeamRoute = teamGroup?.items.some(
-    (item) => pathname === item.path || pathname.startsWith(`${item.path}/`),
-  );
-
-  useEffect(() => {
-    if (isTeamRoute) setTeamManagementOpen(true);
-  }, [pathname, isTeamRoute]);
+  // Only one item can be active at a time
+  const activePath = getActivePath(visibleGroups, pathname);
 
   const toggleCollapse = () => {
     if (onToggleCollapse) {
@@ -307,52 +355,50 @@ const Sidebar = ({ open, onClose, collapsed, onToggleCollapse }) => {
     }
   };
 
-  const renderNavLink = ({ label, path, icon: Icon }) => (
-    <li key={path}>
-      <NavLink
-        to={path}
-        end={path === "/dashboard"}
-        onClick={onClose}
-        title={isCollapsed ? label : undefined}
-        aria-label={label}
-        className={({ isActive }) => `
-    group relative flex min-h-[43px] items-center rounded-xl
-    text-[13px] font-medium transition-all duration-200
-    ${isCollapsed ? "justify-center px-2" : "gap-3 px-3"}
-    ${
-      isActive
-        ? "bg-[#eaf1ff] text-[#2459d4] shadow-sm shadow-blue-100/60"
-        : "text-slate-600 hover:bg-slate-50 hover:text-[#2459d4]"
-    }
-  `}
-      >
-        {({ isActive }) => (
-          <>
-            {isActive && (
-              <span className="absolute bottom-2 left-0 top-2 w-[3px] rounded-r-full bg-blue-600" />
-            )}
-            <span
-              className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg transition ${
-                isActive
-                  ? "bg-white text-blue-600 shadow-sm"
-                  : "text-slate-500 group-hover:bg-white group-hover:text-blue-600"
-              }`}
-            >
-              <Icon size={18} strokeWidth={isActive ? 2.2 : 1.8} />
-            </span>
-            {!isCollapsed && (
-              <>
-                <span className="min-w-0 flex-1 truncate">{label}</span>
-                {isActive && (
-                  <ArrowUpRight size={15} className="shrink-0 text-blue-500" />
-                )}
-              </>
-            )}
-          </>
-        )}
-      </NavLink>
-    </li>
-  );
+  const renderNavLink = ({ label, path, icon: Icon }) => {
+    // We do NOT use NavLink's own isActive, so only one item is highlighted
+    const isActive = path === activePath;
+
+    return (
+      <li key={path}>
+        <NavLink
+          to={path}
+          onClick={onClose}
+          title={isCollapsed ? label : undefined}
+          aria-label={label}
+          aria-current={isActive ? "page" : undefined}
+          className={`
+            group relative flex min-h-[36px] items-center rounded
+            text-[13px] font-medium transition-all duration-200
+            ${isCollapsed ? "justify-center px-2" : "gap-2.5 px-2.5"}
+            ${
+              isActive
+                ? "bg-white text-black"
+                : "text-neutral-400 hover:bg-white/10 hover:text-white"
+            }
+          `}
+        >
+          <span
+            className={`flex h-7 w-7 shrink-0 items-center justify-center rounded transition ${
+              isActive
+                ? "text-black"
+                : "text-neutral-500 group-hover:text-white"
+            }`}
+          >
+            <Icon size={16} strokeWidth={isActive ? 2.2 : 1.8} />
+          </span>
+          {!isCollapsed && (
+            <>
+              <span className="min-w-0 flex-1 truncate">{label}</span>
+              {isActive && (
+                <ArrowUpRight size={14} className="shrink-0 text-black" />
+              )}
+            </>
+          )}
+        </NavLink>
+      </li>
+    );
+  };
 
   return (
     <>
@@ -361,42 +407,41 @@ const Sidebar = ({ open, onClose, collapsed, onToggleCollapse }) => {
           type="button"
           aria-label="Close navigation overlay"
           onClick={onClose}
-          className="fixed inset-0 z-40 bg-slate-950/50 backdrop-blur-sm lg:hidden"
+          className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm lg:hidden"
         />
       )}
 
       <aside
         className={`
           fixed inset-y-0 left-0 z-50 flex flex-col
-          border-r border-blue-100 bg-white
-          shadow-[8px_0_32px_rgba(15,35,80,0.04)]
+          border-r border-white/10 bg-black
           transition-[width,transform] duration-300 ease-in-out
           lg:translate-x-0
           ${open ? "translate-x-0" : "-translate-x-full"}
-          ${isCollapsed ? "w-[78px]" : "w-64"}
+          ${isCollapsed ? "w-[72px]" : "w-64"}
         `}
       >
         {/* Brand */}
         <div
-          className={`flex h-[70px] shrink-0 items-center border-b border-slate-100 ${
-            isCollapsed ? "justify-center px-2" : "justify-between px-5"
+          className={`flex h-[70px] shrink-0 items-center border-b border-white/10 ${
+            isCollapsed ? "justify-center px-2" : "justify-between px-4"
           }`}
         >
           <button
             type="button"
             onClick={() => navigate("/dashboard")}
-            className="flex min-w-0 items-center gap-3 text-left"
+            className="flex min-w-0 items-center gap-2.5 text-left"
             title="StayNexa Dashboard"
           >
-            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-700 text-white shadow-lg shadow-blue-200/70">
-              <Hotel size={23} strokeWidth={1.8} />
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded bg-white text-black">
+              <Hotel size={20} strokeWidth={1.8} />
             </span>
             {!isCollapsed && (
               <span className="min-w-0">
-                <span className="block truncate text-[19px] font-extrabold tracking-tight text-[#13284d]">
+                <span className="block truncate text-[17px] font-extrabold leading-tight tracking-tight text-white">
                   StayNexa
                 </span>
-                <span className="mt-0.5 block text-[10px] font-semibold uppercase tracking-[0.19em] text-blue-500">
+                <span className="block text-[9px] font-semibold uppercase tracking-[0.18em] text-neutral-400">
                   Hotel management
                 </span>
               </span>
@@ -408,17 +453,17 @@ const Sidebar = ({ open, onClose, collapsed, onToggleCollapse }) => {
               type="button"
               onClick={onClose}
               aria-label="Close sidebar"
-              className="rounded-xl p-2 text-slate-400 transition hover:bg-blue-50 hover:text-blue-600 lg:hidden"
+              className="rounded p-1.5 text-neutral-400 transition hover:bg-white/10 hover:text-white lg:hidden"
             >
-              <X size={19} />
+              <X size={18} />
             </button>
           )}
         </div>
 
         {/* Collapse control */}
         <div
-          className={`hidden shrink-0 pt-3 lg:flex ${
-            isCollapsed ? "justify-center px-2" : "px-4"
+          className={`hidden shrink-0 pt-2 lg:flex ${
+            isCollapsed ? "justify-center px-2" : "px-3"
           }`}
         >
           <button
@@ -426,9 +471,9 @@ const Sidebar = ({ open, onClose, collapsed, onToggleCollapse }) => {
             onClick={toggleCollapse}
             aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
             title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-            className={`flex h-9 items-center rounded-xl border border-slate-100 bg-slate-50 text-slate-500 transition hover:border-blue-100 hover:bg-blue-50 hover:text-blue-700 ${
+            className={`flex h-8 items-center rounded border border-white/10 bg-white/5 text-neutral-400 transition hover:border-white/30 hover:bg-white/10 hover:text-white ${
               isCollapsed
-                ? "w-10 justify-center"
+                ? "w-9 justify-center"
                 : "w-full justify-between px-3"
             }`}
           >
@@ -436,9 +481,9 @@ const Sidebar = ({ open, onClose, collapsed, onToggleCollapse }) => {
               <span className="text-xs font-semibold">Collapse menu</span>
             )}
             {isCollapsed ? (
-              <PanelLeftOpen size={18} />
+              <PanelLeftOpen size={16} />
             ) : (
-              <PanelLeftClose size={18} />
+              <PanelLeftClose size={16} />
             )}
           </button>
         </div>
@@ -446,88 +491,51 @@ const Sidebar = ({ open, onClose, collapsed, onToggleCollapse }) => {
         {/* Navigation */}
         <nav
           aria-label="Main navigation"
-          className="sidebar-scrollbar min-h-0 flex-1 overflow-y-auto overflow-x-hidden px-3 pb-4 pt-5"
+          className="sidebar-scrollbar min-h-0 flex-1 overflow-y-auto overflow-x-hidden px-2.5 pb-3 pt-3"
         >
-          {visibleGroups.map((group) => {
-            const isTeamManagement = group.title === "Team Management";
-            const groupOpen = isTeamManagement && teamManagementOpen;
+          {visibleGroups.map((group) => (
+            <section key={group.title} className="mb-3 last:mb-0">
+              {!isCollapsed ? (
+                <p className="mb-1 px-2.5 text-[10px] font-bold uppercase tracking-[0.17em] text-neutral-500">
+                  {group.title}
+                </p>
+              ) : (
+                <div className="mx-auto mb-2 h-px w-8 bg-white/15" />
+              )}
 
-            return (
-              <section key={group.title} className="mb-6 last:mb-0">
-                {isTeamManagement ? (
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setTeamManagementOpen((previous) => !previous)
-                    }
-                    aria-expanded={teamManagementOpen}
-                    title={isCollapsed ? group.title : undefined}
-                    className={`mb-2.5 flex min-h-[36px] w-full items-center rounded-lg text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400 transition hover:bg-slate-50 hover:text-blue-600 ${
-                      isCollapsed
-                        ? "justify-center px-1"
-                        : "justify-between px-3"
-                    }`}
-                  >
-                    {isCollapsed ? (
-                      <UserCog size={18} className="text-slate-500" />
-                    ) : (
-                      <>
-                        <span>{group.title}</span>
-                        <ChevronDown
-                          size={15}
-                          className={`shrink-0 transition-transform ${
-                            teamManagementOpen ? "rotate-180 text-blue-600" : ""
-                          }`}
-                        />
-                      </>
-                    )}
-                  </button>
-                ) : !isCollapsed ? (
-                  <p className="mb-2.5 px-3 text-[10px] font-bold uppercase tracking-[0.17em] text-slate-400">
-                    {group.title}
-                  </p>
-                ) : (
-                  <div className="mx-auto mb-3 h-px w-8 bg-slate-200" />
-                )}
-
-                {(!isTeamManagement || groupOpen) && (
-                  <ul className="space-y-1">
-                    {group.items.map(renderNavLink)}
-                  </ul>
-                )}
-              </section>
-            );
-          })}
+              <ul className="space-y-0.5">{group.items.map(renderNavLink)}</ul>
+            </section>
+          ))}
         </nav>
 
         {/* User profile */}
         <div
           ref={profileRef}
-          className="relative shrink-0 border-t border-slate-100 bg-white p-2"
+          className="relative shrink-0 border-t border-white/10 bg-black p-1.5"
         >
           {menuOpen && (
             <div
               role="menu"
-              className={`absolute z-[60] overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xl ${
+              className={`absolute z-[60] overflow-hidden rounded border border-white/20 bg-black ${
                 isCollapsed
                   ? "bottom-2 left-full ml-2 w-56"
                   : "bottom-full left-2 right-2 mb-2"
               }`}
             >
-              <div className="bg-gradient-to-r from-[#1746a2] to-[#2864f5] p-3">
+              <div className="border-b border-white/10 bg-white/5 p-3">
                 <div className="flex items-center gap-2.5">
                   <Avatar name={displayName} size="h-9 w-9" />
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-semibold text-white">
                       {displayName}
                     </p>
-                    <p className="truncate text-[11px] text-blue-100">
+                    <p className="truncate text-[11px] text-neutral-400">
                       {user?.email || "StayNexa account"}
                     </p>
                   </div>
                 </div>
-                <span className="mt-2 inline-flex items-center gap-1 rounded-full bg-white/15 px-2 py-1 text-[9px] font-semibold uppercase tracking-wide text-white">
-                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-300" />
+                <span className="mt-2 inline-flex items-center gap-1 rounded-full border border-white/20 px-2 py-1 text-[9px] font-semibold uppercase tracking-wide text-white">
+                  <span className="h-1.5 w-1.5 rounded-full bg-white" />
                   {formatRole(user?.role)}
                 </span>
               </div>
@@ -537,9 +545,9 @@ const Sidebar = ({ open, onClose, collapsed, onToggleCollapse }) => {
                   type="button"
                   role="menuitem"
                   onClick={handleProfile}
-                  className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm font-medium text-slate-700 hover:bg-blue-50 hover:text-blue-700"
+                  className="flex w-full items-center gap-2.5 rounded px-2.5 py-1.5 text-sm font-medium text-neutral-300 hover:bg-white/10 hover:text-white"
                 >
-                  <UserCircle2 size={17} />
+                  <UserCircle2 size={16} />
                   My Profile
                 </button>
                 <button
@@ -547,9 +555,9 @@ const Sidebar = ({ open, onClose, collapsed, onToggleCollapse }) => {
                   role="menuitem"
                   onClick={handleLogout}
                   disabled={loggingOut}
-                  className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm font-medium text-rose-600 hover:bg-rose-50 disabled:opacity-50"
+                  className="flex w-full items-center gap-2.5 rounded px-2.5 py-1.5 text-sm font-medium text-neutral-300 hover:bg-white hover:text-black disabled:opacity-50"
                 >
-                  <LogOut size={17} />
+                  <LogOut size={16} />
                   {loggingOut ? "Logging out..." : "Logout"}
                 </button>
               </div>
@@ -562,25 +570,25 @@ const Sidebar = ({ open, onClose, collapsed, onToggleCollapse }) => {
             aria-haspopup="menu"
             aria-expanded={menuOpen}
             title={isCollapsed ? displayName : undefined}
-            className={`flex w-full items-center rounded-xl transition ${
-              menuOpen ? "bg-blue-50" : "hover:bg-slate-50"
-            } ${isCollapsed ? "justify-center p-1.5" : "gap-2.5 p-2"}`}
+            className={`flex w-full items-center rounded transition ${
+              menuOpen ? "bg-white/10" : "hover:bg-white/10"
+            } ${isCollapsed ? "justify-center p-1" : "gap-2.5 p-1.5"}`}
           >
-            <Avatar name={displayName} size="h-9 w-9" />
+            <Avatar name={displayName} size="h-8 w-8" />
             {!isCollapsed && (
               <>
                 <span className="min-w-0 flex-1 text-left">
-                  <span className="block truncate text-xs font-semibold text-[#13284d]">
+                  <span className="block truncate text-xs font-semibold text-white">
                     {displayName}
                   </span>
-                  <span className="mt-0.5 block truncate text-[10px] text-slate-500">
+                  <span className="block truncate text-[10px] text-neutral-400">
                     {formatRole(user?.role)}
                   </span>
                 </span>
                 <ChevronDown
-                  size={15}
-                  className={`shrink-0 text-slate-400 transition-transform ${
-                    menuOpen ? "rotate-180 text-blue-600" : ""
+                  size={14}
+                  className={`shrink-0 text-neutral-400 transition-transform ${
+                    menuOpen ? "rotate-180 text-white" : ""
                   }`}
                 />
               </>

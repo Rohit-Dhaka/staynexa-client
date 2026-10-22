@@ -26,7 +26,6 @@ import RoomForm from "../features/rooms/components/RoomFormModal";
 import RoomTypeForm from "../features/rooms/components/RoomTypeFormModal";
 import StaffForm from "../features/staff/pages/StaffForm";
 
-// import BookingForm from "../features/bookings/components/BookingForm";
 
 import NewBooking from "../features/bookings/pages/NewBooking";
 import BookingDetail from "../features/bookings/pages/BookingDetail";
@@ -71,10 +70,29 @@ import Reviews from "../features/guests/pages/Reviews.jsx";
 import OffersPage from "../features/offers/pages/OffersPage";
 import OfferForm from "../features/offers/pages/OfferForm";
 import SuperAdminDashboard from "../features/dashboard/pages/SuperAdminDashboard.jsx";
-
-// import GuestReservation from "../features/guest/pages/GuestReservation";
-import GuestReservation from "../features/guests/pages/GuestReservation"
+import GuestReservation from "../features/guests/pages/GuestReservation";
 import GuestBanquet from "../features/banquet/pages/GuestBanquet.jsx";
+import MyBookings from "../features/bookings/pages/MyBookings.jsx";
+import GuestBanquetBooking from "../features/banquet/pages/GuestBanquetBooking.jsx";
+
+import GuestBanquetReservations from "../features/banquet/pages/GuestBanquetReservations.jsx";
+import GuestBanquetReservationDetails from "../features/banquet/pages/GuestBanquetReservationDetails.jsx";
+import GuestServiceRequests from "../features/guests/pages/GuestServiceRequests.jsx";
+import GuestReviews from "../features/reviews/pages/GuestReviews.jsx";
+import RestaurantDashboard from "../features/restaurant/pages/RestaurantDashboard.jsx";
+
+
+import GuestRestaurantPage from "../features/restaurant/pages/GuestRestaurantPage.jsx";
+import RestaurantSettingsPage from "../features/restaurant/pages/RestaurantSettingsPage.jsx";
+import RestaurantOrdersPage from "../features/restaurant/pages/RestaurantOrdersPage";
+
+import RestaurantManagementLayout, {
+  MenuSection,
+  CategoriesSection,
+  TablesSection,
+} from "../features/restaurant/pages/RestaurantManagementPage";
+import GuestOrderTrackingPage from "../features/restaurant/pages/GuestOrderTrackingPage.jsx";
+import PaymentReceiptPage from "../features/restaurant/pages/PaymentReceiptPage.jsx";
 
 const SharedLayout = () => {
   const { user } = useAuth();
@@ -112,7 +130,7 @@ const AppRoutes = () => (
           <Route path="/calendar" element={<BookingCalendar />} />
           <Route path="/bookings" element={<Bookings />} />
 
-          <Route path="/payroll" element={<PayrollRuns />} />          
+          <Route path="/payroll" element={<PayrollRuns />} />
           <Route path="/structures" element={<SalaryStructures />} />
           <Route path="/advances" element={<Advances />} />
           <Route path="/payrollsettings" element={<PayrollSettings />} />
@@ -129,6 +147,28 @@ const AppRoutes = () => (
           <Route path="/offers" element={<OffersPage />} />
           <Route path="/offers/new" element={<OfferForm />} />
           <Route path="/offers/:id/edit" element={<OfferForm />} />
+
+
+
+          <Route path="/restaurant" element={<RestaurantDashboard />} />
+
+          <Route path="/restaurant/manage" element={<RestaurantManagementLayout />} >
+            <Route index element={<Navigate to="menu" replace />} />
+            <Route path="menu" element={<MenuSection />} />
+            <Route path="categories" element={<CategoriesSection />} />
+            <Route path="tables" element={<TablesSection />} />
+          </Route>
+
+          
+          <Route path="/restaurant/orders" element={<RestaurantOrdersPage />} />
+          <Route path="/restaurant/orders/create" element={<RestaurantOrdersPage />} />
+          <Route path="/restaurant/receipt/:orderId" element={<PaymentReceiptPage />}/>
+          
+          
+          <Route
+            path="/restaurant/settings"
+            element={<RestaurantSettingsPage />}
+          />
 
           <Route path="/front-desk" element={<FrontDesk />} />
           <Route element={<RoleRoute allowedRoles={[ROLES.SUPER_ADMIN]} />}>
@@ -148,10 +188,7 @@ const AppRoutes = () => (
             <Route path="/attendance/monthly" element={<MonthlySheet />} />
             <Route path="/attendance/leaves" element={<Leaves />} />
             <Route path="/attendance/balances" element={<LeaveBalances />} />
-            <Route
-              path="/attendance/settings"
-              element={<AttendanceSettings />}
-            />
+            <Route path="/attendance/settings" element={<AttendanceSettings />} />
 
             <Route path="/banquet" element={<Banquet />} />
             <Route path="/banquet/new" element={<BanquetBookingForm />} />
@@ -175,9 +212,20 @@ const AppRoutes = () => (
         <Route element={<GuestLayout />}>
           <Route path="/guest" element={<GuestHome />} />
           <Route path="/guest/reservation" element={<GuestReservation />} />
-          {/* <Route path="/guest/banquetGuestReservation />} /> */}
-          <Route path="/guest/banquet" element={<GuestBanquet/>} />
-          {/* <Route path="/guest/bookings" element={<NewBooking />} /> */}
+          <Route path="/guest/restaurant" element={<GuestRestaurantPage />} />
+          <Route path="/guest/orders/track" element={<GuestOrderTrackingPage />}/>
+        
+          
+          <Route path="/guest/banquet" element={<GuestBanquet />} />
+          <Route path="/guest/bookings" element={<MyBookings />} />
+          <Route path="/guest/banquet/:hallId/book" element={<GuestBanquetBooking />} />
+          <Route path="/guest/banquet/my-reservations" element={<GuestBanquetReservations />} />
+          <Route
+            path="/guest/banquet/reservations/:bookingId"
+            element={<GuestBanquetReservationDetails />}
+          />
+          <Route path="/guest/services" element={<GuestServiceRequests />} />
+          <Route path="/guest/reviews" element={<GuestReviews />} />
         </Route>
       </Route>
       <Route path="/unauthorized" element={<Unauthorized />} />
