@@ -38,7 +38,7 @@ import {
 } from "../utils/bookingUi";
 
 // The check-in function exported by frontdesk.service.js.
-const checkInGuest = frontdeskService.checkIn || frontdeskService.checkInBooking;
+const checkInGuest = frontdeskService.checkIn;
 
 // Same rule as the backend, so "+91 98765-43210" and "9876543210" match.
 const phoneKey = (value = "") => {
