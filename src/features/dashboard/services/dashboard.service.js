@@ -84,7 +84,7 @@ export const getDashboardData = async () => {
   const month = currentDate.getMonth() + 1;
   const year = currentDate.getFullYear();
 
-  // Each request is a function so it does not start immediately.
+  
   const requests = [
     () =>
       requestModule("rooms", () =>
@@ -212,7 +212,7 @@ export const getDashboardData = async () => {
 
   const results = [];
 
-  // Run requests sequentially to reduce request bursts.
+  
   for (const request of requests) {
     results.push(await request());
     await sleep(400);

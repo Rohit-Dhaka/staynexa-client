@@ -333,7 +333,7 @@ export default function GuestBanquetBooking() {
         </button>
 
         <div className="overflow-hidden rounded border border-gray-200 bg-white ">
-          {/* Hall information */}
+        
           <div className="border-b border-gray-100 bg-black/60 px-5 py-6 sm:px-8">
             <p className="text-xs font-semibold uppercase tracking-wider text-blue-600">
               Banquet Reservation

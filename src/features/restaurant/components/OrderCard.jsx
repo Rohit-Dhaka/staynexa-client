@@ -3,7 +3,7 @@ const STATUS_STYLES = {
   pending: "border-amber-200 bg-amber-50 text-amber-700",
   placed: "border-amber-200 bg-amber-50 text-amber-700",
   confirmed: "border-blue-200 bg-black text-blue-700",
-  preparing: "border-indigo-200 bg-indigo-50 text-indigo-700",
+  preparing: "border-indigo-200 bg-black text-indigo-700",
   ready: "border-green-200 bg-green-50 text-green-700",
   served: "border-green-200 bg-green-50 text-green-700",
   completed: "border-green-200 bg-green-50 text-green-700",

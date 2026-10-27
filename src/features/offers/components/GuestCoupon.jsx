@@ -1,7 +1,7 @@
 
 import { useEffect, useState } from "react";
 import { Tag, TicketPercent, CheckCircle2, XCircle } from "lucide-react";
-// import { getGuestOffers, validateGuestCoupon } from "../../services/guestOffers.service";
+
 import { getGuestOffers, validateGuestCoupon } from "../services/guestOffers.service";
 
 export default function GuestCoupon({
@@ -82,7 +82,7 @@ export default function GuestCoupon({
   return (
     <section className="space-y-4 rounded border border-slate-200 bg-white p-5">
       <div className="flex items-center gap-3">
-        <div className="rounded bg-black p-3 text-blue-600">
+        <div className="rounded bg-blue-100 p-3 text-slate-600">
           <TicketPercent size={22} />
         </div>
         <div>

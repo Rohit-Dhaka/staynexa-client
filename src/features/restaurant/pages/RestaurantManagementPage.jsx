@@ -89,9 +89,7 @@ export default function RestaurantManagementLayout() {
   );
 }
 
-/* =========================================================
-   MENU ITEMS
-========================================================= */
+
 
 export function MenuSection() {
   const [items, setItems] = useState([]);
@@ -1207,26 +1205,7 @@ export function TablesSection() {
     </option>
   ))}
 </select>
-                  {/* <select
-                    id={`table-status-${id}`}
-                    value={canChangeStatus ? status : ""}
-                    disabled={!canChangeStatus || actionLoading === id}
-                    onChange={(event) =>
-                      handleStatusChange(table, event.target.value)
-                    }
-                    className="w-full rounded border border-gray-200 bg-white px-3 py-2.5 text-sm capitalize disabled: disabled:text-gray-400"
-                  >
-                    {!canChangeStatus && (
-                      <option value="">
-                        {formatStatus(status)} — managed by order flow
-                      </option>
-                    )}
-                    {TABLE_STATUSES.map((value) => (
-                      <option key={value} value={value}>
-                        {formatStatus(value)}
-                      </option>
-                    ))}
-                  </select> */}
+               
 
                   <div className="flex gap-2">
                     <button

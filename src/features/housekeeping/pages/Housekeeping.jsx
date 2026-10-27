@@ -235,7 +235,7 @@ const Housekeeping = () => {
     }
   }, [buildTaskParams, page]);
 
-  // Export every page matching the current filters, not only the visible page.
+  
   const getAllFilteredTasks = useCallback(async () => {
     const limit = 100;
     const allTasks = [];

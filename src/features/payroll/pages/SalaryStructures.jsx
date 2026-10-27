@@ -129,7 +129,7 @@ const SalaryStructures = () => {
 
   return (
     <div className="space-y-6">
-      {/* Page heading */}
+      
       <div>
         <h1 className="text-xl font-bold text-slate-900">
           Salary Structures
@@ -141,7 +141,7 @@ const SalaryStructures = () => {
         </p>
       </div>
 
-      {/* Missing salary warning */}
+      
       {missing > 0 && (
         <p className="rounded bg-amber-50 px-4 py-3 text-sm text-amber-700">
           {missing} staff member{missing > 1 ? "s have" : " has"} no
@@ -149,7 +149,7 @@ const SalaryStructures = () => {
         </p>
       )}
 
-      {/* Salary table */}
+      
       <div className="overflow-hidden rounded border border-slate-200 bg-white">
         {loading ? (
           <div className="flex justify-center py-16 text-slate-400">
@@ -180,7 +180,7 @@ const SalaryStructures = () => {
               <tbody className="divide-y divide-slate-100">
                 {rows.map(({ user, current, upcoming }) => (
                   <Fragment key={user._id}>
-                    {/* Staff row */}
+                    
                     <tr>
                       <td className="px-4 py-3">
                         <p className="font-medium text-slate-900">
@@ -285,7 +285,7 @@ const SalaryStructures = () => {
                       </td>
                     </tr>
 
-                    {/* Inline form: only for the selected employee */}
+                    
                     {form?.person?._id === user._id && (
                       <tr key={`salary-form-${user._id}`}>
                         <td
@@ -311,7 +311,7 @@ const SalaryStructures = () => {
         )}
       </div>
 
-      {/* Salary History modal remains separate */}
+      
       <Modal
         open={Boolean(history)}
         size="md"

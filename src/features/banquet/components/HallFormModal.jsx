@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 import Modal from "../../../components/common/Modal";
 import { createHall, updateHall } from "../services/banquet.service";
 import { Field, ModalActions } from "./BanquetUi";
-// import {PRICING_TYPE_OPTIONS,SETUP_STYLE_OPTIONS,getErrorMessage,inputClass,} from "../banquet.utils";
+
 import {PRICING_TYPE_OPTIONS,SETUP_STYLE_OPTIONS,getErrorMessage,inputClass,} from "../../../utils/banquet.utils";
 
 const toForm = (hall) => ({
@@ -133,7 +133,7 @@ const HallFormModal = ({ hall, onClose, onSaved }) => {
                 onClick={() => toggleStyle(option.value)}
                 className={`rounded-full border px-3 py-1.5 text-xs font-medium transition ${
                   form.setupStyles.includes(option.value)
-                    ? "border-indigo-500 bg-indigo-50 text-indigo-700"
+                    ? "border-indigo-500 bg-black text-indigo-700"
                     : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
                 }`}
               >

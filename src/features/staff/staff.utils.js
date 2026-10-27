@@ -6,11 +6,11 @@ export const ROLE_OPTIONS = [
 ];
 
 export const ROLE_BADGE = {
-  [ROLES.MANAGER]: "bg-indigo-50 text-indigo-700",
+  [ROLES.MANAGER]: "bg-black text-indigo-700",
   [ROLES.STAFF]: "bg-sky-50 text-sky-700",
 };
 
-// Values must match the DEPARTMENTS list in backend staff.validator.js
+
 export const DEPARTMENT_OPTIONS = [
   { value: "front_desk", label: "Front Desk" },
   { value: "housekeeping", label: "Housekeeping" },
@@ -83,11 +83,10 @@ export const generatePassword = (length = 12) => {
 
   const pick = (set) => set[random(set.length)];
 
-  // Guarantee one of each group, then fill the rest.
   const chars = [pick(upper), pick(lower), pick(digits), pick(symbols)];
   while (chars.length < length) chars.push(pick(all));
 
-  // Fisher-Yates shuffle
+
   for (let i = chars.length - 1; i > 0; i -= 1) {
     const j = random(i + 1);
     [chars[i], chars[j]] = [chars[j], chars[i]];

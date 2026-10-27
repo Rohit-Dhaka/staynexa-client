@@ -81,7 +81,7 @@ const CHECKLIST_TEMPLATES = {
   other: [],
 };
 
-// Value for a <input type="datetime-local"> in the user's own time zone.
+
 const toLocalInput = (date = new Date()) => {
   const offset = date.getTimezoneOffset() * 60000;
   return new Date(date.getTime() - offset).toISOString().slice(0, 16);
@@ -149,7 +149,7 @@ const HousekeepingForm = () => {
         const value = staffResult.value;
         setStaff(Array.isArray(value) ? value : value?.staff || []);
       } else {
-        // The task can still be created and assigned later.
+        
         setStaffError(true);
       }
 
@@ -167,7 +167,7 @@ const HousekeepingForm = () => {
     setForm((previous) => {
       const next = { ...previous, [name]: value };
 
-      // A public-area task has no room; every other task has no area name.
+      
       if (name === "taskType") {
         if (value === "public_area_cleaning") next.room = "";
         else next.area = "";
@@ -296,7 +296,7 @@ const HousekeepingForm = () => {
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-5">
-          {/* Task details */}
+          
           <SectionCard
             title="Task Details"
             description="What needs to be done, and where."
@@ -410,7 +410,7 @@ const HousekeepingForm = () => {
             </div>
           </SectionCard>
 
-          {/* Schedule and assignment */}
+          
           <SectionCard
             title="Schedule & Assignment"
             description="When the task should be done, and who will do it."
@@ -468,7 +468,7 @@ const HousekeepingForm = () => {
             </div>
           </SectionCard>
 
-          {/* Checklist */}
+          
           <SectionCard
             title="Checklist"
             description="Steps the staff member must tick off. A task cannot be completed until every step is done."
@@ -495,7 +495,7 @@ const HousekeepingForm = () => {
                       type="button"
                       onClick={() => addItem(item)}
                       disabled={submitting}
-                      className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs text-slate-700 transition hover:border-indigo-300 hover:bg-indigo-50 hover:text-indigo-700 disabled:opacity-50"
+                      className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs text-slate-700 transition hover:border-indigo-300 hover:bg-black hover:text-indigo-700 disabled:opacity-50"
                     >
                       <Plus size={12} />
                       {item}
@@ -560,7 +560,7 @@ const HousekeepingForm = () => {
             )}
           </SectionCard>
 
-          {/* Notes */}
+          
           <SectionCard
             title="Notes"
             description="Anything the staff member should know before starting."
@@ -584,7 +584,7 @@ const HousekeepingForm = () => {
             </p>
           </SectionCard>
 
-          {/* Actions */}
+          
           <div className="flex flex-col-reverse gap-3 rounded border border-slate-200 bg-white p-4 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-xs text-slate-500">
               <span className="text-rose-500">*</span> Required fields

@@ -136,8 +136,7 @@ export default function CreateOrderPage() {
       setCategories(getList(categoryResult, "categories"));
       setTables(getList(tableResult, "tables"));
 
-      // Settings are loaded separately so a settings API failure does not
-      // prevent the menu and table data from loading.
+   
       try {
         const settingsResult = await getRestaurantSettings();
         const settings = extractSettings(settingsResult);

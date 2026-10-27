@@ -141,7 +141,7 @@ const HousekeepingDetail = () => {
 
   const load = useCallback(
     async ({ silent = false } = {}) => {
-      // Never call the API without a real task ID.
+      
       if (!id || id === "undefined" || id === "new") {
         setTask(null);
         setLoadError("Invalid task ID. Please open a valid housekeeping task.");

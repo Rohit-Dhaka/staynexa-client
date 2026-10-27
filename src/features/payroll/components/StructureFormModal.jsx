@@ -122,7 +122,7 @@ const StructureFormModal = ({ person, structure, mode, onClose, onSaved }) => {
 
 return (
   <div className="rounded border border-slate-200 bg-white">
-    {/* Compact header */}
+    
     <div className="flex items-center justify-between gap-3 border-b border-slate-200 px-4 py-3">
       <div>
         <h2 className="text-base font-semibold text-slate-900">
@@ -141,7 +141,7 @@ return (
       </button>
     </div>
 
-    {/* Compact form fields */}
+    
     <div className="space-y-4 p-4">
       {!editing && (
         <Field
@@ -221,7 +221,7 @@ return (
         )}
       </div>
 
-      {/* Allowances */}
+      
       <div className="rounded border border-slate-200 p-3">
         <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
           <p className="text-sm font-semibold text-slate-800">
@@ -300,7 +300,7 @@ return (
         </div>
       </div>
 
-      {/* Statutory deductions */}
+      
       <div className="rounded border border-slate-200 p-3">
         <p className="mb-2 text-sm font-semibold text-slate-800">
           Statutory deductions
@@ -340,7 +340,7 @@ return (
         </p>
       </div>
 
-      {/* Bank details */}
+      
       <div>
         <p className="mb-2 text-sm font-semibold text-slate-800">
           Bank details
@@ -424,7 +424,7 @@ return (
       </div>
     </div>
 
-    {/* Compact footer */}
+    
     <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 bg-slate-50 px-4 py-3">
       <p className="text-sm text-slate-600">
         Monthly gross:{" "}

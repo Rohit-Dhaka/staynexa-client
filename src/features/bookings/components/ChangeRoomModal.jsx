@@ -42,7 +42,7 @@ const ChangeRoomModal = ({ booking, onClose, onDone }) => {
     return () => {
       cancelled = true;
     };
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []); 
 
   const currentTypeId = booking.roomType?._id || booking.roomType;
   const diffFor = (opt) =>

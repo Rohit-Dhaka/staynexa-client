@@ -204,7 +204,7 @@ const submitBooking = async () => {
           isChild: item.isChild,
         })),
 
-      // Applied coupon code
+      
       couponCode: appliedCoupon?.code || undefined,
     });
 
@@ -253,7 +253,7 @@ const submitBooking = async () => {
             <div
               key={item.label}
               className={`flex items-center gap-2 rounded p-2 md:gap-3 md:p-3 ${
-                active ? "bg-indigo-50 text-indigo-700" : done ? "text-emerald-700" : "text-slate-400"
+                active ? "bg-blue-50 text-slate-600" : done ? "text-emerald-700" : "text-slate-400"
               }`}
             >
               <span
@@ -278,7 +278,7 @@ const submitBooking = async () => {
         <section className="space-y-5">
           <div className="rounded border border-slate-200 bg-white p-5  md:p-6">
             <div className="mb-5 flex items-center gap-3">
-              <span className="rounded bg-indigo-50 p-3 text-indigo-600">
+              <span className="rounded bg-blue-100 p-3 text-indigo-600">
                 <CalendarDays size={20} />
               </span>
               <div>
@@ -326,7 +326,7 @@ const submitBooking = async () => {
                 }`}
               >
                 <div className="flex flex-col gap-4 p-5 sm:flex-row sm:items-start sm:justify-between md:p-6">
-                  <div className="flex gap-3">
+                  <div className="flex gap-3 items-start">
                     <div className="rounded bg-slate-100 p-3 text-slate-600">
                       <BedDouble size={22} />
                     </div>
@@ -386,7 +386,7 @@ const submitBooking = async () => {
                     <button
                       type="button"
                       onClick={() => setSelected({ typeId: option.roomType._id, roomId: "" })}
-                      className="rounded border border-indigo-200 bg-white px-4 py-2.5 text-sm font-semibold text-indigo-700 hover:bg-indigo-50"
+                      className="rounded border border-indigo-200 bg-white px-4 py-2.5 text-sm font-semibold text-indigo-700 "
                     >
                       Choose this room type
                     </button>
@@ -419,7 +419,7 @@ const submitBooking = async () => {
         <section className="space-y-5">
           <div className="rounded border border-slate-200 bg-white p-5  md:p-6">
             <div className="mb-5 flex items-start gap-3">
-              <span className="rounded bg-indigo-50 p-3 text-indigo-600">
+              <span className="rounded bg-blue-50 p-3 text-slate-600">
                 <UserRound size={20} />
               </span>
               <div>
@@ -663,7 +663,7 @@ const submitBooking = async () => {
         </div>
       </div>
 
-      {/* Coupon component */}
+      
       <div className="mt-5">
         <GuestCoupon
           subtotal={Number(selectedOption.totalAmount)}
@@ -673,20 +673,20 @@ const submitBooking = async () => {
         />
       </div>
 
-      {/* Estimated total */}
-      <div className="mt-5 rounded border border-indigo-100 bg-indigo-50 p-4">
+      
+      <div className="mt-5 rounded border border-indigo-100 bg-black p-4">
         <div className="flex items-end justify-between gap-4">
           <div>
-            <p className="text-sm font-medium text-indigo-900">
+            <p className="text-sm font-medium text-white">
               Estimated total
             </p>
-            <p className="mt-1 text-xs text-indigo-700">
+            <p className="mt-1 text-xs text-white">
               {nights} night(s) ·{" "}
               {formatINR(selectedOption.pricePerNight)} per night
             </p>
           </div>
 
-          <p className="text-2xl font-bold text-indigo-950">
+          <p className="text-2xl font-bold text-white">
             {formatINR(
               appliedCoupon
                 ? Number(appliedCoupon.finalAmount)
@@ -697,7 +697,7 @@ const submitBooking = async () => {
 
         {appliedCoupon && (
           <div className="mt-3 flex justify-between gap-4 border-t border-indigo-100 pt-3 text-sm">
-            <span className="text-indigo-800">
+            <span className="text-white">
               Coupon discount ({appliedCoupon.code})
             </span>
             <span className="font-semibold text-emerald-700">
@@ -707,7 +707,7 @@ const submitBooking = async () => {
         )}
 
         {selectedOption.suggestedAdvance > 0 && (
-          <p className="mt-3 border-t border-indigo-100 pt-3 text-sm text-indigo-900">
+          <p className="mt-3 border-t border-indigo-100 pt-3 text-sm text-white">
             Advance to confirm this booking:{" "}
             <span className="font-semibold">
               {formatINR(selectedOption.suggestedAdvance)}
@@ -715,7 +715,7 @@ const submitBooking = async () => {
           </p>
         )}
 
-        <p className="mt-2 text-xs text-indigo-700">
+        <p className="mt-2 text-xs text-white">
           Your booking is submitted as pending. The hotel confirms it
           after receiving the advance, and an unpaid request may be
           released after some time.

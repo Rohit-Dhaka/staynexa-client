@@ -1,9 +1,9 @@
 import { ROLES } from "../../constants/roles";
 
-// Only these roles can create, assign, inspect and cancel tasks.
+
 export const MANAGEMENT_ROLES = [ROLES.SUPER_ADMIN, ROLES.MANAGER];
 
-// Values must match TASK_TYPES in the backend.
+
 export const TASK_TYPE_OPTIONS = [
   { value: "room_cleaning", label: "Room Cleaning" },
   { value: "bathroom_cleaning", label: "Bathroom Cleaning" },
@@ -32,7 +32,7 @@ export const PRIORITY_BADGE = {
 
 export const STATUS_META = {
   pending: { label: "Pending", badge: "bg-amber-50 text-amber-700" },
-  assigned: { label: "Assigned", badge: "bg-indigo-50 text-indigo-700" },
+  assigned: { label: "Assigned", badge: "bg-black text-indigo-700" },
   in_progress: { label: "In Progress", badge: "bg-black text-blue-700" },
   completed: { label: "Completed", badge: "bg-emerald-50 text-emerald-700" },
   inspected: { label: "Inspected", badge: "bg-teal-50 text-teal-700" },
@@ -41,13 +41,13 @@ export const STATUS_META = {
 
 export const STATUS_KEYS = Object.keys(STATUS_META);
 
-// Tasks that are still open (not finished or cancelled).
+
 export const OPEN_STATUSES = ["pending", "assigned", "in_progress"];
 
 export const labelFor = (options, value) =>
   options.find((option) => option.value === value)?.label || value || "-";
 
-// The backend task number is long (HK-<24 characters>), so show the last 6.
+
 export const shortTaskNumber = (taskNumber = "") =>
   taskNumber ? `HK-${String(taskNumber).slice(-6)}` : "-";
 

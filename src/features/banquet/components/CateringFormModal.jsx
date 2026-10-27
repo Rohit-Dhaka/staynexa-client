@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 import Modal from "../../../components/common/Modal";
 import { createCatering, updateCatering } from "../services/banquet.service";
 import { Field, ModalActions } from "./BanquetUi";
-// import { FOOD_TYPE_OPTIONS, MEAL_TYPE_OPTIONS, getErrorMessage, inputClass } from "../banquet.utils";
+
 import { FOOD_TYPE_OPTIONS, MEAL_TYPE_OPTIONS, getErrorMessage, inputClass } from "../../../utils/banquet.utils";
 
 const toForm = (pkg) => ({

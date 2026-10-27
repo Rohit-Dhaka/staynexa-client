@@ -437,7 +437,7 @@ function StatCard({ title, value, note, icon: Icon }) {
     <article className="rounded border border-slate-200 bg-white p-4">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0"><p className="text-sm text-slate-500">{title}</p><p className="mt-2 break-words text-xl font-bold tracking-tight text-slate-900">{value}</p><p className="mt-1 text-xs text-slate-500">{note}</p></div>
-        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded bg-indigo-50 text-indigo-600"><Icon size={18} /></span>
+        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded bg-blue-100 text-indigo-600"><Icon size={18} /></span>
       </div>
     </article>
   );
@@ -445,6 +445,6 @@ function StatCard({ title, value, note, icon: Icon }) {
 
 function ActionButton({ label, onClick, children, danger = false }) {
   return (
-    <button type="button" title={label} aria-label={label} onClick={onClick} className={cx("inline-flex h-8 w-8 items-center justify-center rounded transition focus:outline-none focus:ring-2 focus:ring-indigo-200", danger ? "text-slate-500 hover:bg-rose-50 hover:text-rose-600" : "text-slate-500 hover:bg-indigo-50 hover:text-indigo-600")}>{children}</button>
+    <button type="button" title={label} aria-label={label} onClick={onClick} className={cx("inline-flex h-8 w-8 items-center justify-center rounded transition focus:outline-none focus:ring-2 focus:ring-indigo-200", danger ? "text-slate-500 hover:bg-rose-50 hover:text-rose-600" : "text-slate-500 hover:bg-black hover:text-indigo-600")}>{children}</button>
   );
 }

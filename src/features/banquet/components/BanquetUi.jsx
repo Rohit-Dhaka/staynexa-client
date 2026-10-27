@@ -1,5 +1,5 @@
 import { Loader2 } from "lucide-react";
-// import {PAYMENT_STATUS_META,STATUS_META,labelClass,outlineButton,primaryButton,} from "../banquet.utils";
+
 import {PAYMENT_STATUS_META,STATUS_META,labelClass,outlineButton,primaryButton,} from "../../../utils/banquet.utils";
 
 export const Field = ({ label, required = false, hint, htmlFor, children }) => (

@@ -23,7 +23,7 @@ const LIMIT = 6;
 const STATUS_META = {
   hold: { label: "On hold", badge: "bg-amber-50 text-amber-700" },
   pending: { label: "Awaiting advance", badge: "bg-amber-50 text-amber-700" },
-  confirmed: { label: "Confirmed", badge: "bg-indigo-50 text-indigo-700" },
+  confirmed: { label: "Confirmed", badge: "bg-black text-white" },
   checked_in: { label: "Checked in", badge: "bg-emerald-50 text-emerald-700" },
   checked_out: { label: "Completed", badge: "bg-slate-100 text-slate-600" },
   cancelled: { label: "Cancelled", badge: "bg-rose-50 text-rose-700" },
@@ -37,7 +37,7 @@ const PAYMENT_META = {
   refunded: { label: "Refunded", badge: "bg-slate-100 text-slate-600" },
 };
 
-// Tabs map to the "view" / "status" filters of GET /bookings.
+
 const TABS = [
   { key: "all", label: "All", params: {} },
   { key: "upcoming", label: "Upcoming", params: { status: "pending,confirmed" } },
@@ -166,7 +166,7 @@ const BookingCard = ({ booking, open, onToggle, onCancel }) => {
         <button
           type="button"
           onClick={onToggle}
-          className="inline-flex items-center gap-1.5 text-sm font-semibold text-indigo-600 hover:text-indigo-700"
+          className="inline-flex items-center gap-1.5 text-sm font-semibold text-indigo-600 "
         >
           {open ? "Hide details" : "View details"}
           <ChevronDown

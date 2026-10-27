@@ -192,7 +192,7 @@ const DailyAttendance = () => {
     };
   }, [date, reload]);
 
-  // A weekly-off day is read-only: attendance status, times and bulk actions are locked.
+  
   const dayTypeName = String(
     data?.dayType?.name || data?.dayType?.type || data?.dayType?.key || ""
   )
@@ -223,7 +223,7 @@ const DailyAttendance = () => {
     setSuccess("");
   };
 
-  // Status is saved immediately when the user selects a status.
+  
   const saveStatus = async (row, nextStatus) => {
     const userId = row.user._id;
     const draft = drafts[userId] || createDraft(row);
@@ -246,7 +246,7 @@ const DailyAttendance = () => {
       current.includes(userId) ? current : [...current, userId],
     );
 
-    // Optimistic UI update. Roll back if the API fails.
+    
     setDrafts((current) => ({
       ...current,
       [userId]: {
@@ -320,7 +320,7 @@ const DailyAttendance = () => {
     }
   };
 
-  // Check-in and check-out remain pending until Save Times is clicked.
+  
   const saveAttendance = async (row) => {
     const userId = row.user._id;
     const draft = drafts[userId] || createDraft(row);
@@ -430,11 +430,11 @@ const DailyAttendance = () => {
 
   return (
     <div className="space-y-5">
-      {/* Header */}
+      
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <div className="rounded bg-indigo-100 p-2.5 text-indigo-700">
+            <div className="rounded bg-blue-100 p-2.5 text-indigo-700">
               <CalendarDays size={22} />
             </div>
 
@@ -474,7 +474,7 @@ const DailyAttendance = () => {
         </div>
       </div>
 
-      {/* Date controls */}
+     
       <div className="flex flex-wrap items-center gap-3 rounded border border-slate-200 bg-white p-3 ">
         <div className="flex items-center gap-1">
           <button
@@ -525,7 +525,7 @@ const DailyAttendance = () => {
         </div>
       </div>
 
-      {/* Feedback */}
+   
       {error && (
         <div
           role="alert"
@@ -586,7 +586,7 @@ const DailyAttendance = () => {
         </div>
       )}
 
-      {/* Summary cards */}
+      
       {summary && (
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-6">
           <StatCard
@@ -633,7 +633,7 @@ const DailyAttendance = () => {
         </div>
       )}
 
-      {/* Attendance table */}
+     
       <div className="overflow-hidden rounded border border-slate-200 bg-white ">
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 px-4 py-3">
           <div>
@@ -713,7 +713,7 @@ const DailyAttendance = () => {
                       key={userId}
                       className="align-top transition hover:bg-slate-50/70"
                     >
-                      {/* Staff */}
+                      
                       <td className="px-4 py-4">
                         <p className="font-semibold text-slate-900">
                           {row.user.name}
@@ -735,7 +735,7 @@ const DailyAttendance = () => {
                         )}
                       </td>
 
-                      {/* Persisted status */}
+                      
                       <td className="px-4 py-4">
                         <StatusChip status={row.status} />
 
@@ -753,7 +753,7 @@ const DailyAttendance = () => {
                         )}
                       </td>
 
-                      {/* Auto-save status controls */}
+                      
                       <td className="px-4 py-4">
                         <div className="flex w-[100px] gap-1.5">
                           {ATTENDANCE_OPTIONS.map((option) => {
@@ -773,7 +773,7 @@ const DailyAttendance = () => {
                                 className={`rounded border px-2 py-2 text-xs font-semibold transition ${
                                   selected
                                     ? option.active
-                                    : "border-slate-200 bg-white text-slate-600 hover:border-indigo-300 hover:bg-indigo-50"
+                                    : "border-slate-200 bg-white text-slate-600 hover:border-indigo-300 hover:bg-black"
                                 } disabled:cursor-not-allowed disabled:opacity-50`}
                               >
                                 {option.short}
@@ -789,7 +789,7 @@ const DailyAttendance = () => {
                         </p>
                       </td>
 
-                      {/* Check-in */}
+                      
                       <td className="px-4 py-4">
                         <div className="relative w-32">
                           <Clock
@@ -820,7 +820,7 @@ const DailyAttendance = () => {
                         )}
                       </td>
 
-                      {/* Check-out */}
+                      
                       <td className="px-4 py-4">
                         <div className="relative w-32">
                           <Clock
@@ -851,7 +851,7 @@ const DailyAttendance = () => {
                         )}
                       </td>
 
-                      {/* Worked hours */}
+                      
                       <td className="px-4 py-4">
                         <p className="font-semibold text-slate-700">
                           {formatMinutes(row.record?.workedMinutes)}
@@ -864,7 +864,7 @@ const DailyAttendance = () => {
                         )}
                       </td>
 
-                      {/* Time actions */}
+                      
                       <td className="px-4 py-4">
                         <div className="flex justify-end gap-2">
                           <button

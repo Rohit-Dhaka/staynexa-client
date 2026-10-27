@@ -215,7 +215,7 @@ const BookingDetail = () => {
     );
   }
 
-  // 1890
+  
   const payments = booking.payments || [];
   const completed = payments.filter((p) => p.status === "completed");
   const depositHeld =
@@ -229,7 +229,7 @@ const BookingDetail = () => {
     );
   const closed = ["cancelled", "no_show"].includes(booking.status);
 
-  // Check-out baad mein wali booking: total aur bill check-out par hi banta hai.
+  
   const billPending =
     Boolean(booking.openEnded) && booking.status !== "checked_out" && !closed;
 
@@ -260,7 +260,7 @@ const BookingDetail = () => {
               <BookingStatusBadge status={booking.status} />
               <PaymentStatusBadge status={booking.paymentStatus} />
               {booking.isAdvance && (
-                <span className="rounded-full bg-indigo-50 px-2.5 py-0.5 text-xs font-medium text-indigo-600">
+                <span className="rounded-full bg-black px-2.5 py-0.5 text-xs font-medium text-indigo-600">
                   Advance booking
                 </span>
               )}
@@ -302,7 +302,7 @@ const BookingDetail = () => {
       )}
 
       {booking.status === "hold" && (
-        <div className="flex items-start gap-3 rounded bg-indigo-50 px-4 py-3 text-sm text-indigo-700">
+        <div className="flex items-start gap-3 rounded bg-black px-4 py-3 text-sm text-indigo-700">
           <Timer size={18} className="mt-0.5 shrink-0" />
           <div>
             <p className="font-medium">
@@ -639,19 +639,7 @@ const BookingDetail = () => {
                           )}
                         </td>
                         <td className="py-2.5 text-right">
-                          {/* {isManager && p.status === "completed" && (
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setVoidTarget(p);
-                                setVoidReason("");
-                                setVoidError("");
-                              }}
-                              className="text-xs font-medium text-rose-600 hover:underline"
-                            >
-                              Void
-                            </button>
-                          )} */}
+                      
                         </td>
                       </tr>
                     );

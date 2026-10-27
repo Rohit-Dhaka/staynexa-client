@@ -21,7 +21,7 @@ const normalizeDietaryType = (value) =>
   legacyDietaryMap[value] || value || "vegetarian";
 
 const MAX_IMAGES = 5;
-const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5MB
+const MAX_IMAGE_SIZE = 5 * 1024 * 1024; 
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
 
 
@@ -103,7 +103,7 @@ export default function MenuItemForm({
 
   const handleFilesChange = (event) => {
     const files = Array.from(event.target.files || []);
-    event.target.value = ""; // same file dobara select karne ke liye
+    event.target.value = ""; 
     setError("");
 
     if (!files.length) return;
@@ -315,7 +315,7 @@ export default function MenuItemForm({
           </div>
         </div>
 
-        {/* Images */}
+        
         <div>
           <label
             htmlFor="menu-item-images"

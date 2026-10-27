@@ -19,7 +19,7 @@ const TYPE_LABELS = {
 };
 
 const getRows = (response) => {
-  // Supports common API response shapes without assuming one envelope.
+  
   if (Array.isArray(response)) return response;
   if (Array.isArray(response?.rows)) return response.rows;
   if (Array.isArray(response?.data?.rows)) return response.data.rows;
@@ -85,8 +85,6 @@ const LeaveBalances = () => {
 
     load();
 
-    // Refresh periodically so approved leave and balance changes appear
-    // without the user having to reload the entire page.
     const intervalId = window.setInterval(() => {
       if (active && !document.hidden) {
         listLeaveBalances({ year })
@@ -323,7 +321,7 @@ const LeaveBalances = () => {
                       <button
                         type="button"
                         onClick={() => openEdit(row)}
-                        className="inline-flex items-center gap-2 rounded border border-slate-200 px-3 py-2 text-xs font-medium text-slate-700 transition hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700"
+                        className="inline-flex items-center gap-2 rounded border border-slate-200 px-3 py-2 text-xs font-medium text-slate-700 transition hover:border-indigo-200 hover:bg-black hover:text-indigo-700"
                         title="Edit leave balance"
                       >
                         <Pencil size={14} />

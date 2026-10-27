@@ -79,7 +79,7 @@ function StatusBadge({ status }) {
   const styles = {
     placed: "bg-black text-blue-700",
     pending: "bg-amber-50 text-amber-700",
-    confirmed: "bg-indigo-50 text-indigo-700",
+    confirmed: "bg-black text-indigo-700",
     preparing: "bg-amber-50 text-amber-700",
     ready: "bg-emerald-50 text-emerald-700",
     served: "bg-green-50 text-green-700",

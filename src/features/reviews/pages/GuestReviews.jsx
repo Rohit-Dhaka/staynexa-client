@@ -281,7 +281,7 @@ export default function GuestReviews() {
         <section className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           <SummaryCard label="Pending Reviews" value={loading ? "—" : bookings.length} icon={Clock3} color="bg-amber-50 text-amber-600" />
           <SummaryCard label="Reviews Submitted" value={loading ? "—" : reviews.length} icon={CheckCircle2} color="bg-emerald-50 text-emerald-600" />
-          <SummaryCard label="Your Average Rating" value={loading ? "—" : averageRating} icon={Star} color="bg-indigo-50 text-indigo-600" />
+          <SummaryCard label="Your Average Rating" value={loading ? "—" : averageRating} icon={Star} color="bg-blue-100 text-indigo-600" />
         </section>
 
         {error && (
@@ -307,7 +307,7 @@ export default function GuestReviews() {
             <section className="overflow-hidden rounded border border-slate-200 bg-white ">
               <div className="border-b border-slate-100 px-5 py-5 sm:px-6">
                 <div className="flex items-center gap-3">
-                  <div className="rounded bg-indigo-50 p-3 text-indigo-600"><PenLine size={22} /></div>
+                  <div className="rounded bg-blue-100 p-3 text-indigo-600"><PenLine size={22} /></div>
                   <div>
                     <h2 className="text-lg font-bold text-slate-900">Create a Review</h2>
                     <p className="mt-1 text-sm text-slate-500">Rate your completed stay and share your feedback.</p>
@@ -420,7 +420,7 @@ export default function GuestReviews() {
                       {review.comment && <p className="mt-3 whitespace-pre-wrap text-sm leading-6 text-slate-600">{review.comment}</p>}
                       <p className="mt-3 text-xs text-slate-400">Submitted {formatDate(review.createdAt)}</p>
                       {review.reply?.text && (
-                        <div className="mt-4 rounded border border-indigo-100 bg-indigo-50/70 p-4">
+                        <div className="mt-4 rounded border border-indigo-100 bg-black/70 p-4">
                           <p className="text-xs font-bold uppercase tracking-wide text-indigo-700">Response from the hotel</p>
                           <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-slate-700">{review.reply.text}</p>
                           {review.reply.at && <p className="mt-2 text-xs text-slate-400">{formatDate(review.reply.at)}</p>}

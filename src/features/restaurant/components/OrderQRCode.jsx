@@ -56,7 +56,7 @@ export default function OrderQRCode({
         );
       }
 
-      // Amount server decide karta hai (order ka remaining balance)
+      
       const paymentOrder = await createRazorpayOrder(orderId);
 
       const checkout = new window.Razorpay({
@@ -85,7 +85,7 @@ export default function OrderQRCode({
             setStatus("paid");
             onPaid?.();
           } catch (err) {
-            // Paisa kat chuka ho sakta hai, isliye guest ko saaf batao
+            
             setStatus("idle");
             setNotice(
               "Your payment was received, but confirmation is still pending. Please refresh in a minute. If the order still shows unpaid, contact restaurant staff."
@@ -100,7 +100,7 @@ export default function OrderQRCode({
         },
 
         modal: {
-          // Guest ne bina pay kiye window band kar di
+          
           ondismiss: () => {
             setStatus((current) =>
               current === "verifying" || current === "paid"

@@ -95,7 +95,7 @@ export default function OffersPage() {
     loadOffers();
   }, [loadOffers]);
 
-  // Fetch all pages using the current search and status filters for export.
+  
   const getAllFilteredOffers = useCallback(async () => {
     const limit = 100;
     const allOffers = [];

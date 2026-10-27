@@ -11,8 +11,6 @@ import {
 } from "lucide-react";
 import toast from "react-hot-toast";
 
-// Namespace import so the edit page still works if the optional
-// getBookingById function has not been added to the service yet.
 import * as bookingsService from "../services/bookings.service";
 import { FormSkeleton } from "../../../components/common/Skeleton";
 
@@ -75,7 +73,7 @@ const toForm = (booking) => ({
 
 const SectionHeader = ({ icon: Icon, title, description }) => (
   <div className="mb-5 flex items-start gap-3">
-    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded bg-indigo-50 text-indigo-600">
+    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded bg-black text-indigo-600">
       <Icon size={18} />
     </div>
     <div>
@@ -93,7 +91,7 @@ const BookingForm = () => {
   const navigate = useNavigate();
   const isEdit = Boolean(id);
 
-  // The list page passes the booking in router state for an instant load.
+  
   const stateBooking =
     location.state?.booking && location.state.booking._id === id
       ? location.state.booking
@@ -111,7 +109,7 @@ const BookingForm = () => {
   const [loadingRooms, setLoadingRooms] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
-  /* ---------------- Load the booking when editing (page refresh) ---------------- */
+  
 
   useEffect(() => {
     if (!isEdit || stateBooking) return undefined;
@@ -149,7 +147,7 @@ const BookingForm = () => {
     };
   }, [id, isEdit, stateBooking, navigate]);
 
-  /* ----------------------- Load available rooms ----------------------- */
+  
 
   useEffect(() => {
     if (loadingBooking) return undefined;
@@ -175,7 +173,7 @@ const BookingForm = () => {
 
         const list = [...(data.rooms || [])];
 
-        // Keep the booking's current room selectable while editing.
+        
         const currentRoomId =
           booking?.room?._id ||
           (typeof booking?.room === "string" ? booking.room : "");
@@ -318,7 +316,7 @@ const BookingForm = () => {
 
   return (
     <div className="max-w-6xl space-y-6">
-      {/* Page heading */}
+      
       <div>
         <Link
           to={BACK_PATH}
@@ -346,7 +344,7 @@ const BookingForm = () => {
       ) : (
         <form onSubmit={handleSubmit} className="space-y-5">
           <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
-            {/* Stay details */}
+            
             <section className="rounded border border-slate-200 bg-white p-5 sm:p-6">
               <SectionHeader
                 icon={CalendarDays}
@@ -439,7 +437,7 @@ const BookingForm = () => {
               </div>
             </section>
 
-            {/* Room selection */}
+            
             <section className="rounded border border-slate-200 bg-white p-5 sm:p-6">
               <SectionHeader
                 icon={BedDouble}
@@ -490,7 +488,7 @@ const BookingForm = () => {
               )}
 
               {!loadingRooms && selectedRoom && (
-                <div className="mt-5 rounded border border-indigo-100 bg-indigo-50/50 p-4">
+                <div className="mt-5 rounded border border-indigo-100 bg-black/50 p-4">
                   <div className="flex items-start justify-between gap-3">
                     <div>
                       <p className="text-xs font-medium text-slate-500">
@@ -533,7 +531,7 @@ const BookingForm = () => {
               )}
             </section>
 
-            {/* Guest details */}
+            
             <section className="rounded border border-slate-200 bg-white p-5 sm:p-6">
               <SectionHeader
                 icon={Users}
@@ -618,7 +616,7 @@ const BookingForm = () => {
               </div>
             </section>
 
-            {/* Payment and requests */}
+            
             <section className="rounded border border-slate-200 bg-white p-5 sm:p-6">
               <SectionHeader
                 icon={Save}
@@ -679,7 +677,7 @@ const BookingForm = () => {
             </section>
           </div>
 
-          {/* Actions */}
+          
           <div className="flex flex-col-reverse gap-3 rounded border border-slate-200 bg-white p-4 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-xs text-slate-500">
               <span className="text-rose-500">*</span> Required fields

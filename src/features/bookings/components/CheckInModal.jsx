@@ -1,10 +1,22 @@
-import { useState } from "react";
-import { Plus, Trash2 } from "lucide-react";
+
+import { useMemo, useState } from "react";
+import { Plus, Trash2, UserRound, CreditCard, ShieldCheck } from "lucide-react";
+
 import useAuth from "../../../hooks/useAuth";
 import { ROLES } from "../../../constants/roles";
 import Modal from "../../../components/common/Modal";
+
 import { checkInBooking } from "../services/bookings.service";
-import { Field, ErrorBox, NoteBox, SectionTitle, ModalFooter, inputClass } from "./formUi";
+
+import {
+  Field,
+  ErrorBox,
+  NoteBox,
+  SectionTitle,
+  ModalFooter,
+  inputClass,
+} from "./formUi";
+
 import {
   ID_PROOF_TYPES,
   PAYMENT_METHODS,
@@ -15,14 +27,17 @@ import {
 } from "../utils/bookingUi";
 
 const CHECKIN_HOUR = 14;
-const EARLY_TIERS = [
+
+const EARLY_CHECKIN_TIERS = [
   { upTo: 2, percent: 25 },
   { upTo: 4, percent: 50 },
   { upTo: Infinity, percent: 100 },
 ];
-const NOT_READY = /occupied|maintenance|out_of_order|cleaning|dirty/;
 
-const emptyGuest = {
+const ROOM_NOT_READY_PATTERN =
+  /occupied|maintenance|out_of_order|cleaning|dirty/i;
+
+const DEFAULT_GUEST = {
   name: "",
   age: "",
   gender: "male",
@@ -33,321 +48,793 @@ const emptyGuest = {
   idNumber: "",
 };
 
+const DEFAULT_PAYMENT = {
+  amount: "",
+  method: "cash",
+  reference: "",
+};
+
+const getInitialGuests = (additionalGuests = []) =>
+  additionalGuests.map((guest) => ({
+    name: guest.name || "",
+    age: guest.age ?? "",
+    gender: guest.gender || "male",
+    relation: guest.relation || "",
+    phone: guest.phone || "",
+    isChild: Boolean(guest.isChild),
+    idType: guest.idProof?.type || "aadhaar",
+    idNumber: guest.idProof?.number || "",
+  }));
+
+const getInitialPrimaryProof = (booking) => {
+  const proof = booking.guestDetails?.idProof || {};
+
+  return {
+    type: proof.type || "aadhaar",
+    number: proof.number || "",
+  };
+};
+
 const IdFields = ({ type, number, onChange }) => (
-  <div className="grid grid-cols-2 gap-3">
-    <Field label="ID type">
-      <select value={type} onChange={(e) => onChange({ idType: e.target.value })} className={inputClass}>
-        {ID_PROOF_TYPES.map((t) => (
-          <option key={t.value} value={t.value}>
-            {t.label}
+  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+    <Field label="Identification Type">
+      <select
+        value={type}
+        onChange={(event) => onChange({ idType: event.target.value })}
+        className={inputClass}
+      >
+        {ID_PROOF_TYPES.map((item) => (
+          <option key={item.value} value={item.value}>
+            {item.label}
           </option>
         ))}
       </select>
     </Field>
-    <Field label="ID number">
-      <input value={number} onChange={(e) => onChange({ idNumber: e.target.value })} className={inputClass} />
+
+    <Field label="Identification Number">
+      <input
+        type="text"
+        value={number}
+        onChange={(event) =>
+          onChange({ idNumber: event.target.value })
+        }
+        className={inputClass}
+        placeholder="Enter identification number"
+        autoComplete="off"
+      />
     </Field>
   </div>
 );
 
+const PaymentFields = ({ title, value, onChange }) => (
+  <>
+    <SectionTitle hint="Enter the amount collected and its payment details.">
+      {title}
+    </SectionTitle>
+
+    <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+      <Field label="Amount (INR)">
+        <input
+          type="number"
+          min="0"
+          step="0.01"
+          value={value.amount}
+          onChange={(event) =>
+            onChange({ amount: event.target.value })
+          }
+          className={inputClass}
+          placeholder="0.00"
+        />
+      </Field>
+
+      <Field label="Payment Method">
+        <select
+          value={value.method}
+          onChange={(event) =>
+            onChange({ method: event.target.value })
+          }
+          className={inputClass}
+        >
+          {PAYMENT_METHODS.map((method) => (
+            <option key={method.value} value={method.value}>
+              {method.label}
+            </option>
+          ))}
+        </select>
+      </Field>
+
+      <Field label="Payment Reference">
+        <input
+          type="text"
+          value={value.reference}
+          onChange={(event) =>
+            onChange({ reference: event.target.value })
+          }
+          className={inputClass}
+          placeholder="Transaction or receipt reference"
+        />
+      </Field>
+    </div>
+  </>
+);
+
 const CheckInModal = ({ booking, onClose, onDone }) => {
   const { user } = useAuth();
-  const isManager = [ROLES.SUPER_ADMIN, ROLES.MANAGER].includes(user?.role);
 
-  const netPaid = (booking.paidAmount || 0) - (booking.refundedAmount || 0);
+  const isManager = [
+    ROLES.SUPER_ADMIN,
+    ROLES.MANAGER,
+  ].includes(user?.role);
+
+  const netPaid =
+    Number(booking.paidAmount || 0) -
+    Number(booking.refundedAmount || 0);
+
   const advanceDue =
-    booking.status === "pending" ? Math.max((booking.advanceRequired || 0) - netPaid, 0) : 0;
+    booking.status === "pending"
+      ? Math.max(Number(booking.advanceRequired || 0) - netPaid, 0)
+      : 0;
 
-  const proof = booking.guestDetails?.idProof || {};
-  const [primary, setPrimary] = useState({ type: proof.type || "aadhaar", number: proof.number || "" });
-  const [guests, setGuests] = useState(() =>
-    (booking.additionalGuests || []).map((g) => ({
-      name: g.name,
-      age: g.age ?? "",
-      gender: g.gender || "male",
-      relation: g.relation || "",
-      phone: g.phone || "",
-      isChild: Boolean(g.isChild),
-      idType: g.idProof?.type || "aadhaar",
-      idNumber: g.idProof?.number || "",
-    }))
+  const [primary, setPrimary] = useState(() =>
+    getInitialPrimaryProof(booking)
   );
+
+  const [guests, setGuests] = useState(() =>
+    getInitialGuests(booking.additionalGuests)
+  );
+
   const [advance, setAdvance] = useState({
+    ...DEFAULT_PAYMENT,
     amount: advanceDue > 0 ? String(advanceDue) : "",
-    method: "cash",
-    reference: "",
   });
-  const [deposit, setDeposit] = useState({ amount: "", method: "cash", reference: "" });
-  const [opts, setOpts] = useState({
-    waiveEarly: false,
-    override: false,
+
+  const [deposit, setDeposit] = useState({
+    ...DEFAULT_PAYMENT,
+  });
+
+  const [options, setOptions] = useState({
+    waiveEarlyCharge: false,
+    overrideRoomStatus: false,
     notes: booking.internalNotes || "",
   });
+
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
-  const now = new Date();
-  const isArrivalDay = toInputDate(booking.checkIn) === toInputDate(now);
-  const standard = new Date();
-  standard.setHours(CHECKIN_HOUR, 0, 0, 0);
-  const earlyHours = isArrivalDay && now < standard ? Math.ceil((standard - now) / 3600000) : 0;
-  const earlyPercent = earlyHours ? EARLY_TIERS.find((t) => earlyHours <= t.upTo).percent : 0;
-  const earlyEstimate = Math.round(((booking.pricePerNight || 0) * earlyPercent) / 100);
+  const checkInDetails = useMemo(() => {
+    const now = new Date();
+    const today = toInputDate(now);
+    const arrivalDate = toInputDate(booking.checkIn);
+
+    const isArrivalDay = arrivalDate === today;
+
+    const standardCheckIn = new Date(now);
+    standardCheckIn.setHours(CHECKIN_HOUR, 0, 0, 0);
+
+    const earlyHours =
+      isArrivalDay && now < standardCheckIn
+        ? Math.ceil(
+            (standardCheckIn.getTime() - now.getTime()) /
+              (60 * 60 * 1000)
+          )
+        : 0;
+
+    const earlyTier = EARLY_CHECKIN_TIERS.find(
+      (tier) => earlyHours > 0 && earlyHours <= tier.upTo
+    );
+
+    const earlyPercent = earlyTier?.percent || 0;
+
+    const earlyEstimate = Math.round(
+      (Number(booking.pricePerNight || 0) * earlyPercent) / 100
+    );
+
+    return {
+      now,
+      isArrivalDay,
+      earlyHours,
+      earlyPercent,
+      earlyEstimate,
+    };
+  }, [booking.checkIn, booking.pricePerNight]);
 
   const roomStatus = booking.room?.status || "";
-  const roomNotReady = NOT_READY.test(roomStatus);
-  const blocked = roomNotReady && !(isManager && opts.override);
+  const roomNotReady = ROOM_NOT_READY_PATTERN.test(roomStatus);
 
-  const updateGuest = (index, patch) =>
-    setGuests((list) => list.map((g, i) => (i === index ? { ...g, ...patch } : g)));
+  const blocked =
+    roomNotReady &&
+    !(isManager && options.overrideRoomStatus);
+
+  const updateGuest = (index, patch) => {
+    setGuests((currentGuests) =>
+      currentGuests.map((guest, currentIndex) =>
+        currentIndex === index
+          ? { ...guest, ...patch }
+          : guest
+      )
+    );
+  };
+
+  const updateAdvance = (patch) => {
+    setAdvance((current) => ({ ...current, ...patch }));
+  };
+
+  const updateDeposit = (patch) => {
+    setDeposit((current) => ({ ...current, ...patch }));
+  };
+
+  const updateOptions = (patch) => {
+    setOptions((current) => ({ ...current, ...patch }));
+  };
+
+  const validateForm = () => {
+    if (!primary.number.trim()) {
+      return "The primary guest's identification number is required.";
+    }
+
+    const invalidGuest = guests.find(
+      (guest) =>
+        !guest.name.trim() ||
+        (!guest.isChild && !guest.idNumber.trim())
+    );
+
+    if (invalidGuest) {
+      return "Enter each additional guest's name and provide identification for every adult guest.";
+    }
+
+    const advanceAmount = Number(advance.amount);
+
+    if (!Number.isFinite(advanceAmount) || advanceAmount < 0) {
+      return "Enter a valid advance payment amount.";
+    }
+
+    if (advanceDue > 0 && advanceAmount < advanceDue) {
+      return `The outstanding advance of ${formatINR(
+        advanceDue
+      )} must be collected before check-in.`;
+    }
+
+    const depositAmount = Number(deposit.amount);
+
+    if (!Number.isFinite(depositAmount) || depositAmount < 0) {
+      return "Enter a valid security deposit amount.";
+    }
+
+    if (blocked) {
+      return "This room is not ready for check-in. Contact a manager or housekeeping.";
+    }
+
+    return "";
+  };
 
   const submit = async () => {
+    if (saving) return;
+
     setError("");
 
-    if (!primary.number.trim()) return setError("The primary guest’s ID number is required.");
+    const validationError = validateForm();
 
-    const missing = guests.filter((g) => !g.name.trim() || (!g.isChild && !g.idNumber.trim()));
-    if (missing.length) {
-      return setError("Har additional adult guest ka naam aur ID number bharo (bachche ko ID nahi chahiye)");
+    if (validationError) {
+      setError(validationError);
+      return;
     }
 
     const advanceAmount = Number(advance.amount) || 0;
-    if (advanceDue > 0 && advanceAmount < advanceDue) {
-      return setError(`Check-in se pehle advance ${formatINR(advanceDue)} poora lena hoga`);
-    }
+    const depositAmount = Number(deposit.amount) || 0;
 
     const payload = {
-      idProof: { type: primary.type, number: primary.number.trim() },
-      additionalGuests: guests.map((g) => ({
-        name: g.name.trim(),
-        age: g.age === "" ? undefined : Number(g.age),
-        gender: g.gender,
-        relation: g.relation.trim(),
-        phone: g.phone,
-        isChild: g.isChild,
-        idProof: g.idNumber.trim() ? { type: g.idType, number: g.idNumber.trim() } : undefined,
+      idProof: {
+        type: primary.type,
+        number: primary.number.trim(),
+      },
+
+      additionalGuests: guests.map((guest) => ({
+        name: guest.name.trim(),
+        age:
+          guest.age === ""
+            ? undefined
+            : Number(guest.age),
+        gender: guest.gender,
+        relation: guest.relation.trim(),
+        phone: guest.phone.trim(),
+        isChild: guest.isChild,
+
+        idProof: guest.idNumber.trim()
+          ? {
+              type: guest.idType,
+              number: guest.idNumber.trim(),
+            }
+          : undefined,
       })),
-      internalNotes: opts.notes,
+
+      internalNotes: options.notes.trim(),
     };
 
     if (advanceAmount > 0) {
       payload.advancePayment = {
         amount: advanceAmount,
         method: advance.method,
-        reference: advance.reference,
+        reference: advance.reference.trim(),
       };
     }
 
-    const depositAmount = Number(deposit.amount) || 0;
     if (depositAmount > 0) {
       payload.securityDeposit = {
         amount: depositAmount,
         method: deposit.method,
-        reference: deposit.reference,
+        reference: deposit.reference.trim(),
       };
     }
 
     if (isManager) {
-      if (opts.waiveEarly) payload.waiveEarlyCharge = true;
-      if (opts.override) payload.overrideRoomStatus = true;
+      if (options.waiveEarlyCharge) {
+        payload.waiveEarlyCharge = true;
+      }
+
+      if (options.overrideRoomStatus) {
+        payload.overrideRoomStatus = true;
+      }
     }
 
     setSaving(true);
+
     try {
       await checkInBooking(booking._id, payload);
       onDone();
-    } catch (err) {
-      setError(getErrorMessage(err));
+    } catch (requestError) {
+      setError(getErrorMessage(requestError));
+    } finally {
       setSaving(false);
     }
   };
+
+  const stayDescription = booking.openEnded
+    ? `${formatDate(booking.checkIn)} · Open-ended stay`
+    : `${formatDate(booking.checkIn)} – ${formatDate(
+        booking.checkOut
+      )} · ${booking.nights} ${
+        booking.nights === 1 ? "night" : "nights"
+      }`;
 
   return (
     <Modal
       open
       size="lg"
-      title="Check-in"
-      subtitle={`${booking.bookingNumber}, ${booking.guestDetails?.name}, Room ${booking.room?.roomNumber}`}
+      title="Guest Check-In"
+      subtitle={`${booking.bookingNumber || "Booking"} · ${
+        booking.guestDetails?.name || "Guest"
+      } · Room ${booking.room?.roomNumber || "Unassigned"}`}
       onClose={onClose}
       busy={saving}
       footer={
         <ModalFooter
           onCancel={onClose}
           onConfirm={submit}
-          confirmText="Check-in karo"
+          confirmText={saving ? "Processing..." : "Complete Check-In"}
           busy={saving}
-          disabled={blocked}
+          disabled={blocked || saving}
         />
       }
     >
-      <ErrorBox message={error} />
+      <div className="space-y-5">
+        <ErrorBox message={error} />
 
-      <p className="mb-4 text-sm text-slate-500">
-        Stay: {formatDate(booking.checkIn)}{" "}
-        {booking.openEnded
-          ? "se (Check Out Later decide later)"
-          : `se ${formatDate(booking.checkOut)}, ${booking.nights} night${booking.nights > 1 ? "s" : ""}`}
-        , {booking.adults} adults, {booking.children || 0} children
-      </p>
-
-      {roomNotReady && (
-        <NoteBox tone="danger">
-          Room {booking.room?.roomNumber} is not ready yet (status: {roomStatus.replace(/_/g, " ")}).
-          {isManager ? (
-            <label className="mt-2 flex items-center gap-2 font-medium">
-              <input
-                type="checkbox"
-                checked={opts.override}
-                onChange={(e) => setOpts({ ...opts, override: e.target.checked })}
-              />
-              Check In Anyway (Manager Override)
-            </label>
-          ) : (
-            " Housekeeping se room ready karwao ya manager se kaho."
-          )}
-        </NoteBox>
-      )}
-
-      {earlyHours > 0 && (
-        <NoteBox tone="warn">
-          Standard check-in {CHECKIN_HOUR}:00 hai, guest {earlyHours} ghanta pehle aa raha hai. Early check-in
-          charge lagega, lagbhag {formatINR(earlyEstimate)} + GST (final amount bill mein dikhega).
-          {isManager && (
-            <label className="mt-2 flex items-center gap-2 font-medium">
-              <input
-                type="checkbox"
-                checked={opts.waiveEarly}
-                onChange={(e) => setOpts({ ...opts, waiveEarly: e.target.checked })}
-              />
-              Early check-in charge maaf karo
-            </label>
-          )}
-        </NoteBox>
-      )}
-
-      <SectionTitle hint="Check-in par ID dekhkar verify ho jata hai. Aadhaar ke sirf last 4 digits save hote hain">
-        Primary guest ID proof
-      </SectionTitle>
-      <IdFields
-        type={primary.type}
-        number={primary.number}
-        onChange={(patch) =>
-          setPrimary((p) => ({
-            type: patch.idType ?? p.type,
-            number: patch.idNumber ?? p.number,
-          }))
-        }
-      />
-
-      <SectionTitle hint="Har adult guest ka ID zaroori hai">Additional guests</SectionTitle>
-      {guests.length === 0 && <p className="mb-2 text-sm text-slate-500">No additional guests.</p>}
-      <div className="space-y-3">
-        {guests.map((g, i) => (
-          <div key={i} className="rounded border border-slate-200 p-3">
-            <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-              <Field label="Naam *">
-                <input value={g.name} onChange={(e) => updateGuest(i, { name: e.target.value })} className={inputClass} />
-              </Field>
-              <Field label="Age">
-                <input type="number" min="0" value={g.age} onChange={(e) => updateGuest(i, { age: e.target.value })} className={inputClass} />
-              </Field>
-              <Field label="Relation">
-                <input value={g.relation} onChange={(e) => updateGuest(i, { relation: e.target.value })} className={inputClass} />
-              </Field>
-              <label className="flex items-center gap-2 self-end pb-2 text-sm text-slate-700">
-                <input type="checkbox" checked={g.isChild} onChange={(e) => updateGuest(i, { isChild: e.target.checked })} />
-                Child
-              </label>
+        <section className="rounded border border-slate-200 p-4">
+          <div className="flex items-start gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded border border-slate-200 text-slate-700">
+              <UserRound size={19} />
             </div>
-            {!g.isChild && (
-              <div className="mt-3 grid grid-cols-2 gap-3 md:grid-cols-4">
-                <Field label="ID type">
-                  <select value={g.idType} onChange={(e) => updateGuest(i, { idType: e.target.value })} className={inputClass}>
-                    {ID_PROOF_TYPES.map((t) => (
-                      <option key={t.value} value={t.value}>
-                        {t.label}
-                      </option>
-                    ))}
-                  </select>
-                </Field>
-                <Field label="ID number">
-                  <input value={g.idNumber} onChange={(e) => updateGuest(i, { idNumber: e.target.value })} className={inputClass} />
-                </Field>
-              </div>
-            )}
-            <button
-              type="button"
-              onClick={() => setGuests((list) => list.filter((_, idx) => idx !== i))}
-              className="mt-2 flex items-center gap-1.5 text-xs font-medium text-rose-600 hover:underline"
-            >
-              <Trash2 size={13} /> Remove
-            </button>
+
+            <div className="min-w-0 flex-1">
+              <h3 className="text-sm font-semibold text-slate-900">
+                Stay Details
+              </h3>
+
+              <p className="mt-1 text-sm text-slate-600">
+                {stayDescription}
+              </p>
+
+              <p className="mt-1 text-sm text-slate-600">
+                {booking.adults}{" "}
+                {booking.adults === 1 ? "adult" : "adults"}
+                {" · "}
+                {booking.children || 0}{" "}
+                {(booking.children || 0) === 1
+                  ? "child"
+                  : "children"}
+              </p>
+            </div>
           </div>
-        ))}
-      </div>
-      <button
-        type="button"
-        onClick={() => setGuests((list) => [...list, { ...emptyGuest }])}
-        className="mt-3 flex items-center gap-1.5 rounded border border-slate-300 px-3 py-1.5 text-sm text-slate-700 transition hover:bg-slate-50"
-      >
-        <Plus size={15} /> Add Guest
-      </button>
+        </section>
 
-      <SectionTitle
-        hint={
-          advanceDue > 0
-            ? `Booking advance is pending., ${formatINR(advanceDue)} Required to collect.`
-            : "Optional. Enter the advance amount to collect now."
-        }
-      >
-        Advance payment (check-in par)
-      </SectionTitle>
-      <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
-        <Field label="Amount">
-          <input type="number" min="0" value={advance.amount} onChange={(e) => setAdvance({ ...advance, amount: e.target.value })} className={inputClass} />
-        </Field>
-        <Field label="Method">
-          <select value={advance.method} onChange={(e) => setAdvance({ ...advance, method: e.target.value })} className={inputClass}>
-            {PAYMENT_METHODS.map((m) => (
-              <option key={m.value} value={m.value}>
-                {m.label}
-              </option>
+        {roomNotReady && (
+          <NoteBox tone="danger">
+            <div>
+              <p className="font-semibold">
+                Room Not Ready for Check-In
+              </p>
+
+              <p className="mt-1">
+                Room {booking.room?.roomNumber || "Unassigned"} has
+                the status:{" "}
+                <span className="font-medium">
+                  {roomStatus.replace(/_/g, " ")}
+                </span>
+                . The room must be ready before the guest can check in.
+              </p>
+
+              {isManager && (
+                <label className="mt-3 flex items-start gap-2 text-sm font-medium">
+                  <input
+                    type="checkbox"
+                    checked={options.overrideRoomStatus}
+                    onChange={(event) =>
+                      updateOptions({
+                        overrideRoomStatus: event.target.checked,
+                      })
+                    }
+                    className="mt-0.5 rounded border-slate-300"
+                  />
+
+                  <span>
+                    Override room readiness check
+                  </span>
+                </label>
+              )}
+
+              {!isManager && (
+                <p className="mt-2 text-sm">
+                  Contact housekeeping or a manager to resolve this
+                  issue.
+                </p>
+              )}
+            </div>
+          </NoteBox>
+        )}
+
+        {checkInDetails.earlyHours > 0 && (
+          <NoteBox tone="warn">
+            <div>
+              <p className="font-semibold">
+                Early Check-In
+              </p>
+
+              <p className="mt-1">
+                Standard check-in time is {CHECKIN_HOUR}:00.
+                The guest is arriving approximately{" "}
+                {checkInDetails.earlyHours}{" "}
+                {checkInDetails.earlyHours === 1
+                  ? "hour"
+                  : "hours"}{" "}
+                early.
+              </p>
+
+              <p className="mt-1">
+                Estimated early check-in charge:{" "}
+                <span className="font-semibold">
+                  {formatINR(checkInDetails.earlyEstimate)}
+                </span>
+                {" "}plus applicable taxes. The final amount is
+                determined by the billing system.
+              </p>
+
+              {isManager && (
+                <label className="mt-3 flex items-start gap-2 text-sm font-medium">
+                  <input
+                    type="checkbox"
+                    checked={options.waiveEarlyCharge}
+                    onChange={(event) =>
+                      updateOptions({
+                        waiveEarlyCharge: event.target.checked,
+                      })
+                    }
+                    className="mt-0.5 rounded border-slate-300"
+                  />
+
+                  <span>
+                    Waive the early check-in charge
+                  </span>
+                </label>
+              )}
+            </div>
+          </NoteBox>
+        )}
+
+        <section>
+          <SectionTitle hint="Verify the primary guest's identification before completing check-in.">
+            Primary Guest Identification
+          </SectionTitle>
+
+          <IdFields
+            type={primary.type}
+            number={primary.number}
+            onChange={(patch) =>
+              setPrimary((current) => ({
+                type: patch.idType ?? current.type,
+                number: patch.idNumber ?? current.number,
+              }))
+            }
+          />
+
+          <p className="mt-2 text-xs leading-5 text-slate-500">
+            Follow your hotel's identification verification and
+            data-retention policy. Avoid storing unnecessary sensitive
+            identification details.
+          </p>
+        </section>
+
+        <section>
+          <SectionTitle hint="Identification is required for each adult guest.">
+            Additional Guests
+          </SectionTitle>
+
+          {guests.length === 0 && (
+            <div className="rounded border border-dashed border-slate-300 px-4 py-6 text-center">
+              <UserRound
+                size={22}
+                className="mx-auto text-slate-400"
+              />
+
+              <p className="mt-2 text-sm font-medium text-slate-700">
+                No Additional Guests
+              </p>
+
+              <p className="mt-1 text-sm text-slate-500">
+                Add other guests staying under this booking.
+              </p>
+            </div>
+          )}
+
+          <div className="space-y-3">
+            {guests.map((guest, index) => (
+              <div
+                key={index}
+                className="rounded border border-slate-200 p-4"
+              >
+                <div className="mb-3 flex items-center justify-between gap-3">
+                  <h4 className="text-sm font-semibold text-slate-800">
+                    Guest {index + 1}
+                  </h4>
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setGuests((current) =>
+                        current.filter(
+                          (_, currentIndex) =>
+                            currentIndex !== index
+                        )
+                      )
+                    }
+                    disabled={saving}
+                    className="inline-flex items-center gap-1.5 rounded px-2 py-1.5 text-xs font-medium text-rose-600 transition hover:bg-rose-50 disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    <Trash2 size={14} />
+                    Remove Guest
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  <Field label="Full Name *">
+                    <input
+                      type="text"
+                      value={guest.name}
+                      onChange={(event) =>
+                        updateGuest(index, {
+                          name: event.target.value,
+                        })
+                      }
+                      className={inputClass}
+                      placeholder="Enter full name"
+                    />
+                  </Field>
+
+                  <Field label="Age">
+                    <input
+                      type="number"
+                      min="0"
+                      max="120"
+                      value={guest.age}
+                      onChange={(event) =>
+                        updateGuest(index, {
+                          age: event.target.value,
+                        })
+                      }
+                      className={inputClass}
+                      placeholder="Enter age"
+                    />
+                  </Field>
+
+                  <Field label="Relationship to Primary Guest">
+                    <input
+                      type="text"
+                      value={guest.relation}
+                      onChange={(event) =>
+                        updateGuest(index, {
+                          relation: event.target.value,
+                        })
+                      }
+                      className={inputClass}
+                      placeholder="e.g. Spouse, Friend"
+                    />
+                  </Field>
+
+                  <Field label="Phone Number">
+                    <input
+                      type="tel"
+                      value={guest.phone}
+                      onChange={(event) =>
+                        updateGuest(index, {
+                          phone: event.target.value,
+                        })
+                      }
+                      className={inputClass}
+                      placeholder="Enter phone number"
+                    />
+                  </Field>
+
+                  <label className="flex items-center gap-2 rounded border border-slate-200 px-3 py-2.5 text-sm text-slate-700 sm:col-span-2">
+                    <input
+                      type="checkbox"
+                      checked={guest.isChild}
+                      onChange={(event) =>
+                        updateGuest(index, {
+                          isChild: event.target.checked,
+                        })
+                      }
+                      className="rounded border-slate-300"
+                    />
+
+                    This guest is a child
+                  </label>
+                </div>
+
+                {!guest.isChild && (
+                  <div className="mt-4 border-t border-slate-100 pt-4">
+                    <IdFields
+                      type={guest.idType}
+                      number={guest.idNumber}
+                      onChange={(patch) =>
+                        updateGuest(index, {
+                          idType: patch.idType ?? guest.idType,
+                          idNumber:
+                            patch.idNumber ?? guest.idNumber,
+                        })
+                      }
+                    />
+                  </div>
+                )}
+              </div>
             ))}
-          </select>
-        </Field>
-        <Field label="Reference">
-          <input value={advance.reference} onChange={(e) => setAdvance({ ...advance, reference: e.target.value })} className={inputClass} />
-        </Field>
-      </div>
+          </div>
 
-      <SectionTitle hint="Refundable. Check-out par wapas hota hai, bill ka hissa nahi hai">
-        Security deposit
-      </SectionTitle>
-      <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
-        <Field label="Amount">
-          <input type="number" min="0" value={deposit.amount} onChange={(e) => setDeposit({ ...deposit, amount: e.target.value })} className={inputClass} />
-        </Field>
-        <Field label="Method">
-          <select value={deposit.method} onChange={(e) => setDeposit({ ...deposit, method: e.target.value })} className={inputClass}>
-            {PAYMENT_METHODS.map((m) => (
-              <option key={m.value} value={m.value}>
-                {m.label}
-              </option>
-            ))}
-          </select>
-        </Field>
-        <Field label="Reference">
-          <input value={deposit.reference} onChange={(e) => setDeposit({ ...deposit, reference: e.target.value })} className={inputClass} />
-        </Field>
-      </div>
+          <button
+            type="button"
+            onClick={() =>
+              setGuests((current) => [
+                ...current,
+                { ...DEFAULT_GUEST },
+              ])
+            }
+            disabled={saving}
+            className="mt-3 inline-flex items-center gap-2 rounded border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            <Plus size={16} />
+            Add Guest
+          </button>
+        </section>
 
-      <SectionTitle>Internal notes</SectionTitle>
-      <textarea
-        rows="2"
-        value={opts.notes}
-        onChange={(e) => setOpts({ ...opts, notes: e.target.value })}
-        className={inputClass}
-      />
+        <section>
+          <div className="mb-3 flex items-center gap-2">
+            <CreditCard size={18} className="text-slate-600" />
+
+            <div>
+              <h3 className="text-sm font-semibold text-slate-900">
+                Advance Payment
+              </h3>
+
+              <p className="mt-0.5 text-xs text-slate-500">
+                Record the advance collected at check-in.
+              </p>
+            </div>
+          </div>
+
+          {advanceDue > 0 && (
+            <NoteBox tone="warn">
+              Outstanding advance:{" "}
+              <span className="font-semibold">
+                {formatINR(advanceDue)}
+              </span>
+              . This amount must be collected before check-in.
+            </NoteBox>
+          )}
+
+          <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-3">
+            <Field label="Amount (INR)">
+              <input
+                type="number"
+                min="0"
+                step="0.01"
+                value={advance.amount}
+                onChange={(event) =>
+                  updateAdvance({ amount: event.target.value })
+                }
+                className={inputClass}
+                placeholder="0.00"
+              />
+            </Field>
+
+            <Field label="Payment Method">
+              <select
+                value={advance.method}
+                onChange={(event) =>
+                  updateAdvance({ method: event.target.value })
+                }
+                className={inputClass}
+              >
+                {PAYMENT_METHODS.map((method) => (
+                  <option key={method.value} value={method.value}>
+                    {method.label}
+                  </option>
+                ))}
+              </select>
+            </Field>
+
+            <Field label="Payment Reference">
+              <input
+                type="text"
+                value={advance.reference}
+                onChange={(event) =>
+                  updateAdvance({
+                    reference: event.target.value,
+                  })
+                }
+                className={inputClass}
+                placeholder="Transaction or receipt reference"
+              />
+            </Field>
+          </div>
+        </section>
+
+        <section>
+          <div className="mb-3 flex items-center gap-2">
+            <ShieldCheck size={18} className="text-slate-600" />
+
+            <div>
+              <h3 className="text-sm font-semibold text-slate-900">
+                Security Deposit
+              </h3>
+
+              <p className="mt-0.5 text-xs text-slate-500">
+                Record the refundable deposit separately from the
+                accommodation bill.
+              </p>
+            </div>
+          </div>
+
+          <PaymentFields
+            title="Deposit Collection"
+            value={deposit}
+            onChange={updateDeposit}
+          />
+        </section>
+
+        <section>
+          <SectionTitle hint="Internal notes are for authorized hotel staff only.">
+            Internal Notes
+          </SectionTitle>
+
+          <textarea
+            rows={3}
+            value={options.notes}
+            onChange={(event) =>
+              updateOptions({ notes: event.target.value })
+            }
+            className={inputClass}
+            placeholder="Add relevant check-in notes..."
+          />
+        </section>
+      </div>
     </Modal>
   );
 };

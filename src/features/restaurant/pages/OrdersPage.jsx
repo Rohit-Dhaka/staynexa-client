@@ -60,9 +60,9 @@ const getOrderTotal = (order) =>
 
 const getStatusClasses = (status) => {
   const styles = {
-    placed: "bg-blue-50 text-blue-700",
+    placed: "bg-black text-blue-700",
     pending: "bg-amber-50 text-amber-700",
-    confirmed: "bg-indigo-50 text-indigo-700",
+    confirmed: "bg-black text-indigo-700",
     preparing: "bg-orange-50 text-orange-700",
     ready: "bg-emerald-50 text-emerald-700",
     completed: "bg-gray-100 text-gray-700",
@@ -83,7 +83,7 @@ export default function OrdersPage() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  // Selected order for the payment modal
+  
   const [selectedOrder, setSelectedOrder] = useState(null);
 
   const loadOrders = useCallback(async () => {
@@ -264,7 +264,7 @@ useEffect(() => {
   return (
     <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
       <div className="mx-auto max-w-7xl space-y-6">
-        {/* Page heading */}
+        
         <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h1 className="text-2xl font-semibold tracking-tight text-gray-900">
@@ -286,7 +286,7 @@ useEffect(() => {
           </button>
         </header>
 
-        {/* Error message */}
+        
         {error && (
           <div
             role="alert"
@@ -306,7 +306,7 @@ useEffect(() => {
           </div>
         )}
 
-        {/* Success message */}
+        
         {success && (
           <div
             role="status"
@@ -326,7 +326,7 @@ useEffect(() => {
           </div>
         )}
 
-        {/* Summary cards */}
+        
         <section className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           {[
             {
@@ -364,7 +364,6 @@ useEffect(() => {
           ))}
         </section>
 
-        {/* Search and filters */}
         <section className="grid grid-cols-1 gap-4 rounded border border-gray-200 bg-white p-4 sm:grid-cols-2 xl:grid-cols-3">
           <div>
             <label
@@ -433,7 +432,7 @@ useEffect(() => {
           </div>
         </section>
 
-        {/* Order count */}
+   
         <div className="flex items-center justify-between gap-3">
           <p className="text-sm text-gray-600">
             {filteredOrders.length}{" "}
@@ -445,7 +444,7 @@ useEffect(() => {
           </p>
         </div>
 
-        {/* Loading, empty state, and order cards */}
+        
         {loading ? (
           <div className="rounded border border-gray-200 bg-white p-8 text-center">
             <p className="text-sm text-gray-500">Loading orders...</p>
@@ -513,7 +512,7 @@ useEffect(() => {
                   key={id}
                   className="flex flex-col rounded border border-gray-200 bg-white p-4"
                 >
-                  {/* Order heading */}
+             
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div className="min-w-0">
                       <h2 className="break-words text-sm font-semibold text-gray-900">
@@ -532,7 +531,7 @@ useEffect(() => {
                     </p>
                   </div>
 
-                  {/* Guest and location details */}
+                
                   <div className="mt-4 space-y-2 text-xs text-gray-600">
                     <p className="break-words">
                       <span className="text-gray-400">Guest: </span>
@@ -559,7 +558,7 @@ useEffect(() => {
                     </div>
                   </div>
 
-                  {/* Payment summary */}
+               
                   <div className="mt-4 rounded border border-gray-100 bg-gray-50 p-3">
                     <div className="flex items-center justify-between gap-3 text-xs">
                       <span className="text-gray-500">Paid</span>
@@ -596,7 +595,7 @@ useEffect(() => {
                     </div>
                   </div>
 
-                  {/* Ordered items */}
+                
                   <div className="mt-4 border-t border-gray-100 pt-3">
                     <p className="mb-2 text-xs font-medium text-gray-500">
                       Order Items
@@ -632,7 +631,7 @@ useEffect(() => {
                     </div>
                   </div>
 
-                  {/* Order actions */}
+                  
                   <div className="mt-auto border-t border-gray-100 pt-4">
                     <div className="flex flex-wrap gap-2">
                       {!isFinalStatus && (
@@ -684,7 +683,7 @@ useEffect(() => {
         )}
       </div>
 
-      {/* Record payment modal */}
+      
       {selectedOrder && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/40 p-4"

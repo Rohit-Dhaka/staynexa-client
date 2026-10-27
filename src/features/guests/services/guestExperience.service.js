@@ -28,7 +28,7 @@ export const setGuestActive = (id, isActive) =>
 
 export const deleteGuest = (id) => unwrap(api.delete(`/guests/${id}`));
 
-/* ---------------------------- Guest services ---------------------------- */
+
 export const getRequestList = (params) => list("/guest-requests", params);
 export const getRequestSummary = () => unwrap(api.get("/guest-requests/summary"));
 export const createRequest = (data) => unwrap(api.post("/guest-requests", data));
@@ -37,7 +37,7 @@ export const setRequestStatus = (id, status) =>
   unwrap(api.patch(`/guest-requests/${id}/status`, { status }));
 export const deleteRequest = (id) => unwrap(api.delete(`/guest-requests/${id}`));
 
-/* ------------------------------- Reviews ------------------------------- */
+
 export const getReviewList = (params) => list("/reviews", params);
 export const getReviewSummary = () => unwrap(api.get("/reviews/summary"));
 export const createReview = (data) => unwrap(api.post("/reviews", data));

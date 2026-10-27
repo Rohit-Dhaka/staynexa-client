@@ -117,13 +117,7 @@ const GuestServices = () => {
           <h1 className="text-2xl font-bold text-slate-900">Guest Services</h1>
           <p className="text-sm text-slate-500">Housekeeping, laundry, food and other guest requests</p>
         </div>
-        {/* <button
-          onClick={() => setOpen(true)}
-          className="flex items-center justify-center gap-2 rounded bg-[#1a1a1a] px-5 py-2.5 text-sm font-semibold text-white hover:bg-slate-700"
-        >
-          <Plus size={16} />
-          New request
-        </button> */}
+
       </div>
 
       {summary && (

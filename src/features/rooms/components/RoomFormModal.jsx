@@ -175,7 +175,7 @@ const RoomForm = () => {
 
   return (
     <div className="min-h-[calc(100vh-2rem)] w-full bg-slate-50/80">
-      {/* Page Header */}
+      
       <div className="border-b border-slate-200 bg-white">
         <div className="flex flex-col gap-5 px-5 py-6 sm:px-8 lg:flex-row lg:items-center lg:justify-between lg:px-10">
           <div>
@@ -229,7 +229,7 @@ const RoomForm = () => {
         </div>
       </div>
 
-      {/* Main Content */}
+      
       <div className="w-full px-4 py-6 sm:px-6 lg:px-10 lg:py-8">
         {loading ? (
           <div className="rounded border border-slate-200 bg-white p-6 sm:p-10">
@@ -238,9 +238,9 @@ const RoomForm = () => {
         ) : (
           <form onSubmit={handleSubmit}>
             <div className="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1fr)_320px]">
-              {/* Form Sections */}
+              
               <div className="min-w-0 space-y-6">
-                {/* Basic Information */}
+                
                 <section className="overflow-hidden rounded border border-slate-200 bg-white ">
                   <div className="flex items-center gap-3 border-b border-slate-100 px-5 py-5 sm:px-7">
                     <div className="flex h-11 w-11 items-center justify-center rounded bg-black text-blue-600">
@@ -359,7 +359,7 @@ const RoomForm = () => {
                   </div>
                 </section>
 
-                {/* Pricing & Status */}
+                
                 <section className="overflow-hidden rounded border border-slate-200 bg-white ">
                   <div className="flex items-center gap-3 border-b border-slate-100 px-5 py-5 sm:px-7">
                     <div className="flex h-11 w-11 items-center justify-center rounded bg-emerald-50 text-emerald-600">
@@ -480,7 +480,7 @@ const RoomForm = () => {
                   </div>
                 </section>
 
-                {/* Notes */}
+                
                 <section className="overflow-hidden rounded border border-slate-200 bg-white ">
                   <div className="flex items-center gap-3 border-b border-slate-100 px-5 py-5 sm:px-7">
                     <div className="flex h-11 w-11 items-center justify-center rounded bg-violet-50 text-violet-600">
@@ -523,7 +523,7 @@ const RoomForm = () => {
                 </section>
               </div>
 
-              {/* Right Summary Panel */}
+              
               <aside className="space-y-5">
                 <div className="overflow-hidden rounded border border-slate-200 bg-white  xl:sticky xl:top-6">
                   <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-blue-950 p-6 text-white">
@@ -635,7 +635,7 @@ const RoomForm = () => {
               </aside>
             </div>
 
-            {/* Sticky Action Bar */}
+            
             <div className="sticky bottom-0 z-20 -mx-4 mt-6 border-t border-slate-200 bg-white/95 px-4 py-4 backdrop-blur-md sm:-mx-6 sm:px-6 lg:-mx-10 lg:px-10">
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <p className="hidden text-sm text-slate-500 sm:block">

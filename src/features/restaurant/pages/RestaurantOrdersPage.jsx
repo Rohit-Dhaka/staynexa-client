@@ -10,7 +10,7 @@ export default function RestaurantOrdersPage() {
 
   return (
     <div className="min-h-screen space-y-6">
-      {/* Top Header */}
+      
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight text-gray-900">
@@ -21,7 +21,7 @@ export default function RestaurantOrdersPage() {
           </p>
         </div>
 
-        {/* View Switcher */}
+        
         <div className="flex items-center gap-2">
           <button
             type="button"
@@ -51,7 +51,7 @@ export default function RestaurantOrdersPage() {
         </div>
       </div>
 
-      {/* Selected View */}
+      
       <div>
         {activeView === "create" ? (
           <CreateOrderPage />

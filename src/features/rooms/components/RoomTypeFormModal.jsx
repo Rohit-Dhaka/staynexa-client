@@ -85,7 +85,7 @@ const toForm = (roomType) => ({
 
 const SectionTitle = ({ icon: Icon, eyebrow, title, description }) => (
   <div className="mb-6 flex items-start gap-3.5">
-    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded bg-indigo-50 text-indigo-600">
+    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded bg-black text-indigo-600">
       <Icon size={21} />
     </div>
     <div className="min-w-0">
@@ -344,7 +344,7 @@ const RoomTypeForm = () => {
 
   return (
     <div className="min-h-screen w-full bg-[#f5f7fc] text-slate-800">
-      {/* Full-width page header */}
+      
       <header className="border-b border-slate-200/80 bg-white">
         <div className="w-full px-4 py-5 sm:px-6 lg:px-8 xl:px-10">
           <Link
@@ -367,7 +367,7 @@ const RoomTypeForm = () => {
                     {isEdit ? "Edit Room Type" : "Create Room Type"}
                   </h1>
 
-                  <span className="rounded-full border border-indigo-100 bg-indigo-50 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-indigo-700">
+                  <span className="rounded-full border border-indigo-100 bg-black px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-indigo-700">
                     {isEdit ? "Edit mode" : "New category"}
                   </span>
                 </div>
@@ -404,9 +404,9 @@ const RoomTypeForm = () => {
         ) : (
           <form onSubmit={handleSubmit}>
             <div className="grid grid-cols-1 items-start gap-6 xl:grid-cols-[minmax(0,1fr)_350px] 2xl:grid-cols-[minmax(0,1fr)_390px]">
-              {/* Main form column */}
+              
               <div className="min-w-0 space-y-6">
-                {/* Room identity */}
+                
                 <section className="rounded border border-slate-200/80 bg-white p-5  sm:p-7">
                   <SectionTitle
                     icon={Building2}
@@ -466,7 +466,7 @@ const RoomTypeForm = () => {
                   </div>
                 </section>
 
-                {/* Pricing and room size */}
+                
                 <section className="rounded border border-slate-200/80 bg-white p-5  sm:p-7">
                   <SectionTitle
                     icon={CircleDollarSign}
@@ -546,7 +546,7 @@ const RoomTypeForm = () => {
                   </div>
                 </section>
 
-                {/* Capacity and bed setup */}
+                
                 <section className="rounded border border-slate-200/80 bg-white p-5  sm:p-7">
                   <SectionTitle
                     icon={Users}
@@ -705,7 +705,7 @@ const RoomTypeForm = () => {
                             disabled={submitting}
                             className={`relative flex min-w-0 flex-col items-center rounded border p-4 text-center transition ${
                               selected
-                                ? "border-indigo-500 bg-indigo-50 ring-2 ring-indigo-100"
+                                ? "border-indigo-500 bg-black ring-2 ring-indigo-100"
                                 : "border-slate-200 bg-white hover:border-indigo-200 hover:bg-slate-50"
                             }`}
                           >
@@ -738,7 +738,7 @@ const RoomTypeForm = () => {
                   </div>
                 </section>
 
-                {/* Amenities */}
+                
                 <section className="rounded border border-slate-200/80 bg-white p-5  sm:p-7">
                   <SectionTitle
                     icon={Sparkles}
@@ -761,7 +761,7 @@ const RoomTypeForm = () => {
                           disabled={submitting}
                           className={`inline-flex items-center gap-2 rounded-full border px-3.5 py-2 text-sm font-semibold transition ${
                             active
-                              ? "border-indigo-500 bg-indigo-50 text-indigo-700"
+                              ? "border-indigo-500 bg-black text-indigo-700"
                               : "border-slate-200 bg-white text-slate-600 hover:border-indigo-200 hover:bg-slate-50"
                           }`}
                         >
@@ -809,7 +809,7 @@ const RoomTypeForm = () => {
                   )}
                 </section>
 
-                {/* Photos */}
+                
                 <section className="rounded border border-slate-200/80 bg-white p-5  sm:p-7">
                   <SectionTitle
                     icon={ImagePlus}
@@ -837,7 +837,7 @@ const RoomTypeForm = () => {
                     onDrop={handleDrop}
                     className={`rounded border-2 border-dashed p-4 transition sm:p-6 ${
                       dragging
-                        ? "border-indigo-400 bg-indigo-50"
+                        ? "border-indigo-400 bg-black"
                         : "border-slate-200 bg-slate-50/70"
                     }`}
                   >
@@ -903,7 +903,7 @@ const RoomTypeForm = () => {
                       disabled={submitting || totalImages >= MAX_IMAGES}
                       className="flex min-h-36 w-full flex-col items-center justify-center rounded px-4 py-6 text-center transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-50"
                     >
-                      <span className="flex h-12 w-12 items-center justify-center rounded bg-indigo-100 text-indigo-600">
+                      <span className="flex h-12 w-12 items-center justify-center rounded bg-black text-indigo-600">
                         <ImagePlus size={23} />
                       </span>
 
@@ -929,7 +929,7 @@ const RoomTypeForm = () => {
                 </section>
               </div>
 
-              {/* Right: Live room preview */}
+              
               <aside className="min-w-0 space-y-5 xl:sticky xl:top-6">
                 <section className="overflow-hidden rounded border border-slate-200/80 bg-white ">
                   <div className="relative overflow-hidden bg-gradient-to-br from-indigo-800 via-indigo-700 to-violet-700 p-6 text-white sm:p-7">
@@ -1018,7 +1018,7 @@ const RoomTypeForm = () => {
                       </p>
                     )}
 
-                    <div className="mt-5 rounded bg-indigo-50 p-4">
+                    <div className="mt-5 rounded bg-black p-4">
                       <div className="flex items-start gap-3">
                         <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded bg-white text-indigo-600">
                           <Sparkles size={18} />
@@ -1107,7 +1107,7 @@ const RoomTypeForm = () => {
               </aside>
             </div>
 
-            {/* Full-width action bar */}
+            
             <div className="mt-6 rounded border border-slate-200/80 bg-white p-4  sm:p-5">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div className="min-w-0">

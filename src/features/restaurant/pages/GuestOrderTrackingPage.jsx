@@ -157,7 +157,7 @@ export default function GuestOrderTrackingPage() {
         )}
 
         <section className="rounded border border-slate-200 bg-white">
-          {/* Header: order number + status */}
+          
           <div className="flex items-start justify-between gap-3 border-b border-slate-100 p-3">
             <div className="min-w-0">
               <p className="text-[11px] uppercase tracking-wide text-slate-500">
@@ -178,7 +178,7 @@ export default function GuestOrderTrackingPage() {
             </span>
           </div>
 
-          {/* Progress */}
+          
           <div className="border-b border-slate-100 px-3 py-2.5">
             {isCancelled ? (
               <p className="text-xs text-red-700">
@@ -223,7 +223,7 @@ export default function GuestOrderTrackingPage() {
             )}
           </div>
 
-          {/* Items */}
+          
           <div className="border-b border-slate-100 px-3 py-2.5">
             {items.length === 0 ? (
               <p className="text-xs text-slate-500">
@@ -254,7 +254,7 @@ export default function GuestOrderTrackingPage() {
             )}
           </div>
 
-          {/* Bill */}
+          
           <div className="space-y-0.5 bg-slate-50/70 px-3 py-2.5 text-xs text-slate-600">
             <div className="flex justify-between">
               <span>Subtotal</span>
@@ -274,7 +274,7 @@ export default function GuestOrderTrackingPage() {
             </div>
           </div>
 
-          {/* Footer */}
+          
           <div className="flex items-center justify-between gap-3 border-t border-slate-100 px-3 py-2">
             <p className="text-[11px] text-slate-400">
               {isFinished

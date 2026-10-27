@@ -190,7 +190,7 @@ const HousekeepingForm = () => {
     setForm((previous) => {
       const next = { ...previous, [name]: value };
 
-      // Public-area tasks use an area name instead of a room ID.
+      
       if (name === "taskType") {
         if (value === "public_area_cleaning") {
           next.room = "";
@@ -304,8 +304,7 @@ const HousekeepingForm = () => {
     setSubmitting(true);
 
     try {
-      // Create mode only: never call getTask(id) here because this route is
-      // /housekeeping/new and it does not have a task ID.
+    
       await createTask(payload);
       toast.success("Housekeeping task created successfully");
       navigate(BACK_PATH, { replace: true });
@@ -517,7 +516,7 @@ const HousekeepingForm = () => {
                       type="button"
                       onClick={() => addItem(item)}
                       disabled={submitting || checklist.length >= MAX_CHECKLIST_ITEMS}
-                      className="inline-flex items-center gap-1 rounded border border-slate-200 px-2.5 py-1.5 text-xs text-slate-700 hover:border-indigo-300 hover:bg-indigo-50 disabled:opacity-50"
+                      className="inline-flex items-center gap-1 rounded border border-slate-200 px-2.5 py-1.5 text-xs text-slate-700 hover:border-indigo-300 hover:bg-black disabled:opacity-50"
                     >
                       <Plus size={12} />
                       {item}

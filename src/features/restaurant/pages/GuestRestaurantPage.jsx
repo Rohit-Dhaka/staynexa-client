@@ -164,7 +164,7 @@ export default function GuestRestaurantPage() {
   }, []);
 
   const loadOrders = useCallback(async (options) => {
-    // onClick se event aata hai, isliye sirf { silent: true } par hi silent maano
+    
     const silent = options?.silent === true;
 
     if (!silent) setLoadingOrders(true);
@@ -197,7 +197,7 @@ useEffect(() => {
 }, [loadMenu, loadBookings, loadOrders]);
 
 
-    // Jab tak koi order ka payment pending hai, status apne aap check hota rahe
+    
   const hasPendingPayment = useMemo(
     () =>
       orders.some((order) => {
@@ -399,7 +399,7 @@ useEffect(() => {
 
   return (
     <div className="min-h-screen pb-16 text-gray-900 lg:pb-0">
-      {/* Top bar: title, room info, tabs */}
+      
       <header className="rounded border border-gray-200 bg-white px-3 py-2.5">
         <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
           <div className="min-w-0">
@@ -411,7 +411,7 @@ useEffect(() => {
             </h1>
           </div>
 
-          {/* Room info chips */}
+          
           <div className="flex min-w-0 flex-1 flex-wrap items-center gap-1.5 text-xs">
             {loadingBookings ? (
               <span className="text-gray-500">Loading room...</span>
@@ -473,7 +473,7 @@ useEffect(() => {
             )}
           </div>
 
-          {/* Tabs */}
+          
           <div className="flex items-center gap-1 rounded border border-gray-200 p-0.5">
             <button
               type="button"
@@ -514,10 +514,10 @@ useEffect(() => {
         </div>
       )}
 
-      {/* ================= MENU TAB ================= */}
+      
       {activeTab === "menu" && (
         <div className="mt-3 grid grid-cols-1 items-start gap-3 lg:grid-cols-[minmax(0,1fr)_320px]">
-          {/* Left: search + categories + items */}
+          
           <section className="min-w-0 space-y-3">
             <div className="rounded border border-gray-200 bg-white p-2.5">
               <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
@@ -660,7 +660,7 @@ useEffect(() => {
             )}
           </section>
 
-          {/* Right: sticky cart */}
+          
           <aside
             id="guest-cart"
             className="rounded border border-gray-200 bg-white p-3 lg:sticky lg:top-[88px]"
@@ -807,7 +807,7 @@ useEffect(() => {
         </div>
       )}
 
-      {/* ================= ORDERS TAB ================= */}
+      
       {activeTab === "orders" && (
         <section
           id="my-restaurant-orders"
@@ -874,7 +874,7 @@ useEffect(() => {
                 const paymentStatusClass = {
                   paid: "border-emerald-200 bg-emerald-50 text-emerald-700",
                   partial: "border-amber-200 bg-amber-50 text-amber-700",
-                  pending: "border-blue-200 bg-blue-50 text-blue-700",
+                  pending: "border-blue-200 bg-black text-blue-700",
                   unpaid: "border-red-200 bg-red-50 text-red-700",
                   refunded: "border-gray-200 bg-gray-100 text-gray-700",
                 }[paymentStatus] || "border-gray-200 bg-gray-50 text-gray-600";
@@ -936,7 +936,7 @@ useEffect(() => {
                       )}
                     </div>
 
-                    {/* Guest payment status and balance */}
+                    
                     <div className="mt-3 rounded border border-gray-200 p-3">
                       <div className="flex flex-wrap items-center justify-between gap-2">
                         <h3 className="text-xs font-semibold text-gray-900">
@@ -1020,7 +1020,7 @@ useEffect(() => {
         </section>
       )}
 
-      {/* Mobile floating cart bar */}
+      
       {activeTab === "menu" && itemCount > 0 && (
         <button
           type="button"

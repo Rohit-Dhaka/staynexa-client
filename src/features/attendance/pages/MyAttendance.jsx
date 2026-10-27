@@ -108,13 +108,7 @@ const MyAttendance = () => {
       >
         My Leaves
       </Link>
-      {/* <button
-        type="button"
-        onClick={() => setApplying(true)}
-        className="flex items-center gap-2 rounded bg-black px-4 py-2.5 text-sm font-semibold text-white "
-      >
-        <CalendarPlus size={16} /> Apply for Leave
-      </button> */}
+ 
     </div>
   </div>
 

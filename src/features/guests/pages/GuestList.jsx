@@ -24,7 +24,7 @@ const LIMIT = 10;
 const selectClass =
   "rounded border border-slate-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100";
 
-// Query parameters the backend understands.
+
 const FILTERS = {
   vip: { isVip: "true" },
   blacklisted: { isBlacklisted: "true" },
@@ -72,7 +72,7 @@ const GuestList = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
 
-  // The backend lets only managers and super admins edit guests.
+  
   const canManage = [ROLES.SUPER_ADMIN, ROLES.MANAGER].includes(user?.role);
 
   const [items, setItems] = useState([]);
@@ -100,7 +100,7 @@ const GuestList = () => {
 
       const data = await getGuests(params);
 
-      // The backend sends { guests, meta }.
+      
       setItems(data.guests || []);
       setMeta(data.meta || null);
     } catch (error) {

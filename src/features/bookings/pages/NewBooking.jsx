@@ -20,7 +20,7 @@ import {
   createHold,
   addPayment,
 } from "../services/bookings.service";
-// Namespace import: the page still loads even if the function name differs.
+
 import * as frontdeskService from "../../frontdesk/services/frontdesk.service";
 import { lookupGuest, suggestGuests } from "../../guests/services/Guests.service";
 import { Field, ErrorBox, NoteBox, inputClass } from "../components/formUi";
@@ -37,10 +37,10 @@ import {
   toInputDate,
 } from "../utils/bookingUi";
 
-// The check-in function exported by frontdesk.service.js.
+
 const checkInGuest = frontdeskService.checkIn;
 
-// Same rule as the backend, so "+91 98765-43210" and "9876543210" match.
+
 const phoneKey = (value = "") => {
   let digits = String(value).replace(/\D/g, "");
   if (digits.length === 12 && digits.startsWith("91")) digits = digits.slice(2);
@@ -128,7 +128,7 @@ const NewBooking = () => {
   });
   const [extraGuests, setExtraGuests] = useState([]);
 
-  // Saved guest profile (returning guest)
+  
   const [guestId, setGuestId] = useState("");
   const [lookup, setLookup] = useState(EMPTY_LOOKUP);
   const [suggestQuery, setSuggestQuery] = useState("");
@@ -159,17 +159,14 @@ const NewBooking = () => {
   const [checkInNow, setCheckInNow] = useState(false);
   const [saving, setSaving] = useState(false);
 
-  // "fixed" = check-in and check-out are both confirmed
-  // "open"  = check-in only, the check-out date is not confirmed yet
+
   const [stayMode, setStayMode] = useState("fixed");
   const [expectedNights, setExpectedNights] = useState("1");
 
   const isHold = holdOpts.isHold;
   const isOpenStay = stayMode === "open";
 
-  /* ----------------------- Returning guest lookup ----------------------- */
 
-  // The saved guest only counts while the typed phone number still matches.
   const matchedGuest =
     lookup.guest && phoneKey(lookup.guest.phone) === phoneKey(guest.phone)
       ? lookup.guest
@@ -179,7 +176,7 @@ const NewBooking = () => {
   const showNewGuestHint =
     !lookup.loading && !matchedGuest && phoneKey(guest.phone).length >= 10;
 
-  // Look the phone number up once the user stops typing.
+  
   useEffect(() => {
     if (phoneKey(guest.phone).length < 10) {
       setLookup(EMPTY_LOOKUP);
@@ -211,7 +208,7 @@ const NewBooking = () => {
     };
   }, [guest.phone]);
 
-  // Type-ahead search by name, phone or email.
+  
   useEffect(() => {
     const query = suggestQuery.trim();
 
@@ -275,7 +272,7 @@ const NewBooking = () => {
   const handlePhoneChange = (value) => {
     setGuest((previous) => ({ ...previous, phone: value }));
 
-    // A different phone number means a different person.
+    
     if (guestId && phoneKey(value) !== phoneKey(lookup.guest?.phone)) {
       setGuestId("");
     }
@@ -300,13 +297,11 @@ const NewBooking = () => {
     isManager &&
     (pricing.pricePerNight !== "" || pricing.discountAmount !== "");
 
-  /* -------------------- "Check in now" toggle rules -------------------- */
 
-  // Only for confirmed (not hold) bookings that start today.
   const canOfferCheckIn =
     Boolean(checkInGuest) && !isHold && stay.checkIn === today;
 
-  // Reasons the toggle cannot be switched on yet.
+  
   const checkInBlockedReason = !guest.idNumber.trim()
     ? "Enter the guest's ID number in the Guest Details step to enable check-in."
     : advanceDue > 0
@@ -330,7 +325,7 @@ const NewBooking = () => {
 
       if (name === "checkIn") {
         if (isOpenStay) {
-          // Check-in only: the expected check-out follows the expected nights.
+          
           next.checkOut = addDaysToInput(value, toNightsNumber(expectedNights));
         } else if (next.checkOut <= value) {
           next.checkOut = addDaysToInput(value, 1);
@@ -438,7 +433,7 @@ const NewBooking = () => {
       guestId: guestId || undefined,
       checkIn: stay.checkIn,
       checkOut: stay.checkOut,
-      // false = check-in only, the check-out date is only an estimate
+      
       checkOutConfirmed: !isOpenStay,
       adults: Number(stay.adults),
       children: Number(stay.children),
@@ -604,7 +599,7 @@ const NewBooking = () => {
       {step === 1 && (
         <div className="space-y-5">
           <div className="rounded border border-slate-200 bg-white p-5">
-            {/* Switch between "check-in & check-out" and "check-in only" */}
+            
             <div
               role="group"
               aria-label="Stay type"
@@ -804,7 +799,7 @@ const NewBooking = () => {
                         roomId: opt.rooms[0]?._id || "",
                       })
                     }
-                    className="mt-4 rounded border border-indigo-200 px-4 py-2 text-sm font-medium text-indigo-600 transition hover:bg-indigo-50"
+                    className="mt-4 rounded border border-indigo-200 px-4 py-2 text-sm font-medium text-indigo-600 transition hover:bg-black"
                   >
                     Choose a Room Type
                   </button>
@@ -833,7 +828,7 @@ const NewBooking = () => {
               Primary guest
             </h2>
 
-            {/* Find a saved guest */}
+            
             <div className="relative mb-4">
               <label
                 htmlFor="guestSearch"
@@ -910,7 +905,7 @@ const NewBooking = () => {
               )}
             </div>
 
-            {/* Result of the phone number lookup */}
+            
             {matchedGuest?.isBlacklisted && (
               <div className="mb-4 flex items-start gap-3 rounded border border-rose-200 bg-rose-50 p-3.5 text-sm text-rose-800">
                 <AlertTriangle size={18} className="mt-0.5 shrink-0" />
@@ -926,7 +921,7 @@ const NewBooking = () => {
             )}
 
             {matchedGuest && !matchedGuest.isBlacklisted && !usingSavedGuest && (
-              <div className="mb-4 flex flex-col gap-3 rounded border border-indigo-200 bg-indigo-50 p-3.5 text-sm text-indigo-900 sm:flex-row sm:items-center sm:justify-between">
+              <div className="mb-4 flex flex-col gap-3 rounded border border-indigo-200 bg-black p-3.5 text-sm text-indigo-900 sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex items-start gap-3">
                   <UserCheck size={18} className="mt-0.5 shrink-0" />
                   <p>
@@ -1198,25 +1193,7 @@ const NewBooking = () => {
                   className={inputClass}
                 />
               </Field>
-              {/* <Field label="Company name (for GST invoice)">
-                <input
-                  value={extra.companyName}
-                  onChange={(e) =>
-                    setExtra({ ...extra, companyName: e.target.value })
-                  }
-                  className={inputClass}
-                />
-              </Field>
-              <Field label="GSTIN">
-                <input
-                  value={extra.gstin}
-                  maxLength={15}
-                  onChange={(e) =>
-                    setExtra({ ...extra, gstin: e.target.value.toUpperCase() })
-                  }
-                  className={inputClass}
-                />
-              </Field> */}
+      
               <Field label="Special requests">
                 <textarea
                   rows="2"
@@ -1284,7 +1261,7 @@ const NewBooking = () => {
                   onClick={() => setHoldOpts({ ...holdOpts, isHold: o.value })}
                   className={`rounded border p-4 text-left transition ${
                     isHold === o.value
-                      ? "border-indigo-500 bg-indigo-50 ring-2 ring-indigo-100"
+                      ? "border-indigo-500 bg-black ring-2 ring-indigo-100"
                       : "border-slate-200 hover:bg-slate-50"
                   }`}
                 >

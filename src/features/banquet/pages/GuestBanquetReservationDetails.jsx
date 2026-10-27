@@ -110,7 +110,7 @@ export default function GuestBanquetReservationDetails() {
   return (
     <main className="min-h-screen w-full bg-white text-slate-800">
       <div className="w-full px-5 py-6 sm:px-8 lg:px-12 xl:px-16">
-        {/* Top navigation */}
+        
         <div className="flex items-center justify-between border-b border-slate-200 pb-5">
           <button
             onClick={() => navigate("/guest/banquet/my-reservations")}
@@ -127,7 +127,7 @@ export default function GuestBanquetReservationDetails() {
           </button>
         </div>
 
-        {/* Page heading */}
+        
         <section className="flex flex-col justify-between gap-5 border-b border-slate-200 py-8 sm:flex-row sm:items-center">
           <div>
             <p className="text-sm text-slate-500">
@@ -158,7 +158,7 @@ export default function GuestBanquetReservationDetails() {
           </div>
         </section>
 
-        {/* Booking details */}
+        
         <section className="py-8">
           <div className="mb-6">
             <h2 className="text-lg font-semibold text-slate-900">
@@ -186,7 +186,7 @@ export default function GuestBanquetReservationDetails() {
           </div>
         </section>
 
-        {/* Special requests */}
+        
         <section className="border-t border-slate-200 py-7">
           <h2 className="text-lg font-semibold text-slate-900">
             Special Requests
@@ -197,7 +197,7 @@ export default function GuestBanquetReservationDetails() {
           </p>
         </section>
 
-        {/* Status information */}
+        
         <section className="border-t border-slate-200 py-7">
           <h2 className="text-lg font-semibold text-slate-900">
             Booking Update
@@ -216,7 +216,7 @@ export default function GuestBanquetReservationDetails() {
           </p>
         </section>
 
-        {/* Footer action */}
+        
         <div className="flex flex-wrap gap-3 border-t border-slate-200 py-6">
           <button
             onClick={() => navigate("/guest/banquet/my-reservations")}

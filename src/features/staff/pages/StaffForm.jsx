@@ -284,7 +284,7 @@ const StaffForm = () => {
 
   const [showPassword, setShowPassword] = useState(false);
 
-  const [created, setCreated] = useState(null); // { name, email, password }
+  const [created, setCreated] = useState(null); 
 
   const [copied, setCopied] = useState(false);
 
@@ -726,7 +726,7 @@ const StaffForm = () => {
 
         <form onSubmit={handleSubmit} className="space-y-5">
 
-          {/* Account */}
+         
 
           <SectionCard
 
@@ -842,7 +842,7 @@ const StaffForm = () => {
 
                     >
 
-                      {/* Temporary */}
+                     
                        Password{" "}
 
                       <span className="text-rose-500">*</span>
@@ -939,7 +939,7 @@ const StaffForm = () => {
 
 
 
-          {/* Work */}
+          
 
           <SectionCard
 
@@ -1041,7 +1041,7 @@ const StaffForm = () => {
 
 
 
-          {/* Personal */}
+      
 
           <SectionCard
 
@@ -1314,7 +1314,7 @@ const StaffForm = () => {
 
 
 
-          {/* Emergency + ID */}
+        
 
           <SectionCard
 
@@ -1410,7 +1410,7 @@ const StaffForm = () => {
 
 
 
-          {/* Actions */}
+       
 
           <div className="flex flex-col-reverse gap-3 rounded border border-slate-200 bg-white p-4 sm:flex-row sm:items-center sm:justify-between">
 

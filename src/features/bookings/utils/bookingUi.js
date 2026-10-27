@@ -45,7 +45,7 @@ export const nightsBetween = (from, to) => {
 };
 
 export const BOOKING_STATUS_META = {
-    hold: { label: "Hold", badge: "bg-indigo-100 text-indigo-700", bar: "bg-indigo-400" },
+    hold: { label: "Hold", badge: "bg-black text-indigo-700", bar: "bg-black" },
   pending: { label: "Pending", badge: "bg-amber-100 text-amber-700", bar: "bg-amber-400" },
   confirmed: { label: "Confirmed", badge: "bg-sky-100 text-sky-700", bar: "bg-sky-500" },
   checked_in: { label: "Checked in", badge: "bg-emerald-100 text-emerald-700", bar: "bg-emerald-500" },

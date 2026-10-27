@@ -13,7 +13,7 @@ import Login from "../features/auth/pages/Login";
 import GuestSignup from "../features/auth/pages/GuestSignup";
 import Profile from "../features/auth/pages/Profile";
 import ChangePassword from "../features/auth/pages/ChangePassword";
-// import Dashboard from "../features/dashboard/pages/Dashboard";
+
 import GuestHome from "../features/guests/pages/GuestHome";
 import StaffList from "../features/staff/pages/StaffList";
 import Rooms from "../features/rooms/pages/Rooms";
@@ -94,13 +94,31 @@ import RestaurantManagementLayout, {
 import GuestOrderTrackingPage from "../features/restaurant/pages/GuestOrderTrackingPage.jsx";
 import PaymentReceiptPage from "../features/restaurant/pages/PaymentReceiptPage.jsx";
 
+
+
+import AdminCabBookingsPage from "../features/cab/pages/AdminCabBookingsPage.jsx";
+import CabBookingPage from "../features/cab/pages/CabBookingPage.jsx";
+import AdminCabDashboardPage from "../features/cab/pages/AdminCabDashboardPage.jsx";
+import AdminCabVehiclesPage from "../features/cab/pages/AdminCabVehiclesPage.jsx";
+import AdminCabRatesPage from "../features/cab/pages/AdminCabRatesPage.jsx";
+import AdminCabDriversPage from "../features/cab/pages/AdminCabDriversPage.jsx";
+import AdminCabDispatchPage from "../features/cab/pages/AdminCabDispatchPage.jsx";
+import MaintenanceHistory from "../features/mainteance/page/MaintenanceHistory.jsx";
+import MaintenanceDashboard from "../features/mainteance/page/MaintenanceDashboard.jsx";
+import AIManagerPage from "../features/ai/pages/AIManagerPage.jsx";
+import GuestLostFound from "../features/lostFound/pages/GuestLostFound.jsx";
+import AdminLostFound from "../features/lostFound/pages/AdminLostFound.jsx";
+
+
 const SharedLayout = () => {
   const { user } = useAuth();
   return user?.role === ROLES.GUEST ? <GuestLayout /> : <DashboardLayout />;
 };
 
 const AppRoutes = () => (
+    
   <Routes>
+    
     <Route path="/" element={<Navigate to="/login" replace />} />
 
     <Route element={<AuthLayout />}>
@@ -163,6 +181,44 @@ const AppRoutes = () => (
           <Route path="/restaurant/orders" element={<RestaurantOrdersPage />} />
           <Route path="/restaurant/orders/create" element={<RestaurantOrdersPage />} />
           <Route path="/restaurant/receipt/:orderId" element={<PaymentReceiptPage />}/>
+
+
+          {/* <Route path="/admin/cab-bookings" element={<AdminCabBookingsPage />} />
+          <Route path="/admin/cab-dashboard" element={<AdminCabDashboardPage />} />
+          <Route path="/admin/cab-vehicles" element={<AdminCabVehiclesPage />}/>
+          <Route path="/admin/cab-rates" element={<AdminCabRatesPage />} />
+          <Route path="/admin/cab-drivers" element={<AdminCabDriversPage />} />
+          <Route path="/admin/cab-dispatch" element={<AdminCabDispatchPage />} /> */}
+
+          {/* <Route path="/admin/cab">
+  <Route index element={<AdminCabDashboardPage />} />
+  <Route path="bookings" element={<AdminCabBookingsPage />} />
+  <Route path="dispatch" element={<AdminCabDispatchPage />} />
+  <Route path="vehicles" element={<AdminCabVehiclesPage />} />
+  <Route path="drivers" element={<AdminCabDriversPage />} />
+  <Route path="rates" element={<AdminCabRatesPage />} />
+</Route> */}
+
+
+<Route path="/admin/cab" element={<AdminCabDashboardPage />}>
+  <Route path="bookings" element={<AdminCabBookingsPage />} />
+  <Route path="dispatch" element={<AdminCabDispatchPage />} />
+  <Route path="vehicles" element={<AdminCabVehiclesPage />} />
+  <Route path="drivers" element={<AdminCabDriversPage />} />
+  <Route path="rates" element={<AdminCabRatesPage />} />
+  
+</Route>
+
+
+
+
+
+        <Route path="/maintenance/dashboard" element={<MaintenanceDashboard />} />
+        <Route path="/maintenance/history" element={<MaintenanceHistory />} />
+
+
+
+          
           
           
           <Route
@@ -172,7 +228,7 @@ const AppRoutes = () => (
 
           <Route path="/front-desk" element={<FrontDesk />} />
           <Route element={<RoleRoute allowedRoles={[ROLES.SUPER_ADMIN]} />}>
-            {/* <Route path="/staff" element={<StaffList />} />             */}
+            
             <Route path="/staff">
               <Route index element={<StaffList />} />
               <Route path="new" element={<StaffForm />} />
@@ -204,6 +260,15 @@ const AppRoutes = () => (
             <Route path="/expenses/new" element={<ExpenseForm />} />
             <Route path="/expenses/:id" element={<ExpenseDetails />} />
             <Route path="/expenses/:id/edit" element={<ExpenseEdit />} />
+
+
+
+
+            <Route path="/ai-manager" element={<AIManagerPage />} />
+            <Route path="/lostfound" element={<AdminLostFound />} />
+            
+
+
           </Route>
         </Route>
       </Route>
@@ -220,12 +285,14 @@ const AppRoutes = () => (
           <Route path="/guest/bookings" element={<MyBookings />} />
           <Route path="/guest/banquet/:hallId/book" element={<GuestBanquetBooking />} />
           <Route path="/guest/banquet/my-reservations" element={<GuestBanquetReservations />} />
-          <Route
-            path="/guest/banquet/reservations/:bookingId"
-            element={<GuestBanquetReservationDetails />}
-          />
+          <Route path="/guest/banquet/reservations/:bookingId" element={<GuestBanquetReservationDetails />} />
           <Route path="/guest/services" element={<GuestServiceRequests />} />
           <Route path="/guest/reviews" element={<GuestReviews />} />
+
+
+          <Route path="/guest/cabs/new" element={<CabBookingPage />} />
+          <Route path="/guest/lostfound" element={<GuestLostFound />} />
+          
         </Route>
       </Route>
       <Route path="/unauthorized" element={<Unauthorized />} />

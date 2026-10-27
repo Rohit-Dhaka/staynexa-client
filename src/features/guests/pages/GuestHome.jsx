@@ -64,7 +64,7 @@ const GuestHome = () => {
 
   return (
     <div className="w-full min-w-0 space-y-4 pb-4">
-      {/* Welcome header */}
+      
       <section className="rounded bg-black p-5 text-white sm:p-6">
         <div className="flex flex-col justify-between gap-4 lg:flex-row lg:items-center">
           <div className="min-w-0">
@@ -105,7 +105,7 @@ const GuestHome = () => {
         </div>
       </section>
 
-      {/* Main dashboard content */}
+      
       <div className="grid grid-cols-1 items-start gap-4 xl:grid-cols-[minmax(0,1.65fr)_minmax(280px,0.85fr)]">
         <section className="min-w-0 space-y-4">
           <div>
@@ -145,7 +145,7 @@ const GuestHome = () => {
             ))}
           </div>
 
-          {/* Helpful information */}
+          
           <div className="rounded border border-neutral-200 bg-white p-4">
             <div className="flex items-center gap-3">
               <div className="flex h-9 w-9 items-center justify-center rounded bg-black text-white">
@@ -185,7 +185,7 @@ const GuestHome = () => {
           </div>
         </section>
 
-        {/* Right-side panel */}
+        
         <aside className="min-w-0 space-y-4">
           <section className="overflow-hidden rounded border border-neutral-200 bg-white">
             <div className="border-b border-neutral-100 px-4 py-3">
@@ -239,7 +239,7 @@ const GuestHome = () => {
             </div>
           </section>
 
-          {/* Profile shortcut */}
+          
           <section className="rounded border border-neutral-200 bg-white p-4">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-black text-white">

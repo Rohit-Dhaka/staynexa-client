@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import toast from "react-hot-toast";
 import useAuth from "../../hooks/useAuth";
-// import { getNotifications } from "../../services/notifications.service";
+
 import { getNotifications } from "../../features/notifications/services/notifications.service";
 
 const ROLE_LABELS = {
@@ -36,11 +36,11 @@ const Navbar = ({ onMenuClick }) => {
     }
 
     try {
-      // Backend returns data.unreadCount.
+      
       const data = await getNotifications({ page: 1, limit: 1 });
       setUnreadCount(Number(data?.unreadCount) || 0);
     } catch (error) {
-      // Keep Navbar usable if notification loading fails.
+      
       console.error("Failed to load notification count:", error);
     }
   }, [user]);
@@ -48,10 +48,10 @@ const Navbar = ({ onMenuClick }) => {
   useEffect(() => {
     loadUnreadCount();
 
-    // Refresh the badge periodically.
+    
     const intervalId = window.setInterval(loadUnreadCount, 60000);
 
-    // Refresh when the user returns to the browser tab.
+    
     const handleFocus = () => loadUnreadCount();
     window.addEventListener("focus", handleFocus);
 
@@ -110,7 +110,7 @@ const Navbar = ({ onMenuClick }) => {
 
   return (
     <header className="sticky top-0 z-30 flex h-[70px] items-center justify-between border-b border-gray-100 bg-white px-3 sm:px-6">
-      {/* Mobile Menu */}
+    
       <button
         type="button"
         onClick={onMenuClick}
@@ -129,7 +129,7 @@ const Navbar = ({ onMenuClick }) => {
           onClick={handleNotificationsClick}
           aria-label={`Notifications, ${unreadCount} unread`}
           title={`${unreadCount} unread notification${unreadCount === 1 ? "" : "s"}`}
-          className="relative flex h-10 w-10 items-center justify-center rounded-full text-gray-600 transition hover:bg-black hover:text-blue-600"
+          className="relative flex h-10 w-10 items-center justify-center rounded-full text-gray-600 transition hover:bg-black hover:text-white"
         >
           <Bell size={21} />
 
@@ -140,7 +140,7 @@ const Navbar = ({ onMenuClick }) => {
           )}
         </button>
 
-        {/* Profile Menu */}
+     
         <div className="relative" ref={menuRef}>
           <button
             type="button"

@@ -25,6 +25,9 @@ import {
   clearReadNotifications,
 } from "../services/notifications.service";
 
+// import { requestNotificationPermission } from "../../firebase/notifications.js";
+import { requestNotificationPermission } from "../../../firebase/notifications.js";
+
 const CATEGORY_META = {
   booking: {
     label: "Booking",
@@ -69,6 +72,10 @@ const dateText = (value) =>
 export default function Notifications() {
   const navigate = useNavigate();
   const [items, setItems] = useState([]);
+  const [pushLoading, setPushLoading] = useState(false);
+  const [pushStatus, setPushStatus] = useState(
+    "Push notifications have not been enabled yet.",
+  );
   const [pagination, setPagination] = useState({
     page: 1,
     pages: 1,
@@ -179,6 +186,38 @@ export default function Notifications() {
     }
   };
 
+  const enablePushNotifications = async () => {
+    try {
+      setPushLoading(true);
+      setPushStatus("Requesting notification permission...");
+
+      console.log("[FCM] Starting push notification setup");
+
+      const token = await requestNotificationPermission();
+
+      if (!token) {
+        setPushStatus("Notification permission was not granted.");
+        console.warn("[FCM] No token generated");
+        return;
+      }
+
+
+      setPushStatus(
+        "FCM token generated successfully. Backend registration is pending.",
+      );
+
+      toast.success("FCM token generated successfully");
+    } catch (error) {
+      console.error("[FCM] Setup failed:", error);
+
+      setPushStatus(error?.message || "Could not enable push notifications.");
+
+      toast.error("Could not enable push notifications");
+    } finally {
+      setPushLoading(false);
+    }
+  };
+
   return (
     <main className="  space-y-6 ">
       <header className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
@@ -196,6 +235,7 @@ export default function Notifications() {
             Stay updated with bookings, staff activity and payroll.
           </p>
         </div>
+
         <div className="flex flex-wrap gap-2">
           <button
             type="button"
@@ -214,6 +254,42 @@ export default function Notifications() {
           </button>
         </div>
       </header>
+      <section className="rounded border border-slate-200 bg-white p-4 sm:p-5">
+        <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+          <div>
+            <h2 className="font-semibold text-slate-900">
+              Browser Push Notifications
+            </h2>
+
+            <p className="mt-1 text-sm text-slate-500">
+              Receive notifications from your hotel management system.
+            </p>
+
+            <p className="mt-2 text-sm text-slate-600" role="status">
+              {pushStatus}
+            </p>
+          </div>
+
+          <button
+            type="button"
+            onClick={enablePushNotifications}
+            disabled={pushLoading}
+            className="inline-flex shrink-0 items-center justify-center gap-2 rounded border border-slate-300 px-4 py-2.5 text-sm font-semibold text-slate-700 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {pushLoading ? (
+              <>
+                <Loader2 size={16} className="animate-spin" />
+                Enabling...
+              </>
+            ) : (
+              <>
+                <Bell size={16} />
+                Enable Push Notifications
+              </>
+            )}
+          </button>
+        </div>
+      </section>
       <section className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <Summary
           title="Total notifications"
@@ -231,6 +307,7 @@ export default function Notifications() {
           icon={<CheckCheck size={22} />}
         />
       </section>
+
       <section className="overflow-hidden rounded border border-slate-200 bg-white">
         <div className="border-b border-slate-100 p-4 sm:p-5">
           <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
@@ -263,7 +340,7 @@ export default function Notifications() {
                   setActiveFilter(filter.value);
                   setPagination((p) => ({ ...p, page: 1 }));
                 }}
-                className={`shrink-0 rounded px-3 py-2 text-xs font-semibold ${activeFilter === filter.value ? "bg-black text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`}
+                className={`shrink-0 rounded px-3 py-2 text-xs font-semibold ${activeFilter === filter.value ? "bg-blue-100 text-black" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`}
               >
                 {filter.label}
                 {filter.value === "unread" && unreadCount > 0
@@ -285,7 +362,7 @@ export default function Notifications() {
               return (
                 <article
                   key={item._id}
-                  className={`flex gap-3 p-4 sm:gap-4 sm:p-5 ${item.read ? "bg-white" : "bg-black/40"}`}
+                  className={`flex gap-3 p-4 sm:gap-4 sm:p-5 ${item.read ? "bg-white" : "bg-gray-100"}`}
                 >
                   <span
                     className={`flex h-11 w-11 shrink-0 items-center justify-center rounded ${meta.color}`}
@@ -302,7 +379,7 @@ export default function Notifications() {
                         {item.title}
                       </span>
                       {!item.read && (
-                        <span className="rounded-full bg-black px-2 py-0.5 text-[10px] font-bold text-blue-700">
+                        <span className="rounded-full bg-black px-2 py-0.5 text-[10px] font-bold text-white">
                           UNREAD
                         </span>
                       )}
@@ -376,7 +453,7 @@ function Summary({ title, value, icon }) {
         <p className="text-sm text-slate-500">{title}</p>
         <p className="mt-2 text-3xl font-bold text-slate-900">{value}</p>
       </div>
-      <span className="flex h-12 w-12 items-center justify-center rounded bg-black text-blue-600">
+      <span className="flex h-12 w-12 items-center justify-center rounded bg-blue-100 text-blue-600">
         {icon}
       </span>
     </article>

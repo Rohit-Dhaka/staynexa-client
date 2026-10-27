@@ -22,6 +22,8 @@ import {
   PanelLeftClose,
   PanelLeftOpen,
   Star,
+  Car,
+  MicSignal,
 } from "lucide-react";
 import toast from "react-hot-toast";
 import useAuth from "../hooks/useAuth";
@@ -32,6 +34,8 @@ const navLinks = [
   { label: "Banquet Halls", path: "/guest/banquet", icon: Building2 },
   { label: "Services", path: "/guest/services", icon: ConciergeBell },
   { label: "Restaurant", path: "/guest/restaurant", icon: UtensilsCrossed },
+  { label: "Cab", path: "/guest/cabs/new", icon: Car },
+  { label: "Lost Found", path: "/guest/lostfound", icon: MicSignal },
   { label: "Reviews", path: "/guest/reviews", icon: Star },
 ];
 
@@ -280,7 +284,7 @@ const GuestLayout = () => {
     );
   };
 
-  // dark = true when shown on a black background
+
   const profileAvatar = (size = "h-10 w-10", dark = false) =>
     user.profileImage ? (
       <img
@@ -302,13 +306,13 @@ const GuestLayout = () => {
 
   return (
     <div className="min-h-screen bg-white text-black">
-      {/* Desktop sidebar */}
+      
       <aside
         className={`fixed inset-y-0 left-0 z-40 hidden border-r border-white/10 bg-black text-white lg:flex lg:flex-col ${
           collapsed ? "w-[84px]" : "w-64"
         } transition-[width] duration-300`}
       >
-        {/* Brand */}
+    
         <div
           className={`flex h-[72px] shrink-0 items-center border-b border-white/10 ${
             collapsed ? "justify-center px-2" : "px-5"
@@ -331,7 +335,7 @@ const GuestLayout = () => {
           </Link>
         </div>
 
-        {/* Navigation area */}
+        
         <div className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden px-3 py-5">
           <div
             className={`mb-4 flex h-8 items-center ${
@@ -366,11 +370,11 @@ const GuestLayout = () => {
           <nav className="space-y-1.5">{renderNavLinks()}</nav>
         </div>
 
-        {/* Bottom section */}
+      
         <div className="shrink-0 border-t border-white/10 p-3">
           {!collapsed && guestInfoCard()}
 
-          {/* Desktop profile */}
+     
           <div className="relative" ref={profileRef}>
             <button
               type="button"
@@ -427,13 +431,13 @@ const GuestLayout = () => {
         </div>
       </aside>
 
-      {/* Main page */}
+      
       <div
         className={`min-h-screen min-w-0 transition-[padding] duration-300 ${
           collapsed ? "lg:pl-[84px]" : "lg:pl-64"
         }`}
       >
-        {/* Topbar */}
+        
         <header className="sticky top-0 z-30 border-b border-neutral-200 bg-white/95 backdrop-blur-xl">
           <div className="flex h-[72px] items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
             <div className="flex min-w-0 items-center gap-3">
@@ -459,7 +463,7 @@ const GuestLayout = () => {
               </div>
             </div>
 
-            {/* Top-right profile */}
+            
             <div className="relative shrink-0" ref={mobileProfileRef}>
               <button
                 type="button"
@@ -513,7 +517,7 @@ const GuestLayout = () => {
           </div>
         </header>
 
-        {/* Mobile drawer */}
+        
         {menuOpen && (
           <div className="fixed inset-0 z-50 lg:hidden">
             <button
@@ -524,7 +528,7 @@ const GuestLayout = () => {
             />
 
             <aside className="absolute inset-y-0 left-0 flex w-[min(300px,85vw)] flex-col bg-black text-white">
-              {/* Drawer header */}
+              
               <div className="flex h-[72px] shrink-0 items-center justify-between border-b border-white/10 px-5">
                 <Link
                   to="/guest"
@@ -547,7 +551,7 @@ const GuestLayout = () => {
                 </button>
               </div>
 
-              {/* Drawer navigation */}
+              
               <div className="min-h-0 flex-1 overflow-y-auto p-4">
                 <p className="mb-3 px-3 text-[11px] font-bold uppercase tracking-[0.16em] text-neutral-500">
                   Guest Menu
@@ -558,7 +562,7 @@ const GuestLayout = () => {
                 {guestInfoCard(true)}
               </div>
 
-              {/* Drawer bottom profile */}
+              
               <div className="shrink-0 border-t border-white/10 bg-black p-4">
                 <div className="mb-3 flex items-center gap-3 rounded bg-white/5 p-3">
                   {profileAvatar("h-10 w-10", true)}
@@ -579,7 +583,7 @@ const GuestLayout = () => {
           </div>
         )}
 
-        {/* Route content */}
+        
         <main className="mx-auto w-full max-w-[1600px] p-4 sm:p-6 lg:p-8">
           <Outlet />
         </main>

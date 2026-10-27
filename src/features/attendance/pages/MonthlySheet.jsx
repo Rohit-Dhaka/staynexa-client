@@ -14,7 +14,7 @@ import {
   ATTENDANCE_META,
   MONTH_NAMES,
   formatUnits,
-  //   formatWeekday,
+  
   getErrorMessage,
   toDayKey,
 } from "../../../utils/attendanceUi";
@@ -109,7 +109,7 @@ const MonthlySheet = () => {
   const getMonthGrid = () => {
     const first = new Date(ym.year, ym.month - 1, 1);
     const daysInMonth = new Date(ym.year, ym.month, 0).getDate();
-    // Convert JS Sunday-first index into a Monday-first calendar offset.
+    
     const offset = (first.getDay() + 6) % 7;
     const cells = [];
 
@@ -181,7 +181,7 @@ const MonthlySheet = () => {
     <div className="space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <div className="mb-2 inline-flex items-center gap-2 rounded-full bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-700">
+          <div className="mb-2 inline-flex items-center gap-2 rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-indigo-700">
             <CalendarDays size={14} />
             Attendance calendar
           </div>
@@ -201,7 +201,7 @@ const MonthlySheet = () => {
             type="button"
             onClick={() => shift(-1)}
             aria-label="Previous month"
-            className="rounded border border-slate-200 bg-white p-2.5 text-slate-600  transition hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700"
+            className="rounded border border-slate-200 bg-white p-2.5 text-slate-600  transition hover:border-indigo-200 "
           >
             <ChevronLeft size={18} />
           </button>
@@ -218,14 +218,14 @@ const MonthlySheet = () => {
             type="button"
             onClick={() => shift(1)}
             aria-label="Next month"
-            className="rounded border border-slate-200 bg-white p-2.5 text-slate-600  transition hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700"
+            className="rounded border border-slate-200 bg-white p-2.5 text-slate-600  transition hover:border-indigo-200  hover:text-indigo-700"
           >
             <ChevronRight size={18} />
           </button>
           <button
             type="button"
             onClick={goToToday}
-            className="rounded border border-indigo-200 bg-indigo-50 px-3 py-2.5 text-sm font-semibold text-indigo-700 transition hover:bg-indigo-100"
+            className="rounded border border-indigo-200 bg-blue-100 px-3 py-2.5 text-sm font-semibold text-indigo-700 transition "
           >
             Today
           </button>
@@ -300,7 +300,7 @@ const MonthlySheet = () => {
             <p className=" font-bold ">
               {formatUnits(item.value)}
             </p>
-            {/* <p className="mt-1 text-[11px] opacity-70">Staff-day total</p> */}
+            
           </div>
         ))}
       </div>
@@ -365,7 +365,7 @@ const MonthlySheet = () => {
                     key={calendarDay.dateKey}
                     className={`min-h-[110px] border-b border-r border-slate-100 p-1.5 sm:min-h-[132px] sm:p-2 ${
                       isToday
-                        ? "bg-indigo-50/60"
+                        ? "bg-black/60"
                         : isWeekend || isWeeklyOff
                           ? "bg-slate-50/70"
                           : "bg-white"
@@ -453,68 +453,6 @@ const MonthlySheet = () => {
             </div>
           </div>
 
-          {/* <aside className="space-y-4">
-            <div className="rounded border border-slate-200 bg-white p-4 ">
-              <h3 className="font-semibold text-slate-900">
-                Attendance legend
-              </h3>
-              <div className="mt-3 space-y-2.5">
-                {LEGEND.map((status) => (
-                  <div
-                    key={status}
-                    className="flex items-center gap-2 text-sm text-slate-600"
-                  >
-                    <span
-                      className={`inline-flex min-w-9 justify-center rounded px-2 py-1 text-[10px] font-bold ${ATTENDANCE_META[status].chip}`}
-                    >
-                      {ATTENDANCE_META[status].code}
-                    </span>
-                    <span>{ATTENDANCE_META[status].label}</span>
-                  </div>
-                ))}
-                <div className="flex items-center gap-2 text-sm text-slate-600">
-                  <span className="inline-flex min-w-9 justify-center rounded bg-slate-100 px-2 py-1 text-[10px] font-bold text-slate-500">
-                    —
-                  </span>
-                  <span>Not marked</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm text-slate-600">
-                  <span className="inline-flex min-w-9 justify-center rounded bg-white px-2 py-1 text-[10px] font-bold text-amber-700 ring-1 ring-amber-500">
-                    Late
-                  </span>
-                  <span>Late check-in</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="rounded border border-slate-200 bg-white p-4 ">
-              <h3 className="font-semibold text-slate-900">Monthly totals</h3>
-              <p className="mt-1 text-xs text-slate-500">
-                {selectedStaffId === "all"
-                  ? "Combined across visible staff"
-                  : (visibleRows[0]?.user?.name ?? "Selected staff")}
-              </p>
-              <div className="mt-3 space-y-3">
-                {[
-                  ["Present", totals.present, "text-emerald-700"],
-                  ["Half day", totals.halfDay, "text-amber-700"],
-                  ["Absent", totals.absent, "text-rose-700"],
-                  ["Paid leave", totals.paidLeave, "text-sky-700"],
-                  ["Unpaid leave", totals.unpaidLeave, "text-orange-700"],
-                ].map(([label, value, color]) => (
-                  <div
-                    key={label}
-                    className="flex items-center justify-between text-sm"
-                  >
-                    <span className="text-slate-600">{label}</span>
-                    <span className={`font-semibold tabular-nums ${color}`}>
-                      {formatUnits(value)}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </aside> */}
         </div>
       )}
 

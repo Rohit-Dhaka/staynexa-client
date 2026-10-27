@@ -111,7 +111,7 @@ export default function GuestBanquetReservations() {
   return (
     <main className="min-h-screen w-full bg-slate-50 text-slate-800">
       <div className="w-full  py-7 ">
-        {/* Page heading */}
+        
         <header className="flex flex-col justify-between gap-5 border-b border-slate-200 pb-7 sm:flex-row sm:items-center">
           <div>
             <p className="text-sm font-medium text-indigo-600">
@@ -136,7 +136,7 @@ export default function GuestBanquetReservations() {
           </button>
         </header>
 
-        {/* Summary */}
+        
         <section className="grid grid-cols-2 gap-4 py-7 lg:grid-cols-4">
           {summaryItems.map((item) => (
             <div
@@ -151,7 +151,7 @@ export default function GuestBanquetReservations() {
           ))}
         </section>
 
-        {/* Reservations */}
+        
         <section className="overflow-hidden rounded border border-slate-200 bg-white">
           <div className="flex flex-col justify-between gap-4 border-b border-slate-200 px-5 py-5 sm:flex-row sm:items-center sm:px-6">
             <div>
@@ -173,7 +173,7 @@ export default function GuestBanquetReservations() {
             </button>
           </div>
 
-          {/* Filters */}
+          
           <div className="flex gap-2 overflow-x-auto border-b border-slate-100 px-5 py-4 sm:px-6">
             {[
               ["all", "All"],
@@ -187,7 +187,7 @@ export default function GuestBanquetReservations() {
                 onClick={() => setFilter(value)}
                 className={`shrink-0 rounded px-4 py-2 text-sm font-medium transition ${
                   filter === value
-                    ? "bg-indigo-50 text-indigo-700"
+                    ? "bg-black text-indigo-700"
                     : "text-slate-500 hover:bg-slate-50 hover:text-slate-800"
                 }`}
               >
@@ -341,7 +341,7 @@ export default function GuestBanquetReservations() {
                             `/guest/banquet/reservations/${bookingId}`
                           )
                         }
-                        className="inline-flex w-fit shrink-0 items-center gap-2 rounded border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:border-indigo-300 hover:bg-indigo-50 hover:text-indigo-700"
+                        className="inline-flex w-fit shrink-0 items-center gap-2 rounded border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:border-indigo-300 hover:bg-black hover:text-indigo-700"
                       >
                         View Details
                         <span aria-hidden="true">→</span>

@@ -13,7 +13,7 @@ const getCategoryName = (category) => {
   return "Uncategorized";
 };
 
-// Naye ({ url, publicId }) aur purane (string) dono tarah ki images handle karta hai
+
 const getImageUrl = (item) => {
   const first = Array.isArray(item?.images) ? item.images[0] : null;
 

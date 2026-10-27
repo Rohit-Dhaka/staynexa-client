@@ -30,7 +30,7 @@ const AuthLayout = () => {
   return (
     <main className="min-h-screen ">
       <div className="grid min-h-screen lg:grid-cols-2">
-        {/* Branding panel */}
+      
         <section className="relative hidden overflow-hidden bg-slate-950 lg:flex lg:flex-col lg:justify-between lg:p-10 xl:p-14">
           <img
             src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1800&q=90"
@@ -82,7 +82,7 @@ const AuthLayout = () => {
           </p>
         </section>
 
-        {/* Authentication panel */}
+      
         <section className="relative flex min-h-screen flex-col bg-white px-5 py-8 sm:px-10 lg:px-12 xl:px-20">
           <div className="flex items-center justify-between">
             <Link to="/" className="flex items-center gap-2.5 lg:hidden">
@@ -109,15 +109,10 @@ const AuthLayout = () => {
           <div className="flex flex-1 items-center justify-center py-12">
             <div className="w-full max-w-[420px]">
               <div className="">
-                <span className=" flex h-12 w-12 items-center justify-center rounded bg-black text-blue-600">
+                <span className=" flex h-12 w-12 items-center justify-center rounded bg-black text-white">
                   <Hotel size={25} />
                 </span>
-                {/* <h2 className="text-3xl font-bold tracking-tight text-slate-900">
-                  Welcome back
-                </h2>
-                <p className="mt-2 text-sm leading-6 text-slate-500">
-                  Sign in to continue to your StayNexa account.
-                </p> */}
+           
               </div>
 
               <Outlet />

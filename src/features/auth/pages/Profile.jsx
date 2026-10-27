@@ -66,7 +66,7 @@ const Profile = () => {
 
   return (
     <div className="w-full min-w-0 space-y-6 pb-6">
-      {/* Heading */}
+      
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p className="text-sm font-medium text-slate-500">
@@ -89,7 +89,7 @@ const Profile = () => {
         </Link>
       </div>
 
-      {/* Profile summary */}
+      
       <section className="overflow-hidden rounded border border-slate-200 bg-white">
         
 
@@ -130,7 +130,7 @@ const Profile = () => {
         </div>
       </section>
 
-      {/* Personal information */}
+      
       <section className="rounded border border-slate-200 bg-white p-5 sm:p-7">
         <div className="mb-5">
           <h3 className="text-base font-bold text-slate-900">
@@ -180,7 +180,7 @@ const Profile = () => {
         </div>
       </section>
 
-      {/* Security */}
+      
       <section className="flex flex-col gap-4 rounded border border-slate-200 bg-white p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
         <div className="flex items-start gap-3">
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded bg-slate-100 text-slate-700">

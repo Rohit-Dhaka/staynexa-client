@@ -345,7 +345,7 @@ const BanquetBookingForm = () => {
                       onClick={() => setForm((f) => ({ ...f, hall: item.hall._id }))}
                       className={`rounded border p-4 text-left transition ${
                         selected
-                          ? "border-indigo-500 bg-indigo-50 ring-2 ring-indigo-100"
+                          ? "border-indigo-500 bg-black ring-2 ring-indigo-100"
                           : item.available
                             ? "border-slate-200 bg-white hover:border-slate-300"
                             : "cursor-not-allowed border-slate-200 bg-slate-50 opacity-70"

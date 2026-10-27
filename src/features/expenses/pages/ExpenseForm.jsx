@@ -73,7 +73,7 @@ export default function ExpenseForm() {
 
       toast.success("Expense created successfully");
 
-      // Return to the expenses list after saving.
+      
       window.location.assign("/expenses");
     } catch (error) {
       toast.error(error.message || "Failed to save expense");
@@ -99,7 +99,7 @@ return (
       </button>
 
       <div className="mb-8 flex items-center gap-4">
-        <div className="rounded bg-indigo-100 p-4 text-indigo-600">
+        <div className="rounded bg-black p-4 text-indigo-600">
           <Receipt size={28} />
         </div>
 

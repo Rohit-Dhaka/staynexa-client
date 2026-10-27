@@ -12,9 +12,6 @@ import {
   BOOKING_VIEWS,
   BOOKING_STATUS_META,
   PAYMENT_STATUS_META,
-  // formatDate,
-  // formatINR,
-  // getErrorMessage,
   formatDate,
   formatINR,
   getErrorMessage,
@@ -180,7 +177,7 @@ const Bookings = () => {
         ))}
       </div>
 
-      <div className="flex flex-wrap gap-3">
+      <div className="flex flex-wrap gap-3 ">
         <div className="relative">
           <Search
             size={16}
@@ -277,7 +274,7 @@ const Bookings = () => {
                       {b.bookingNumber}
                     </p>
                     {b.isAdvance && (
-                      <span className="mt-0.5 inline-block rounded bg-indigo-50 px-1.5 py-0.5 text-[11px] font-medium text-indigo-600">
+                      <span className="mt-0.5 inline-block rounded bg-black px-1.5 py-0.5 text-[11px] font-medium text-white">
                         Advance
                       </span>
                     )}
@@ -313,13 +310,13 @@ const Bookings = () => {
                     )}
                   </td>
                   <td className="px-4 py-3">
-                    {/* <PaymentStatusBadge status={b.paymentStatus} /> */}
+                    
                     {b.status === "hold" ? (
                       <span className="text-xs text-slate-400">-</span>
                     ) : (
                       <PaymentStatusBadge status={b.paymentStatus} />
                     )}
-                    {/* {b.balanceAmount > 0 && b.status !== "cancelled" && b.status !== "no_show" && ( */}
+                    
                     {b.balanceAmount > 0 &&
                       !["hold", "cancelled", "no_show"].includes(b.status) && (
                         <p className="mt-0.5 text-xs text-slate-500">

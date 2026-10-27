@@ -137,7 +137,7 @@ const Banquet = () => {
     }
   }, [buildBookingParams, page]);
 
-  // Export all bookings matching the selected view and filters, across every page.
+  
   const getAllFilteredBookings = useCallback(async () => {
     const limit = 100;
     const allBookings = [];

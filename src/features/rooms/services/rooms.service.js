@@ -9,7 +9,7 @@ export const getRoomTypes = (params) =>
 
 export const getRoomType = (id) => api.get(`/rooms/types/${id}`).then(unwrap);
 
-// Room types are sent as FormData because they can include image files.
+
 const multipart = { headers: { "Content-Type": "multipart/form-data" } };
 
 export const createRoomType = (data) =>

@@ -105,7 +105,7 @@ const PayrollSettings = () => {
 
   return (
     <main className="min-h-screen w-full min-w-0 space-y-6 ">
-      {/* Page Header */}
+      
       <header>
         <h1 className="text-2xl font-bold text-slate-900">Payroll Settings</h1>
         <p className="mt-2 text-sm text-slate-500">
@@ -125,7 +125,7 @@ const PayrollSettings = () => {
         enabling these deductions.
       </div>
 
-      {/* Provident Fund */}
+      
       <Card title="Provident Fund (PF)">
         <div className="space-y-5">
           <label className="flex items-start gap-3 text-sm text-slate-700">
@@ -147,7 +147,7 @@ const PayrollSettings = () => {
         </div>
       </Card>
 
-      {/* Professional Tax */}
+      
       <Card title="Professional Tax">
         <div className="space-y-5">
           <label className="flex items-start gap-3 text-sm text-slate-700">
@@ -173,7 +173,7 @@ const PayrollSettings = () => {
         </div>
       </Card>
 
-      {/* Overtime */}
+      
       <Card title="Overtime">
         <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
           <Field
@@ -185,7 +185,7 @@ const PayrollSettings = () => {
         </div>
       </Card>
 
-      {/* Save Actions */}
+      
       {canEdit && (
         <div className="flex w-full flex-col-reverse gap-4 rounded border border-slate-200 bg-white p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5">
           <p className="text-xs leading-5 text-slate-500">

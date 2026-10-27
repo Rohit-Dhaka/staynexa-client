@@ -31,6 +31,11 @@ import {
   Settings,
   Banknote,
   HandCoins,
+  Car,
+  History,
+  LayoutDashboardIcon,
+  AirVent,
+  MicSignal,
 } from "lucide-react";
 
 import useAuth from "../../hooks/useAuth";
@@ -39,22 +44,14 @@ import { ROLES } from "../../constants/roles";
 const { SUPER_ADMIN, MANAGER, STAFF } = ROLES;
 const ALL = [SUPER_ADMIN, MANAGER, STAFF];
 
-/*
-  Item options:
-  - path: link target
-  - activePrefix (optional): use this instead of `path` when deciding
-    whether the item is active (e.g. a section with several sub-pages)
-*/
+
 const menuGroups = [
   {
     title: "Workspace",
     items: [
-      {
-        label: "Dashboard",
-        path: "/dashboard",
-        icon: LayoutDashboard,
-        roles: ALL,
-      },
+      // { label: "Dashboard", path: "/dashboard", icon: LayoutDashboard, roles: ALL, },
+      { label: "Dashboard", path: "/ai-manager", icon: LayoutDashboard, roles: ALL, },
+      // { label: "Ai Manager", path: "/ai-manager", icon: AirVent, roles: ALL, },
     ],
   },
   {
@@ -75,6 +72,14 @@ const menuGroups = [
         icon: Sparkles,
         roles: ALL,
       },
+
+          {
+        label: "Cab",
+        path: "/admin/cab",
+        icon: Car,
+        roles: ALL,
+      },
+      
     ],
   },
   {
@@ -117,8 +122,7 @@ const menuGroups = [
       },
       {
         label: "Menu Management",
-        path: "/restaurant/manage/menu",
-        // Categories / Tables pages also live under /restaurant/manage
+        path: "/restaurant/manage/menu",        
         activePrefix: "/restaurant/manage",
         icon: UtensilsCrossed,
         roles: [SUPER_ADMIN, MANAGER, STAFF],
@@ -201,10 +205,17 @@ const menuGroups = [
         icon: HandHelping,
         roles: ALL,
       },
+      
       {
         label: "Reviews & Feedback",
         path: "/reviews",
         icon: Star,
+        roles: [SUPER_ADMIN, MANAGER],
+      },
+        {
+        label: "Lost Found",
+        path: "/lostfound",
+        icon: MicSignal,        
         roles: [SUPER_ADMIN, MANAGER],
       },
     ],
@@ -224,13 +235,24 @@ const menuGroups = [
         icon: Tag,
         roles: [SUPER_ADMIN, MANAGER],
       },
+
+         {
+        label: "Maintenance Dashboard",
+        path: "/maintenance/dashboard",
+        icon: LayoutDashboardIcon,
+        roles: [SUPER_ADMIN, MANAGER],
+      },
+
+         {
+        label: "Maintenance History",
+        path: "/maintenance/history",
+        icon: History,
+        roles: [SUPER_ADMIN, MANAGER],
+      },
     ],
   },
 ];
 
-/* =========================================================
-   HELPERS
-========================================================= */
 
 const getInitials = (name = "") => {
   const parts = String(name).trim().split(/\s+/).filter(Boolean);
@@ -277,9 +299,6 @@ const Avatar = ({ name, size = "h-8 w-8" }) => (
   </div>
 );
 
-/* =========================================================
-   SIDEBAR
-========================================================= */
 
 const Sidebar = ({ open, onClose, collapsed, onToggleCollapse }) => {
   const { user, logout } = useAuth();
@@ -304,7 +323,7 @@ const Sidebar = ({ open, onClose, collapsed, onToggleCollapse }) => {
     }))
     .filter((group) => group.items.length > 0);
 
-  // Only one item can be active at a time
+  
   const activePath = getActivePath(visibleGroups, pathname);
 
   const toggleCollapse = () => {
@@ -356,7 +375,7 @@ const Sidebar = ({ open, onClose, collapsed, onToggleCollapse }) => {
   };
 
   const renderNavLink = ({ label, path, icon: Icon }) => {
-    // We do NOT use NavLink's own isActive, so only one item is highlighted
+    
     const isActive = path === activePath;
 
     return (
@@ -421,7 +440,7 @@ const Sidebar = ({ open, onClose, collapsed, onToggleCollapse }) => {
           ${isCollapsed ? "w-[72px]" : "w-64"}
         `}
       >
-        {/* Brand */}
+      
         <div
           className={`flex h-[70px] shrink-0 items-center border-b border-white/10 ${
             isCollapsed ? "justify-center px-2" : "justify-between px-4"
@@ -460,7 +479,7 @@ const Sidebar = ({ open, onClose, collapsed, onToggleCollapse }) => {
           )}
         </div>
 
-        {/* Collapse control */}
+        
         <div
           className={`hidden shrink-0 pt-2 lg:flex ${
             isCollapsed ? "justify-center px-2" : "px-3"
@@ -488,7 +507,7 @@ const Sidebar = ({ open, onClose, collapsed, onToggleCollapse }) => {
           </button>
         </div>
 
-        {/* Navigation */}
+       
         <nav
           aria-label="Main navigation"
           className="sidebar-scrollbar min-h-0 flex-1 overflow-y-auto overflow-x-hidden px-2.5 pb-3 pt-3"
@@ -508,7 +527,7 @@ const Sidebar = ({ open, onClose, collapsed, onToggleCollapse }) => {
           ))}
         </nav>
 
-        {/* User profile */}
+        
         <div
           ref={profileRef}
           className="relative shrink-0 border-t border-white/10 bg-black p-1.5"

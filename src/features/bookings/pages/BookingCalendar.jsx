@@ -107,8 +107,7 @@ const useData = (loader, deps) => {
     return () => {
       cancelled = true;
     };
-    // The caller provides the exact dependencies for each request.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
   }, deps);
 
   return state;
@@ -325,9 +324,7 @@ const MonthView = ({ onPickDay }) => {
                     {day.available} available
                   </p>
 
-                  {/* <p className="mt-1 text-[9px] leading-4 text-slate-500 sm:text-[10px]">
-                    In {day.arrivals} · Out {day.departures}
-                  </p> */}
+                 
                 </button>
               ))}
             </div>
@@ -515,7 +512,7 @@ const TimelineView = ({ search = "" }) => {
                     <div
                       key={key}
                       className={`border-l border-slate-200 py-2 ${
-                        key === today ? "bg-black" : ""
+                        key === today ? "bg-gray-100" : ""
                       }`}
                     >
                       <p className="text-[10px] text-slate-500">
@@ -559,7 +556,7 @@ const TimelineView = ({ search = "" }) => {
                     <div
                       key={key}
                       className={`min-h-[66px] border-l border-slate-100 ${
-                        key === today ? "bg-black/50" : ""
+                        key === today ? "bg-gray-100" : ""
                       }`}
                       style={{
                         gridColumn: index + 2,

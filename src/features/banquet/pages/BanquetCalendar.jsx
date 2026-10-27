@@ -4,7 +4,6 @@ import { ChevronLeft, ChevronRight, Loader2, Plus } from "lucide-react";
 import toast from "react-hot-toast";
 
 import { getCalendar } from "../services/banquet.service";
-// import {EVENT_TYPE_OPTIONS,MONTH_NAMES,STATUS_META,WEEKDAYS,formatTime,getErrorMessage,labelFor,outlineButton,primaryButton,toDayKey,} from "../banquet.utils";
 import {EVENT_TYPE_OPTIONS,MONTH_NAMES,STATUS_META,WEEKDAYS,formatTime,getErrorMessage,labelFor,outlineButton,primaryButton,toDayKey,} from "../../../utils/banquet.utils";
 
 const MAX_CHIPS = 3;
