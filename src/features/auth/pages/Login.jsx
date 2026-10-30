@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 import useAuth from "../../../hooks/useAuth";
-const inputClass = "w-full rounded border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 disabled:opacity-60";
+const inputClass = "w-full rounded border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400  focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 disabled:opacity-60";
 
 const Login = () => {
   const { login } = useAuth();
@@ -87,7 +87,7 @@ const Login = () => {
               type="button"
               onClick={() => setShowPassword((prev) => !prev)}
               aria-label={showPassword ? "Hide password" : "Show password"}
-              className="absolute inset-y-0 right-0 flex items-center px-4 text-slate-400 transition hover:text-slate-800"
+              className="absolute inset-y-0 right-0 flex items-center px-4 text-slate-400 transition "
             >
               {showPassword ? <EyeOff size={17} /> : <Eye size={17} />}
             </button>
@@ -107,7 +107,7 @@ const Login = () => {
 
           <Link
             to="/forgot-password"
-            className="text-xs text-slate-500 transition hover:text-slate-900"
+            className="text-xs text-slate-500 transition "
           >
             Forgot Password?
           </Link>
@@ -116,7 +116,7 @@ const Login = () => {
         <button
           type="submit"
           disabled={submitting}
-          className="flex w-full items-center justify-center gap-2 rounded bg-[#1a1a1a] py-3 text-sm font-semibold text-white transition hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-70"
+          className="flex w-full items-center justify-center gap-2 rounded bg-[#1a1a1a] py-3 text-sm font-semibold text-white transition  disabled:cursor-not-allowed disabled:opacity-70"
         >
           {submitting && <Loader2 size={16} className="animate-spin" />}
           {submitting ? "Logging in..." : "Login"}
@@ -125,7 +125,7 @@ const Login = () => {
 
       <p className="mt-16 text-center text-xs text-slate-500">
         Don&apos;t have any account?{" "}
-        <Link to="/signup" className="font-semibold text-blue-600 hover:underline">
+        <Link to="/signup" className="font-semibold text-blue-600 ">
           Register
         </Link>
       </p>

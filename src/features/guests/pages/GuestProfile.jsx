@@ -1,4 +1,3 @@
-
 import { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft, Ban, Loader2, Pencil, Star, Trash2 } from "lucide-react";
@@ -15,7 +14,7 @@ const inr = (n) => `₹${Number(n || 0).toLocaleString("en-IN")}`;
 const day = (v) => (v ? new Date(v).toLocaleDateString("en-IN") : "-");
 
 const Stat = ({ label, value }) => (
-  <div className="min-w-0 rounded border border-slate-200 bg-white p-5 ">
+  <div className="min-w-0 rounded border border-slate-200 bg-white p-5">
     <p className="text-sm text-slate-500">{label}</p>
     <p className="mt-2 break-words text-2xl font-bold text-slate-900">{value}</p>
   </div>
@@ -93,7 +92,7 @@ const GuestProfile = () => {
   if (loading) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center text-slate-400">
-        <Loader2 className="animate-spin" size={30} />
+        <Loader2 size={30} />
       </div>
     );
   }
@@ -113,8 +112,6 @@ const GuestProfile = () => {
   }
 
   const { guest, bookings = [] } = data;
-
-
   const stats = data.summary || data.stats || {};
 
   const totalStays = stats.totalStays ?? stats.completedStays ?? 0;
@@ -137,11 +134,10 @@ const GuestProfile = () => {
 
   return (
     <div className="w-full min-w-0 space-y-6">
-      
       <div className="flex flex-wrap items-center justify-between gap-4">
         <Link
           to="/guests"
-          className="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-slate-900"
+          className="inline-flex items-center gap-2 text-sm font-medium text-slate-500"
         >
           <ArrowLeft size={17} />
           Back to Guests
@@ -149,13 +145,16 @@ const GuestProfile = () => {
 
         <div className="flex flex-wrap gap-2">
           <button
+            type="button"
             onClick={() => navigate(`/guests/${id}/edit`)}
-            className="inline-flex items-center gap-2 rounded border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+            disabled={busy}
+            className="inline-flex items-center gap-2 rounded border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 disabled:cursor-not-allowed disabled:opacity-60"
           >
             <Pencil size={15} /> Edit
           </button>
 
           <button
+            type="button"
             onClick={() =>
               run(
                 () => setGuestVip(id, !guest.isVip),
@@ -163,36 +162,36 @@ const GuestProfile = () => {
               )
             }
             disabled={busy}
-            className="inline-flex items-center gap-2 rounded border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-60"
+            className="inline-flex items-center gap-2 rounded border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 disabled:cursor-not-allowed disabled:opacity-60"
           >
             <Star size={15} />
             {guest.isVip ? "Remove VIP" : "Mark VIP"}
           </button>
 
           <button
+            type="button"
             onClick={handleBlacklist}
             disabled={busy}
-            className="inline-flex items-center gap-2 rounded border border-rose-200 px-4 py-2 text-sm font-medium text-rose-600 hover:bg-rose-50 disabled:opacity-60"
+            className="inline-flex items-center gap-2 rounded border border-rose-200 px-4 py-2 text-sm font-medium text-rose-600 disabled:cursor-not-allowed disabled:opacity-60"
           >
             <Ban size={15} />
             {guest.isBlacklisted ? "Remove blacklist" : "Blacklist"}
           </button>
 
           <button
+            type="button"
             onClick={handleDelete}
             disabled={busy}
             aria-label="Delete guest"
             title="Delete guest"
-            className="inline-flex items-center gap-2 rounded border border-slate-300 px-4 py-2 text-sm font-medium text-slate-600 hover:bg-red-50 hover:text-red-600 disabled:opacity-60"
+            className="inline-flex items-center gap-2 rounded border border-slate-300 px-4 py-2 text-sm font-medium text-slate-600 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            <Trash2 size={15} />
-            Delete
+            <Trash2 size={15} /> Delete
           </button>
         </div>
       </div>
 
-      
-      <section className="rounded border border-slate-200 bg-white p-5  sm:p-7">
+      <section className="rounded border border-slate-200 bg-white p-5 sm:p-7">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-3">
@@ -227,7 +226,6 @@ const GuestProfile = () => {
         )}
       </section>
 
-      
       <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <Stat label="Total stays" value={totalStays} />
         <Stat label="Total nights" value={totalNights} />
@@ -235,18 +233,12 @@ const GuestProfile = () => {
         <Stat label="Last stay" value={day(lastStay)} />
       </section>
 
-      
-      <section className="rounded border border-slate-200 bg-white p-5  sm:p-7">
-        <h2 className="mb-6 text-lg font-semibold text-slate-900">
-          Guest details
-        </h2>
+      <section className="rounded border border-slate-200 bg-white p-5 sm:p-7">
+        <h2 className="mb-6 text-lg font-semibold text-slate-900">Guest details</h2>
 
         <div className="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {detail("Gender", guest.gender)}
-          {detail(
-            "Date of birth",
-            guest.dateOfBirth ? day(guest.dateOfBirth) : ""
-          )}
+          {detail("Date of birth", guest.dateOfBirth ? day(guest.dateOfBirth) : "")}
           {detail("Phone", guest.phone)}
           {detail("Email", guest.email)}
           {detail("City", guest.city)}
@@ -255,18 +247,13 @@ const GuestProfile = () => {
           {detail("ID type", guest.idProof?.type)}
           {detail("ID number", guest.idProof?.number)}
           {detail("Address", guest.address)}
-          <div className="sm:col-span-2 xl:col-span-4">
-            {detail("Notes", guest.notes)}
-          </div>
+          <div className="sm:col-span-2 xl:col-span-4">{detail("Notes", guest.notes)}</div>
         </div>
       </section>
 
-      
-      <section className="overflow-hidden rounded border border-slate-200 bg-white ">
+      <section className="overflow-hidden rounded border border-slate-200 bg-white">
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 px-5 py-4 sm:px-7">
-          <h2 className="text-lg font-semibold text-slate-900">
-            Booking history
-          </h2>
+          <h2 className="text-lg font-semibold text-slate-900">Booking history</h2>
           <span className="text-sm text-slate-500">
             {bookings.length} recent booking{bookings.length === 1 ? "" : "s"}
           </span>
@@ -287,16 +274,13 @@ const GuestProfile = () => {
             <tbody className="divide-y divide-slate-100">
               {bookings.length === 0 ? (
                 <tr>
-                  <td
-                    colSpan={5}
-                    className="px-5 py-12 text-center text-slate-400"
-                  >
+                  <td colSpan={5} className="px-5 py-12 text-center text-slate-400">
                     No bookings yet
                   </td>
                 </tr>
               ) : (
                 bookings.map((booking) => (
-                  <tr key={booking._id} className="hover:bg-slate-50">
+                  <tr key={booking._id}>
                     <td className="px-5 py-4 font-medium text-slate-900">
                       {booking.bookingNumber || "-"}
                     </td>
@@ -304,8 +288,7 @@ const GuestProfile = () => {
                       {booking.room?.roomNumber || "-"}
                     </td>
                     <td className="px-5 py-4 text-slate-600">
-                      {day(booking.checkIn)} to {day(booking.checkOut)} (
-                      {booking.nights || 0} nights)
+                      {day(booking.checkIn)} to {day(booking.checkOut)} ({booking.nights || 0} nights)
                     </td>
                     <td className="px-5 py-4 capitalize text-slate-600">
                       {String(booking.status || "-").replace(/_/g, " ")}

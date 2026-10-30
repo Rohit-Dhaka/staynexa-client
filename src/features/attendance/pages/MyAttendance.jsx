@@ -104,7 +104,7 @@ const MyAttendance = () => {
     <div className="flex gap-2">
       <Link
         to="/attendance/leaves"
-        className="rounded border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
+        className="rounded border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 "
       >
         My Leaves
       </Link>
@@ -123,7 +123,7 @@ const MyAttendance = () => {
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <p className="flex items-center gap-2 text-3xl font-semibold text-slate-900">
-            <Clock size={26} className="text-indigo-500" />
+            <Clock size={26} className="text-black" />
             {now.toLocaleTimeString("en-IN", {
               hour: "2-digit",
               minute: "2-digit",
@@ -153,7 +153,7 @@ const MyAttendance = () => {
             type="button"
             disabled={!today.canClockIn || busy}
             onClick={() => act(clockIn)}
-            className="flex items-center gap-2 rounded bg-emerald-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-40"
+            className="flex items-center gap-2 rounded bg-emerald-600 px-5 py-3 text-sm font-semibold text-white transition  disabled:cursor-not-allowed disabled:opacity-40"
           >
             <LogIn size={16} /> Clock In
           </button>
@@ -161,7 +161,7 @@ const MyAttendance = () => {
             type="button"
             disabled={!today.canClockOut || busy}
             onClick={() => act(clockOut)}
-            className="flex items-center gap-2 rounded bg-rose-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-rose-700 disabled:cursor-not-allowed disabled:opacity-40"
+            className="flex items-center gap-2 rounded bg-rose-600 px-5 py-3 text-sm font-semibold text-white transition  disabled:cursor-not-allowed disabled:opacity-40"
           >
             <LogOut size={16} /> Clock Out
           </button>

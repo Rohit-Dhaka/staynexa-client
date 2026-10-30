@@ -263,14 +263,14 @@ export default function ExpensesPage() {
             type="button"
             onClick={() => loadExpenses({ showRefresh: true })}
             disabled={loading}
-            className="inline-flex items-center justify-center gap-2 rounded border border-slate-200 bg-white px-3.5 py-2.5 text-sm font-medium hover:bg-slate-50 disabled:opacity-60"
+            className="inline-flex items-center justify-center gap-2 rounded border border-slate-200 bg-white px-3.5 py-2.5 text-sm font-medium disabled:opacity-60"
           >
-            <RefreshCw size={16} className={refreshing ? "animate-spin" : ""} /> Refresh
+            <RefreshCw size={16} className={refreshing ? "" : ""} /> Refresh
           </button>
           <button
             type="button"
             onClick={() => navigate("/expenses/new")}
-            className="inline-flex items-center justify-center gap-2 rounded bg-black px-4 py-2.5 text-sm font-semibold text-white "
+            className="inline-flex items-center justify-center gap-2 rounded bg-black px-4 py-2.5 text-sm font-semibold text-white"
           >
             <Plus size={17} /> Add expense
           </button>
@@ -302,7 +302,7 @@ export default function ExpensesPage() {
                 type="search"
                 placeholder="Search expenses..."
                 aria-label="Search expenses"
-                className="w-full rounded border border-slate-200 py-2.5 pl-9 pr-3 text-sm outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-50"
+                className="w-full rounded border border-slate-200 py-2.5 pl-9 pr-3 text-sm outline-none focus:border-indigo-600"
               />
             </div>
             <select
@@ -312,7 +312,7 @@ export default function ExpensesPage() {
                 setPagination((old) => ({ ...old, page: 1 }));
               }}
               aria-label="Filter category"
-              className="rounded border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:border-indigo-400"
+              className="rounded border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:border-indigo-600"
             >
               <option value="">All categories</option>
               {categories.map((item) => <option key={item} value={item}>{item}</option>)}
@@ -324,7 +324,7 @@ export default function ExpensesPage() {
                 setPagination((old) => ({ ...old, page: 1 }));
               }}
               aria-label="Filter status"
-              className="rounded border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:border-indigo-400"
+              className="rounded border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:border-indigo-600"
             >
               <option value="">All statuses</option>
               <option value="Paid">Paid</option>
@@ -335,7 +335,7 @@ export default function ExpensesPage() {
               type="button"
               onClick={resetFilters}
               disabled={!hasFilters}
-              className="inline-flex items-center justify-center gap-2 rounded border border-slate-200 px-3 py-2.5 text-sm font-medium hover:bg-slate-50 disabled:opacity-40"
+              className="inline-flex items-center justify-center gap-2 rounded border border-slate-200 px-3 py-2.5 text-sm font-medium disabled:opacity-40"
             >
               <RotateCcw size={15} /> Reset
             </button>
@@ -357,7 +357,7 @@ export default function ExpensesPage() {
             </thead>
             <tbody className="divide-y divide-slate-100">
               {loading ? (
-                <tr><td colSpan={7} className="px-5 py-14 text-center text-sm text-slate-500"><span className="inline-flex items-center gap-2"><RefreshCw size={16} className="animate-spin" /> Loading expenses...</span></td></tr>
+                <tr><td colSpan={7} className="px-5 py-14 text-center text-sm text-slate-500"><span className="inline-flex items-center gap-2"><RefreshCw size={16}  /> Loading expenses...</span></td></tr>
               ) : filteredExpenses.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="px-5 py-14 text-center">
@@ -365,15 +365,15 @@ export default function ExpensesPage() {
                     <p className="mt-2 text-sm font-semibold text-slate-800">{hasFilters ? "No matching expenses" : "No expenses yet"}</p>
                     <p className="mt-1 text-sm text-slate-500">{hasFilters ? "Try changing your search or filters." : "Add your first expense to get started."}</p>
                     {hasFilters ? (
-                      <button type="button" onClick={resetFilters} className="mt-3 text-sm font-semibold text-indigo-600 hover:text-indigo-700">Clear filters</button>
+                      <button type="button" onClick={resetFilters} className="mt-3 text-sm font-semibold text-indigo-600">Clear filters</button>
                     ) : (
-                      <button type="button" onClick={() => navigate("/expenses/new")} className="mt-3 text-sm font-semibold text-indigo-600 hover:text-indigo-700">+ Add expense</button>
+                      <button type="button" onClick={() => navigate("/expenses/new")} className="mt-3 text-sm font-semibold text-indigo-600">+ Add expense</button>
                     )}
                   </td>
                 </tr>
               ) : (
                 filteredExpenses.map((expense) => (
-                  <tr key={expense._id} className="hover:bg-slate-50/70">
+                  <tr key={expense._id} >
                     <td className="px-5 py-3.5">
                       <div className="flex items-center gap-3">
                         <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded bg-slate-100 text-slate-500"><Receipt size={17} /></span>
@@ -387,7 +387,7 @@ export default function ExpensesPage() {
                     <td className="px-4 py-3.5 text-sm text-slate-600"><span className="inline-flex items-center gap-1.5"><CalendarDays size={14} className="text-slate-400" />{dateText(expense.date)}</span></td>
                     <td className="px-4 py-3.5 text-sm text-slate-600"><span className="inline-flex items-center gap-1.5"><CreditCard size={14} className="text-slate-400" />{expense.paymentMethod || "—"}</span></td>
                     <td className="px-4 py-3.5 text-sm font-semibold tabular-nums text-slate-900">{money(expense.amount)}</td>
-                    <td className="px-4 py-3.5"><span className={cx("inline-flex rounded-full px-2.5 py-1 text-xs font-semibold", statusStyle[expense.status] || "bg-black text-blue-700")}>{expense.status || "Unknown"}</span></td>
+                    <td className="px-4 py-3.5"><span className={cx("inline-flex rounded-full px-2.5 py-1 text-xs font-semibold", statusStyle[expense.status] || "bg-slate-100 text-slate-700")}>{expense.status || "Unknown"}</span></td>
                     <td className="px-5 py-3.5">
                       <div className="flex justify-end gap-1">
                         <ActionButton label="View" onClick={() => navigate(`/expenses/${expense._id}`)}><Eye size={16} /></ActionButton>
@@ -405,25 +405,25 @@ export default function ExpensesPage() {
         <footer className="flex flex-col gap-3 border-t border-slate-200 px-4 py-3.5 sm:flex-row sm:items-center sm:justify-between sm:px-5">
           <p className="text-sm text-slate-500">Showing <span className="font-medium text-slate-700">{total ? (page - 1) * pagination.limit + 1 : 0}–{Math.min(page * pagination.limit, total)}</span> of <span className="font-medium text-slate-700">{total}</span></p>
           <div className="flex items-center gap-2">
-            <button type="button" disabled={page <= 1 || loading} onClick={() => setPagination((old) => ({ ...old, page: Math.max(1, old.page - 1) }))} className="inline-flex items-center gap-1 rounded border border-slate-200 px-3 py-2 text-sm font-medium hover:bg-slate-50 disabled:opacity-40"><ChevronLeft size={15} /> Previous</button>
+            <button type="button" disabled={page <= 1 || loading} onClick={() => setPagination((old) => ({ ...old, page: Math.max(1, old.page - 1) }))} className="inline-flex items-center gap-1 rounded border border-slate-200 px-3 py-2 text-sm font-medium disabled:opacity-40"><ChevronLeft size={15} /> Previous</button>
             <span className="px-2 text-sm text-slate-600">{page} / {totalPages}</span>
-            <button type="button" disabled={loading || page >= (pagination.totalPages || 0)} onClick={() => setPagination((old) => ({ ...old, page: old.page + 1 }))} className="inline-flex items-center gap-1 rounded border border-slate-200 px-3 py-2 text-sm font-medium hover:bg-slate-50 disabled:opacity-40">Next <ChevronRight size={15} /></button>
+            <button type="button" disabled={loading || page >= (pagination.totalPages || 0)} onClick={() => setPagination((old) => ({ ...old, page: old.page + 1 }))} className="inline-flex items-center gap-1 rounded border border-slate-200 px-3 py-2 text-sm font-medium disabled:opacity-40">Next <ChevronRight size={15} /></button>
           </div>
         </footer>
       </section>
 
       {selectedExpense && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/40 p-4" onMouseDown={(event) => { if (event.target === event.currentTarget && !deleting) setSelectedExpense(null); }}>
-          <section role="alertdialog" aria-modal="true" aria-labelledby="delete-title" className="w-full max-w-sm rounded border border-slate-200 bg-white p-5 ">
+          <section role="alertdialog" aria-modal="true" aria-labelledby="delete-title" className="w-full max-w-sm rounded border border-slate-200 bg-white p-5">
             <div className="flex items-start gap-3">
               <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded bg-rose-50 text-rose-600"><AlertTriangle size={19} /></span>
               <div><h2 id="delete-title" className="font-semibold text-slate-900">Delete expense?</h2><p className="mt-1 text-sm text-slate-500">This action cannot be undone.</p></div>
-              <button type="button" onClick={() => setSelectedExpense(null)} disabled={deleting} aria-label="Close" className="ml-auto rounded p-1 text-slate-400 hover:bg-slate-100 disabled:opacity-40"><X size={17} /></button>
+              <button type="button" onClick={() => setSelectedExpense(null)} disabled={deleting} aria-label="Close" className="ml-auto rounded p-1 text-slate-400 disabled:opacity-40"><X size={17} /></button>
             </div>
             <div className="mt-4 rounded bg-slate-50 p-3"><p className="text-sm font-medium text-slate-800">{selectedExpense.title || "Untitled expense"}</p><p className="mt-1 text-sm text-slate-500">{money(selectedExpense.amount)}</p></div>
             <div className="mt-5 flex justify-end gap-2">
-              <button type="button" disabled={deleting} onClick={() => setSelectedExpense(null)} className="rounded border border-slate-200 px-3.5 py-2 text-sm font-medium hover:bg-slate-50">Cancel</button>
-              <button type="button" disabled={deleting} onClick={confirmDelete} className="inline-flex items-center gap-2 rounded bg-rose-600 px-3.5 py-2 text-sm font-semibold text-white hover:bg-rose-700 disabled:opacity-60">{deleting && <RefreshCw size={14} className="animate-spin" />}{deleting ? "Deleting..." : "Delete expense"}</button>
+              <button type="button" disabled={deleting} onClick={() => setSelectedExpense(null)} className="rounded border border-slate-200 px-3.5 py-2 text-sm font-medium">Cancel</button>
+              <button type="button" disabled={deleting} onClick={confirmDelete} className="inline-flex items-center gap-2 rounded bg-rose-600 px-3.5 py-2 text-sm font-semibold text-white disabled:opacity-60">{deleting && <RefreshCw size={14}  />}{deleting ? "Deleting..." : "Delete expense"}</button>
             </div>
           </section>
         </div>
@@ -445,6 +445,6 @@ function StatCard({ title, value, note, icon: Icon }) {
 
 function ActionButton({ label, onClick, children, danger = false }) {
   return (
-    <button type="button" title={label} aria-label={label} onClick={onClick} className={cx("inline-flex h-8 w-8 items-center justify-center rounded transition focus:outline-none focus:ring-2 focus:ring-indigo-200", danger ? "text-slate-500 hover:bg-rose-50 hover:text-rose-600" : "text-slate-500 hover:bg-black hover:text-indigo-600")}>{children}</button>
+    <button type="button" title={label} aria-label={label} onClick={onClick} className={cx("inline-flex h-8 w-8 items-center justify-center rounded focus:outline-none", danger ? "text-rose-600" : "text-slate-500")}>{children}</button>
   );
 }

@@ -1,6 +1,6 @@
-
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
+  AlertCircle,
   CarFront,
   Check,
   CircleDollarSign,
@@ -9,9 +9,7 @@ import {
   RefreshCw,
   Save,
   X,
-  AlertCircle,
 } from "lucide-react";
-
 import {
   getCabRates,
   updateCabRate,
@@ -100,10 +98,9 @@ const FIELD_CONFIG = [
 ];
 
 const inputClass =
-  "w-full rounded border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-500";
-
+  "w-full rounded border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-500 disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-500";
 const buttonClass =
-  "inline-flex items-center justify-center gap-2 rounded border px-4 py-2.5 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-50";
+  "inline-flex items-center justify-center gap-2 rounded border px-4 py-2.5 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-50";
 
 function getErrorMessage(error) {
   return (
@@ -130,54 +127,48 @@ function formatCurrency(value) {
 }
 
 function getRateForm(rate) {
-  return {
-    ...EMPTY_RATE,
-    ...rate,
-    isActive: rate?.isActive !== false,
-  };
+  return { ...EMPTY_RATE, ...(rate || {}), isActive: rate?.isActive !== false };
 }
 
 function createRatePayload(form, vehicleType) {
-  const payload = {
-    vehicleType,
-    isActive: Boolean(form.isActive),
-  };
-
-  for (const field of FIELD_CONFIG) {
+  const payload = { vehicleType, isActive: Boolean(form.isActive) };
+  for (const field of FIELD_CONFIG)
     payload[field.name] = Number(form[field.name]);
-  }
-
   return payload;
 }
 
 function StatusBadge({ active }) {
   return (
     <span
-      className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-semibold ${
-        active
-          ? "border-emerald-200 bg-emerald-50 text-emerald-700"
-          : "border-slate-200 bg-slate-100 text-slate-600"
-      }`}
+      className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-semibold ${active ? "border-emerald-200 bg-emerald-50 text-emerald-700" : "border-slate-200 bg-slate-100 text-slate-600"}`}
     >
       <span
-        className={`h-1.5 w-1.5 rounded-full ${
-          active ? "bg-emerald-500" : "bg-slate-400"
-        }`}
+        className={`h-1.5 w-1.5 rounded-full ${active ? "bg-emerald-500" : "bg-slate-400"}`}
       />
       {active ? "Active" : "Inactive"}
     </span>
   );
 }
 
+function normalizeRatesResponse(response) {
+  const candidates = [
+    response?.rates,
+    response?.data?.rates,
+    response?.data?.data?.rates,
+    response?.data,
+    response?.data?.data,
+    response,
+  ];
+  return candidates.find(Array.isArray) || [];
+}
+
 export default function AdminCabRatesPage() {
   const [rates, setRates] = useState([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-
   const [pageError, setPageError] = useState("");
   const [actionError, setActionError] = useState("");
   const [notice, setNotice] = useState("");
-
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [selectedType, setSelectedType] = useState(VEHICLE_TYPES[0]);
@@ -188,11 +179,8 @@ export default function AdminCabRatesPage() {
     try {
       setLoading(true);
       setPageError("");
-
       const response = await getCabRates(true);
-      const list = Array.isArray(response?.rates) ? response.rates : [];
-
-      setRates(list);
+      setRates(normalizeRatesResponse(response));
     } catch (error) {
       setPageError(getErrorMessage(error));
     } finally {
@@ -204,10 +192,10 @@ export default function AdminCabRatesPage() {
     loadRates();
   }, [loadRates]);
 
-  const rateMap = Object.fromEntries(
-    rates.map((rate) => [rate.vehicleType, rate])
+  const rateMap = useMemo(
+    () => Object.fromEntries(rates.map((rate) => [rate.vehicleType, rate])),
+    [rates],
   );
-
   const selectedRate = rateMap[selectedType];
 
   useEffect(() => {
@@ -218,79 +206,53 @@ export default function AdminCabRatesPage() {
 
   const filteredTypes = VEHICLE_TYPES.filter((type) => {
     const rate = rateMap[type];
-
     const matchesSearch = formatVehicleType(type)
       .toLowerCase()
       .includes(search.trim().toLowerCase());
-
     const matchesStatus =
       statusFilter === "all" ||
       (statusFilter === "active" && rate?.isActive === true) ||
       (statusFilter === "inactive" && rate?.isActive === false) ||
       (statusFilter === "missing" && !rate);
-
     return matchesSearch && matchesStatus;
   });
 
   function handleFieldChange(event) {
     const { name, value, type, checked } = event.target;
-
     setForm((current) => ({
       ...current,
       [name]: type === "checkbox" ? checked : value,
     }));
   }
 
-  function handleEdit() {
-    setForm(getRateForm(selectedRate));
-    setActionError("");
-    setNotice("");
-    setEditing(true);
-  }
-
   function validateForm() {
     for (const field of FIELD_CONFIG) {
+      if (form[field.name] === "" || form[field.name] == null)
+        return `${field.label} is required.`;
       const value = Number(form[field.name]);
-
-      if (!Number.isFinite(value)) {
+      if (!Number.isFinite(value))
         return `${field.label} must be a valid number.`;
-      }
-
-      if (value < field.min) {
+      if (value < field.min)
         return `${field.label} cannot be less than ${field.min}.`;
-      }
-
-      if (field.max !== undefined && value > field.max) {
+      if (field.max !== undefined && value > field.max)
         return `${field.label} cannot exceed ${field.max}.`;
-      }
     }
-
     return "";
   }
 
   async function handleSave(event) {
     event.preventDefault();
-
     const validationError = validateForm();
-
     if (validationError) {
       setActionError(validationError);
       return;
     }
-
     try {
       setSaving(true);
       setActionError("");
       setNotice("");
-
-      const payload = createRatePayload(form, selectedType);
-
-      await updateCabRate(selectedType, payload);
-
-      setNotice(
-        `${formatVehicleType(selectedType)} rates saved successfully.`
-      );
-
+      await updateCabRate(selectedType, createRatePayload(form, selectedType));
+      setNotice(`${formatVehicleType(selectedType)} rates saved successfully.`);
       setEditing(false);
       await loadRates();
     } catch (error) {
@@ -302,37 +264,26 @@ export default function AdminCabRatesPage() {
 
   async function handleToggleStatus() {
     if (!selectedRate) return;
-
     const nextStatus = selectedRate.isActive === false;
-
-    const confirmed = window.confirm(
-      `${nextStatus ? "Activate" : "Deactivate"} ${formatVehicleType(
-        selectedType
-      )} rates?`
-    );
-
-    if (!confirmed) return;
-
+    if (
+      !window.confirm(
+        `${nextStatus ? "Activate" : "Deactivate"} ${formatVehicleType(selectedType)} rates?`,
+      )
+    )
+      return;
     try {
       setSaving(true);
       setActionError("");
       setNotice("");
-
       const payload = createRatePayload(
         getRateForm(selectedRate),
-        selectedType
+        selectedType,
       );
-
       payload.isActive = nextStatus;
-
       await updateCabRate(selectedType, payload);
-
       setNotice(
-        `${formatVehicleType(selectedType)} rates ${
-          nextStatus ? "activated" : "deactivated"
-        } successfully.`
+        `${formatVehicleType(selectedType)} rates ${nextStatus ? "activated" : "deactivated"} successfully.`,
       );
-
       setEditing(false);
       await loadRates();
     } catch (error) {
@@ -343,15 +294,11 @@ export default function AdminCabRatesPage() {
   }
 
   const activeCount = rates.filter((rate) => rate.isActive === true).length;
-  const inactiveCount = rates.filter(
-    (rate) => rate.isActive === false
-  ).length;
-  const missingCount = VEHICLE_TYPES.filter(
-    (type) => !rateMap[type]
-  ).length;
+  const inactiveCount = rates.filter((rate) => rate.isActive === false).length;
+  const missingCount = VEHICLE_TYPES.filter((type) => !rateMap[type]).length;
 
   return (
-    <main className="min-h-screen ">
+    <main className="min-h-screen">
       <div className="mx-auto max-w-7xl space-y-6">
         <header className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
           <div>
@@ -359,23 +306,20 @@ export default function AdminCabRatesPage() {
               <CarFront size={18} />
               Fleet Management
             </div>
-
             <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
               Cab Rate Management
             </h1>
-
             <p className="mt-2 max-w-2xl text-sm text-slate-500">
               Configure fares, taxes and availability for each vehicle type.
             </p>
           </div>
-
           <button
             type="button"
             onClick={loadRates}
             disabled={loading || saving}
-            className={`${buttonClass} border-slate-300 bg-white text-slate-700 hover:bg-slate-100`}
+            className={`${buttonClass} border-slate-300 bg-white text-slate-700`}
           >
-            <RefreshCw size={16} className={loading ? "animate-spin" : ""} />
+            <RefreshCw size={16} />
             Refresh Rates
           </button>
         </header>
@@ -389,21 +333,19 @@ export default function AdminCabRatesPage() {
               <AlertCircle size={18} className="shrink-0" />
               {actionError || pageError}
             </span>
-
             <button
               type="button"
               onClick={() => {
                 setPageError("");
                 setActionError("");
               }}
-              className="rounded p-1 hover:bg-rose-100"
+              className="rounded p-1"
               aria-label="Dismiss error"
             >
               <X size={16} />
             </button>
           </div>
         )}
-
         {notice && (
           <div
             role="status"
@@ -457,7 +399,6 @@ export default function AdminCabRatesPage() {
                 Select a vehicle to manage its rates.
               </p>
             </div>
-
             <label className="mb-3 block">
               <span className="mb-1.5 block text-xs font-medium text-slate-600">
                 Search Vehicle
@@ -470,7 +411,6 @@ export default function AdminCabRatesPage() {
                 className={inputClass}
               />
             </label>
-
             <label className="mb-4 block">
               <span className="mb-1.5 block text-xs font-medium text-slate-600">
                 Rate Status
@@ -486,10 +426,9 @@ export default function AdminCabRatesPage() {
                 <option value="missing">Missing Rates</option>
               </select>
             </label>
-
             {loading ? (
               <div className="flex items-center justify-center gap-2 rounded border border-slate-200 p-6 text-sm text-slate-500">
-                <LoaderCircle size={18} className="animate-spin" />
+                <LoaderCircle size={18} />
                 Loading rates...
               </div>
             ) : (
@@ -497,7 +436,6 @@ export default function AdminCabRatesPage() {
                 {filteredTypes.map((type) => {
                   const rate = rateMap[type];
                   const selected = selectedType === type;
-
                   return (
                     <button
                       type="button"
@@ -507,22 +445,16 @@ export default function AdminCabRatesPage() {
                         setNotice("");
                         setActionError("");
                       }}
-                      className={`flex w-full items-center justify-between gap-3 rounded border p-3 text-left transition ${
-                        selected
-                          ? "border-indigo-300 bg-black"
-                          : "border-slate-200 bg-white hover:bg-slate-50"
-                      }`}
+                      className={`flex w-full items-center justify-between gap-3 rounded border p-3 text-left ${selected ? "border-indigo-300 bg-slate-100" : "border-slate-200 bg-white"}`}
                     >
                       <span className="flex min-w-0 items-center gap-3">
                         <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded border border-slate-200 bg-white text-slate-600">
                           <CarFront size={19} />
                         </span>
-
                         <span className="min-w-0">
                           <span className="block text-sm font-semibold text-slate-900">
                             {formatVehicleType(type)}
                           </span>
-
                           <span className="mt-1 block text-xs text-slate-500">
                             {rate
                               ? rate.isActive
@@ -532,7 +464,6 @@ export default function AdminCabRatesPage() {
                           </span>
                         </span>
                       </span>
-
                       {rate ? (
                         <StatusBadge active={rate.isActive !== false} />
                       ) : (
@@ -543,7 +474,6 @@ export default function AdminCabRatesPage() {
                     </button>
                   );
                 })}
-
                 {filteredTypes.length === 0 && (
                   <p className="rounded border border-slate-200 p-4 text-sm text-slate-500">
                     No matching vehicle types found.
@@ -560,17 +490,14 @@ export default function AdminCabRatesPage() {
                   <CircleDollarSign size={18} />
                   Rate Configuration
                 </div>
-
                 <h2 className="text-xl font-bold">
                   {formatVehicleType(selectedType)}
                 </h2>
-
                 <p className="mt-1 text-sm text-slate-500">
                   {selectedRate
                     ? "Review or update the configured rate card."
                     : "No rate card exists yet. Configure the rates below."}
                 </p>
-
                 <div className="mt-3">
                   {selectedRate ? (
                     <StatusBadge active={selectedRate.isActive !== false} />
@@ -581,23 +508,26 @@ export default function AdminCabRatesPage() {
                   )}
                 </div>
               </div>
-
               {!editing && (
                 <button
                   type="button"
-                  onClick={handleEdit}
+                  onClick={() => {
+                    setForm(getRateForm(selectedRate));
+                    setActionError("");
+                    setNotice("");
+                    setEditing(true);
+                  }}
                   disabled={loading || saving}
-                  className={`${buttonClass} border-indigo-600 bg-black text-white hover:bg-black`}
+                  className={`${buttonClass} border-slate-900 bg-slate-900 text-white`}
                 >
                   <Pencil size={16} />
                   {selectedRate ? "Edit Rates" : "Configure Rates"}
                 </button>
               )}
             </div>
-
             {loading ? (
               <div className="flex items-center justify-center gap-2 py-12 text-sm text-slate-500">
-                <LoaderCircle size={20} className="animate-spin" />
+                <LoaderCircle size={20} />
                 Loading rate configuration...
               </div>
             ) : (
@@ -608,7 +538,6 @@ export default function AdminCabRatesPage() {
                       <span className="mb-1.5 block text-sm font-semibold text-slate-800">
                         {field.label}
                       </span>
-
                       <input
                         type="number"
                         name={field.name}
@@ -621,14 +550,12 @@ export default function AdminCabRatesPage() {
                         required
                         className={inputClass}
                       />
-
                       <span className="mt-1.5 block text-xs text-slate-500">
                         {field.description}
                       </span>
                     </label>
                   ))}
                 </div>
-
                 <div className="mt-6 rounded border border-slate-200 p-4">
                   <label className="flex cursor-pointer items-start gap-3">
                     <input
@@ -639,7 +566,6 @@ export default function AdminCabRatesPage() {
                       disabled={!editing || saving}
                       className="mt-1 h-4 w-4 rounded border-slate-300 accent-indigo-600"
                     />
-
                     <span>
                       <span className="block text-sm font-semibold text-slate-900">
                         Active Rate Card
@@ -651,7 +577,6 @@ export default function AdminCabRatesPage() {
                     </span>
                   </label>
                 </div>
-
                 <div className="mt-6 rounded border border-slate-200 bg-slate-50 p-4">
                   <p className="text-sm font-semibold text-slate-800">
                     Minimum Fare Preview
@@ -660,11 +585,10 @@ export default function AdminCabRatesPage() {
                     {formatCurrency(form.minimumFare)}
                   </p>
                   <p className="mt-1 text-xs text-slate-500">
-                    This is the configured minimum fare. The final quote
-                    depends on the backend pricing rules.
+                    This is the configured minimum fare. The final quote depends
+                    on the backend pricing rules.
                   </p>
                 </div>
-
                 {editing && (
                   <div className="mt-6 flex flex-col justify-between gap-3 border-t border-slate-200 pt-5 sm:flex-row">
                     <button
@@ -675,29 +599,23 @@ export default function AdminCabRatesPage() {
                         setActionError("");
                       }}
                       disabled={saving}
-                      className={`${buttonClass} border-slate-300 bg-white text-slate-700 hover:bg-slate-50`}
+                      className={`${buttonClass} border-slate-300 bg-white text-slate-700`}
                     >
                       <X size={16} />
                       Cancel
                     </button>
-
                     <button
                       type="submit"
                       disabled={saving}
-                      className={`${buttonClass} border-indigo-600 bg-black text-white hover:bg-black`}
+                      className={`${buttonClass} border-slate-900 bg-slate-900 text-white`}
                     >
-                      {saving ? (
-                        <LoaderCircle size={16} className="animate-spin" />
-                      ) : (
-                        <Save size={16} />
-                      )}
+                      {saving ? <LoaderCircle size={16} /> : <Save size={16} />}
                       {saving ? "Saving..." : "Save Rate Card"}
                     </button>
                   </div>
                 )}
               </form>
             )}
-
             {!editing && selectedRate && (
               <div className="mt-6 flex flex-col justify-between gap-3 border-t border-slate-200 pt-5 sm:flex-row sm:items-center">
                 <p className="text-sm text-slate-500">
@@ -705,22 +623,13 @@ export default function AdminCabRatesPage() {
                     ? "This rate card is available for new bookings."
                     : "This rate card is hidden from guest rate selection."}
                 </p>
-
                 <button
                   type="button"
                   onClick={handleToggleStatus}
                   disabled={saving}
-                  className={`${buttonClass} ${
-                    selectedRate.isActive
-                      ? "border-rose-200 bg-white text-rose-700 hover:bg-rose-50"
-                      : "border-emerald-200 bg-white text-emerald-700 hover:bg-emerald-50"
-                  }`}
+                  className={`${buttonClass} ${selectedRate.isActive ? "border-rose-200 bg-white text-rose-700" : "border-emerald-200 bg-white text-emerald-700"}`}
                 >
-                  {saving ? (
-                    <LoaderCircle size={16} className="animate-spin" />
-                  ) : (
-                    <Check size={16} />
-                  )}
+                  {saving ? <LoaderCircle size={16} /> : <Check size={16} />}
                   {selectedRate.isActive ? "Deactivate Rate" : "Activate Rate"}
                 </button>
               </div>

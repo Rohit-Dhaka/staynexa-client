@@ -65,7 +65,7 @@ const ExtendHoldModal = ({ booking, onClose, onDone }) => {
             className={`rounded px-4 py-2 text-sm font-medium transition ${
               mode.type === "preset" && mode.hours === p.hours
                 ? "bg-black text-white"
-                : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                : "bg-slate-100 text-slate-700 "
             }`}
           >
             {p.label}
@@ -75,7 +75,7 @@ const ExtendHoldModal = ({ booking, onClose, onDone }) => {
           type="button"
           onClick={() => setMode({ type: "custom" })}
           className={`rounded px-4 py-2 text-sm font-medium transition ${
-            mode.type === "custom" ? "bg-black text-white" : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+            mode.type === "custom" ? "bg-black text-white" : "bg-slate-100 text-slate-700"
           }`}
         >
           Khud ka time

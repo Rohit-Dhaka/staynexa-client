@@ -1,4 +1,4 @@
-// import api from "../../api/axiosInstance";
+
 import api from "../../../api/axiosInstance";
 
 const BASE_URL = "/lost-found";
@@ -6,7 +6,7 @@ const BASE_URL = "/lost-found";
 const unwrap = (response) => response.data?.data ?? response.data;
 
 const lostFoundService = {
-  // ==================== GUEST REPORTS ====================
+  
 
   getMyReports: async (params = {}) => {
     const response = await api.get(`${BASE_URL}/guest/reports`, { params });
@@ -30,14 +30,14 @@ const lostFoundService = {
     return unwrap(response);
   },
 
-  // ==================== STAFF SUMMARY ====================
+  
 
   getSummary: async (params = {}) => {
     const response = await api.get(`${BASE_URL}/summary`, { params });
     return unwrap(response);
   },
 
-  // ==================== STAFF REPORTS ====================
+  
 
   getReports: async (params = {}) => {
     const response = await api.get(`${BASE_URL}/reports`, { params });
@@ -99,7 +99,7 @@ const lostFoundService = {
     return unwrap(response);
   },
 
-  // ==================== STAFF FOUND ITEMS ====================
+  
 
   getFoundItems: async (params = {}) => {
     const response = await api.get(`${BASE_URL}/found`, { params });

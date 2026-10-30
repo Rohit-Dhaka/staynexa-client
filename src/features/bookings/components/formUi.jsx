@@ -43,7 +43,7 @@ export const ModalFooter = ({
       type="button"
       onClick={onCancel}
       disabled={busy}
-      className="rounded border border-slate-300 px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50 disabled:opacity-60"
+      className="rounded border border-slate-300 px-4 py-2.5 text-sm font-medium text-slate-700 transition  disabled:opacity-60"
     >
       Cancel
     </button>
@@ -52,7 +52,7 @@ export const ModalFooter = ({
       onClick={onConfirm}
       disabled={busy || disabled}
       className={`flex items-center justify-center gap-2 rounded px-5 py-2.5 text-sm font-semibold text-white transition disabled:cursor-not-allowed disabled:opacity-60 ${
-        danger ? "bg-rose-600 hover:bg-rose-700" : "bg-black "
+        danger ? "bg-rose-600 " : "bg-black "
       }`}
     >
       {busy && <Loader2 size={16} className="animate-spin" />}

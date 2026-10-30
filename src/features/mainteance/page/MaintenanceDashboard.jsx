@@ -9,7 +9,6 @@ import {
   Wrench,
   Eye,
   Pencil,
-  MoreHorizontal,
   X,
   ChevronLeft,
   ChevronRight,
@@ -61,10 +60,10 @@ const PRIORITY_OPTIONS = [
 ];
 
 const inputClass =
-  "w-full rounded border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-800 outline-none transition-colors placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100";
+  "w-full rounded border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-800 outline-none placeholder:text-slate-400 focus:border-blue-500";
 
 const buttonClass =
-  "inline-flex items-center justify-center gap-2 rounded border border-slate-200 px-3.5 py-2.5 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50";
+  "inline-flex items-center justify-center gap-2 rounded border border-slate-200 px-3.5 py-2.5 text-sm font-medium text-slate-700 disabled:cursor-not-allowed disabled:opacity-50";
 
 function getErrorMessage(error, fallback) {
   return (
@@ -202,7 +201,7 @@ function EmptyState({ onAddEquipment, hasFilters }) {
         <button
           type="button"
           onClick={onAddEquipment}
-          className="mt-5 inline-flex items-center gap-2 rounded bg-black px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-black"
+          className="mt-5 inline-flex items-center gap-2 rounded bg-black px-4 py-2.5 text-sm font-semibold text-white"
         >
           <Plus size={17} />
           Add Equipment
@@ -225,7 +224,7 @@ function EquipmentTable({
         {Array.from({ length: 5 }).map((_, index) => (
           <div
             key={index}
-            className="h-14 animate-pulse rounded bg-slate-100"
+            className="h-14 rounded bg-slate-100"
           />
         ))}
       </div>
@@ -281,7 +280,7 @@ function EquipmentTable({
             return (
               <tr
                 key={id}
-                className="transition-colors hover:bg-slate-50"
+                className=" "
               >
                 <td className="px-5 py-4">
                   <button
@@ -342,7 +341,7 @@ function EquipmentTable({
                       onClick={() => onView(item)}
                       title="View Details"
                       aria-label={`View ${name}`}
-                      className="flex h-9 w-9 items-center justify-center rounded border border-slate-200 text-slate-600 transition-colors hover:bg-slate-100"
+                      className="flex h-9 w-9 items-center justify-center rounded border border-slate-200 text-slate-600"
                     >
                       <Eye size={16} />
                     </button>
@@ -352,7 +351,7 @@ function EquipmentTable({
                       onClick={() => onEdit(item)}
                       title="Edit Equipment"
                       aria-label={`Edit ${name}`}
-                      className="flex h-9 w-9 items-center justify-center rounded border border-slate-200 text-slate-600 transition-colors hover:bg-slate-100"
+                      className="flex h-9 w-9 items-center justify-center rounded border border-slate-200 text-slate-600"
                     >
                       <Pencil size={15} />
                     </button>
@@ -362,7 +361,7 @@ function EquipmentTable({
                       onClick={() => onReportIssue(item)}
                       title="Report Issue"
                       aria-label={`Report issue for ${name}`}
-                      className="flex h-9 w-9 items-center justify-center rounded border border-amber-200 text-amber-700 transition-colors hover:bg-amber-50"
+                      className="flex h-9 w-9 items-center justify-center rounded border border-amber-200 text-amber-700"
                     >
                       <AlertTriangle size={16} />
                     </button>
@@ -632,9 +631,9 @@ export default function MaintenanceDashboard() {
   };
 
   return (
-    <main className="min-h-screen ">
+    <main className="min-h-screen">
       <div className="mx-auto max-w-[1600px]">
-        {/* Page Header */}
+      
         <header className="mb-7 flex flex-col justify-between gap-4 lg:flex-row lg:items-center">
           <div>
             <div className="mb-2 flex items-center gap-2 text-sm font-medium text-blue-700">
@@ -662,7 +661,7 @@ export default function MaintenanceDashboard() {
               <RefreshCw
                 size={16}
                 className={
-                  loading || statsLoading ? "animate-spin" : ""
+                  loading || statsLoading ? "" : ""
                 }
               />
               Refresh
@@ -671,7 +670,7 @@ export default function MaintenanceDashboard() {
             <button
               type="button"
               onClick={openCreateForm}
-              className="inline-flex items-center justify-center gap-2 rounded bg-black px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-black"
+              className="inline-flex items-center justify-center gap-2 rounded bg-black px-4 py-2.5 text-sm font-semibold text-white"
             >
               <Plus size={17} />
               Add Equipment
@@ -679,7 +678,7 @@ export default function MaintenanceDashboard() {
           </div>
         </header>
 
-        {/* Success Message */}
+        
         {successMessage && (
           <div
             role="status"
@@ -691,14 +690,14 @@ export default function MaintenanceDashboard() {
               type="button"
               onClick={() => setSuccessMessage("")}
               aria-label="Dismiss notification"
-              className="rounded p-1 hover:bg-emerald-100"
+              className="rounded p-1"
             >
               <X size={16} />
             </button>
           </div>
         )}
 
-        {/* Dashboard Statistics */}
+        
         <div className="mb-8">
           <MaintenanceStats
             stats={dashboardStats}
@@ -708,7 +707,7 @@ export default function MaintenanceDashboard() {
           />
         </div>
 
-        {/* Equipment Inventory */}
+        
         <section className="overflow-hidden rounded border border-slate-200 bg-white">
           <div className="border-b border-slate-200 p-5 sm:p-6">
             <div className="flex flex-col justify-between gap-4 xl:flex-row xl:items-center">
@@ -739,7 +738,7 @@ export default function MaintenanceDashboard() {
               </div>
             </div>
 
-            {/* Search and Filters */}
+            
             <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
               <div className="relative">
                 <Search
@@ -811,7 +810,7 @@ export default function MaintenanceDashboard() {
             </div>
           </div>
 
-          {/* Equipment Table */}
+          
           {error ? (
             <div className="flex flex-col items-center px-5 py-14 text-center">
               <div className="flex h-12 w-12 items-center justify-center rounded bg-red-50 text-red-600">
@@ -829,7 +828,7 @@ export default function MaintenanceDashboard() {
               <button
                 type="button"
                 onClick={loadEquipment}
-                className="mt-4 inline-flex items-center gap-2 rounded border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+                className="mt-4 inline-flex items-center gap-2 rounded border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-700"
               >
                 <RefreshCw size={15} />
                 Try Again
@@ -855,7 +854,7 @@ export default function MaintenanceDashboard() {
             />
           )}
 
-          {/* Pagination */}
+          
           {!error && filteredEquipment.length > 0 && (
             <div className="flex flex-col gap-3 border-t border-slate-200 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
               <p className="text-xs text-slate-500">
@@ -883,7 +882,7 @@ export default function MaintenanceDashboard() {
                   onClick={() => setPage((current) => Math.max(1, current - 1))}
                   disabled={currentPage <= 1}
                   aria-label="Previous page"
-                  className="flex h-9 w-9 items-center justify-center rounded border border-slate-200 text-slate-600 transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
+                  className="flex h-9 w-9 items-center justify-center rounded border border-slate-200 text-slate-600 disabled:cursor-not-allowed disabled:opacity-40"
                 >
                   <ChevronLeft size={17} />
                 </button>
@@ -901,7 +900,7 @@ export default function MaintenanceDashboard() {
                   }
                   disabled={currentPage >= totalPages}
                   aria-label="Next page"
-                  className="flex h-9 w-9 items-center justify-center rounded border border-slate-200 text-slate-600 transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
+                  className="flex h-9 w-9 items-center justify-center rounded border border-slate-200 text-slate-600 disabled:cursor-not-allowed disabled:opacity-40"
                 >
                   <ChevronRight size={17} />
                 </button>
@@ -910,7 +909,7 @@ export default function MaintenanceDashboard() {
           )}
         </section>
 
-        {/* Inline Equipment Form */}
+        
         {formOpen && (
           <section
             id="equipment-form-section"
@@ -931,7 +930,7 @@ export default function MaintenanceDashboard() {
           </section>
         )}
 
-        {/* Issue Form */}
+        
         <MaintenanceIssueForm
           open={issueFormOpen}
           equipment={selectedEquipment}
@@ -943,7 +942,7 @@ export default function MaintenanceDashboard() {
           onSubmit={handleReportIssue}
         />
 
-        {/* Equipment Details */}
+        
         <MaintenanceDetails
           open={detailsOpen}
           equipment={selectedEquipment}

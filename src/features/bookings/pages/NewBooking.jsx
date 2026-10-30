@@ -72,7 +72,7 @@ const emptyExtraGuest = {
 };
 
 const Select = ({ value, onChange, children }) => (
-  <select value={value} onChange={onChange} className={inputClass}>
+  <select value={value} onChange={onChange} className={`${inputClass} w-full min-w-0`}>
     {children}
   </select>
 );
@@ -545,25 +545,25 @@ const NewBooking = () => {
         : "Same-day booking";
 
   return (
-    <div className="mx-auto space-y-6">
-      <div className="flex items-center gap-3">
+    <div className="mx-auto w-full min-w-0 space-y-4 sm:space-y-5">
+      <div className="flex min-w-0 items-center gap-2 sm:gap-3">
         <button
           type="button"
           onClick={() => navigate("/bookings")}
           aria-label="Back to bookings"
-          className="rounded p-2 text-slate-500 transition hover:bg-slate-100"
+          className="rounded p-2 text-slate-500 transition "
         >
           <ArrowLeft size={18} />
         </button>
         <div>
-          <h1 className="text-2xl font-semibold text-slate-900">New Booking</h1>
-          <p className="text-sm text-slate-500">
+          <h1 className="text-lg font-semibold text-slate-900 sm:text-xl">New Booking</h1>
+          <p className="text-xs text-slate-500 sm:text-sm">
             Walk-in, Advance Booking, or Room Hold Only
           </p>
         </div>
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1.5 sm:gap-2">
         {STEPS.map((label, i) => {
           const n = i + 1;
           const done = step > n;
@@ -597,13 +597,13 @@ const NewBooking = () => {
       <ErrorBox message={error} />
 
       {step === 1 && (
-        <div className="space-y-5">
-          <div className="rounded border border-slate-200 bg-white p-5">
+        <div className="min-w-0 space-y-4 sm:space-y-5">
+          <div className="min-w-0 rounded border border-slate-200 bg-white p-3 sm:p-4 lg:p-5">
             
             <div
               role="group"
               aria-label="Stay type"
-              className="mb-2 inline-flex rounded bg-slate-100 p-1"
+              className="mb-2 flex w-full max-w-full rounded bg-slate-100 p-1 sm:inline-flex sm:w-auto"
             >
               {[
                 { value: "fixed", label: "Check-in & Check-out" },
@@ -614,10 +614,10 @@ const NewBooking = () => {
                   type="button"
                   onClick={() => changeStayMode(mode.value)}
                   aria-pressed={stayMode === mode.value}
-                  className={`rounded px-4 py-2 text-sm font-medium transition ${
+                  className={`rounded px-3 py-2 text-xs font-medium sm:px-4 sm:text-sm transition ${
                     stayMode === mode.value
                       ? "bg-white text-slate-900 "
-                      : "text-slate-500 hover:text-slate-800"
+                      : "text-slate-500 "
                   }`}
                 >
                   {mode.label}
@@ -630,14 +630,14 @@ const NewBooking = () => {
                 : "Both the check-in and the check-out dates are confirmed."}
             </p>
 
-            <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+            <div className="grid grid-cols-1 gap-3 min-[420px]:grid-cols-2 sm:gap-3 sm:gap-4 md:grid-cols-4">
               <Field label="Check-in">
                 <input
                   type="date"
                   min={today}
                   value={stay.checkIn}
                   onChange={(e) => changeStay("checkIn", e.target.value)}
-                  className={inputClass}
+                  className={`${inputClass} w-full min-w-0`}
                 />
               </Field>
               {isOpenStay ? (
@@ -651,7 +651,7 @@ const NewBooking = () => {
                     max="60"
                     value={expectedNights}
                     onChange={(e) => changeExpectedNights(e.target.value)}
-                    className={inputClass}
+                    className={`${inputClass} w-full min-w-0`}
                   />
                 </Field>
               ) : (
@@ -666,7 +666,7 @@ const NewBooking = () => {
                     min={addDaysToInput(stay.checkIn, 1)}
                     value={stay.checkOut}
                     onChange={(e) => changeStay("checkOut", e.target.value)}
-                    className={inputClass}
+                    className={`${inputClass} w-full min-w-0`}
                   />
                 </Field>
               )}
@@ -676,7 +676,7 @@ const NewBooking = () => {
                   min="1"
                   value={stay.adults}
                   onChange={(e) => changeStay("adults", e.target.value)}
-                  className={inputClass}
+                  className={`${inputClass} w-full min-w-0`}
                 />
               </Field>
               <Field label="Children">
@@ -685,7 +685,7 @@ const NewBooking = () => {
                   min="0"
                   value={stay.children}
                   onChange={(e) => changeStay("children", e.target.value)}
-                  className={inputClass}
+                  className={`${inputClass} w-full min-w-0`}
                 />
               </Field>
             </div>
@@ -693,7 +693,7 @@ const NewBooking = () => {
               type="button"
               onClick={runSearch}
               disabled={searching}
-              className="mt-4 flex items-center gap-2 rounded bg-black px-5 py-2.5 text-sm font-semibold text-white transition  disabled:opacity-60"
+              className="mt-4 flex items-center gap-2 rounded bg-black px-4 py-2 text-xs font-semibold sm:px-5 sm:py-2.5 sm:text-sm text-white transition disabled:opacity-60"
             >
               {searching && <Loader2 size={16} className="animate-spin" />}
               Available rooms
@@ -701,7 +701,7 @@ const NewBooking = () => {
           </div>
 
           {availability && availability.options.length === 0 && (
-            <p className="rounded border border-slate-200 bg-white px-5 py-10 text-center text-sm text-slate-500">
+            <p className="rounded border border-slate-200 bg-white px-3 py-7 text-center text-xs text-slate-500 sm:px-5 sm:py-10 sm:text-sm">
               No rooms are available for these dates and guest count
             </p>
           )}
@@ -717,9 +717,9 @@ const NewBooking = () => {
                     : "border-slate-200"
                 }`}
               >
-                <div className="flex flex-wrap items-start justify-between gap-4">
+                <div className="flex min-w-0 flex-col gap-3 min-[520px]:flex-row min-[520px]:items-start min-[520px]:justify-between sm:gap-3 sm:gap-4">
                   <div>
-                    <h3 className="text-base font-semibold text-slate-900">
+                    <h3 className="text-sm font-semibold text-slate-900 sm:text-base">
                       {opt.roomType.name}
                     </h3>
                     <p className="mt-0.5 flex items-center gap-1.5 text-sm text-slate-500">
@@ -729,7 +729,7 @@ const NewBooking = () => {
                       <span className="text-slate-300">|</span>
                       {opt.roomType.bedType} bed
                     </p>
-                    <p className="mt-1 text-xs text-emerald-600">
+                    <p className="mt-1 text-[11px] text-emerald-600 sm:text-xs">
                       {opt.availableCount} room available
                     </p>
                     {(opt.roomType.amenities || []).length > 0 && (
@@ -746,11 +746,11 @@ const NewBooking = () => {
                     )}
                   </div>
 
-                  <div className="text-right">
-                    <p className="text-sm text-slate-500">
+                  <div className="text-left min-[520px]:text-right">
+                    <p className="text-xs text-slate-500 sm:text-sm">
                       {formatINR(opt.pricePerNight)} / night
                     </p>
-                    <p className="text-xl font-semibold text-slate-900">
+                    <p className="text-lg font-semibold text-slate-900 sm:text-xl">
                       {formatINR(opt.totalAmount)}
                     </p>
                     <p className="text-xs text-slate-500">
@@ -768,7 +768,7 @@ const NewBooking = () => {
                     <p className="mb-2 text-sm font-medium text-slate-700">
                       Choose a Room Number
                     </p>
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap gap-1.5 sm:gap-2">
                       {opt.rooms.map((r) => (
                         <button
                           key={r._id}
@@ -779,7 +779,7 @@ const NewBooking = () => {
                           className={`rounded px-3 py-1.5 text-sm transition ${
                             selected.roomId === r._id
                               ? "bg-black text-white"
-                              : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                              : "bg-slate-100 text-slate-700 "
                           }`}
                         >
                           {r.roomNumber}{" "}
@@ -799,7 +799,7 @@ const NewBooking = () => {
                         roomId: opt.rooms[0]?._id || "",
                       })
                     }
-                    className="mt-4 rounded border border-indigo-200 px-4 py-2 text-sm font-medium text-indigo-600 transition hover:bg-black"
+                    className="mt-4 rounded border border-indigo-200 px-3 py-2 text-xs font-medium sm:px-4 sm:text-sm text-indigo-600 transition "
                   >
                     Choose a Room Type
                   </button>
@@ -808,12 +808,12 @@ const NewBooking = () => {
             );
           })}
 
-          <div className="flex justify-end">
+          <div className="flex flex-col gap-2 sm:flex-row sm:justify-end">
             <button
               type="button"
               onClick={goStep2}
               disabled={!selected.roomId}
-              className="rounded bg-black px-6 py-2.5 text-sm font-semibold text-white transition  disabled:opacity-50"
+              className="rounded bg-black px-4 py-2 text-xs font-semibold sm:px-6 sm:py-2.5 sm:text-sm text-white transition disabled:opacity-50"
             >
               Next
             </button>
@@ -822,9 +822,9 @@ const NewBooking = () => {
       )}
 
       {step === 2 && (
-        <div className="space-y-5">
-          <div className="rounded border border-slate-200 bg-white p-5">
-            <h2 className="mb-4 text-base font-semibold text-slate-900">
+        <div className="min-w-0 space-y-4 sm:space-y-5">
+          <div className="min-w-0 rounded border border-slate-200 bg-white p-3 sm:p-4 lg:p-5">
+            <h2 className="mb-4 text-sm font-semibold text-slate-900 sm:text-base">
               Primary guest
             </h2>
 
@@ -852,7 +852,7 @@ const NewBooking = () => {
                   onBlur={() => setShowSuggestions(false)}
                   placeholder="Search by name, phone or email"
                   autoComplete="off"
-                  className={`${inputClass} pl-10`}
+                  className={`${inputClass} w-full min-w-0 pl-10`}
                 />
                 {suggesting && (
                   <Loader2
@@ -863,7 +863,7 @@ const NewBooking = () => {
               </div>
 
               {showSuggestions && suggestQuery.trim().length >= 2 && (
-                <div className="absolute z-20 mt-1 max-h-64 w-full overflow-y-auto rounded border border-slate-200 bg-white ">
+                <div className="absolute z-20 mt-1 max-h-64 w-full overflow-y-auto rounded border border-slate-200 bg-white">
                   {suggestions.length === 0 ? (
                     <p className="px-4 py-3 text-sm text-slate-500">
                       {suggesting ? "Searching..." : "No guests found"}
@@ -875,7 +875,7 @@ const NewBooking = () => {
                         type="button"
                         onMouseDown={(e) => e.preventDefault()}
                         onClick={() => selectSuggestion(item)}
-                        className="flex w-full items-center justify-between gap-3 px-4 py-2.5 text-left transition hover:bg-slate-50"
+                        className="flex w-full items-center justify-between gap-3 px-4 py-2.5 text-left transition "
                       >
                         <span className="min-w-0">
                           <span className="block truncate text-sm font-medium text-slate-900">
@@ -907,7 +907,7 @@ const NewBooking = () => {
 
             
             {matchedGuest?.isBlacklisted && (
-              <div className="mb-4 flex items-start gap-3 rounded border border-rose-200 bg-rose-50 p-3.5 text-sm text-rose-800">
+              <div className="mb-4 flex items-start gap-3 rounded border border-rose-200 bg-rose-50 p-3 sm:p-3.5 text-sm text-rose-800">
                 <AlertTriangle size={18} className="mt-0.5 shrink-0" />
                 <p>
                   <span className="font-semibold">{matchedGuest.name}</span> is
@@ -921,7 +921,7 @@ const NewBooking = () => {
             )}
 
             {matchedGuest && !matchedGuest.isBlacklisted && !usingSavedGuest && (
-              <div className="mb-4 flex flex-col gap-3 rounded border border-indigo-200 bg-black p-3.5 text-sm text-indigo-900 sm:flex-row sm:items-center sm:justify-between">
+              <div className="mb-4 flex flex-col gap-3 rounded border border-indigo-200 bg-black p-3 sm:p-3.5 text-sm text-indigo-900 sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex items-start gap-3">
                   <UserCheck size={18} className="mt-0.5 shrink-0" />
                   <p>
@@ -935,7 +935,7 @@ const NewBooking = () => {
                 <button
                   type="button"
                   onClick={() => applyGuest(matchedGuest, lookup.stays)}
-                  className="shrink-0 rounded bg-black px-4 py-2 text-xs font-semibold text-white transition "
+                  className="shrink-0 rounded bg-black px-4 py-2 text-xs font-semibold text-white transition"
                 >
                   Fill saved details
                 </button>
@@ -943,7 +943,7 @@ const NewBooking = () => {
             )}
 
             {usingSavedGuest && !matchedGuest.isBlacklisted && (
-              <div className="mb-4 flex items-start gap-3 rounded border border-emerald-200 bg-emerald-50 p-3.5 text-sm text-emerald-800">
+              <div className="mb-4 flex items-start gap-3 rounded border border-emerald-200 bg-emerald-50 p-3 sm:p-3.5 text-sm text-emerald-800">
                 <UserCheck size={18} className="mt-0.5 shrink-0" />
                 <p>
                   Using the saved profile of{" "}
@@ -969,19 +969,19 @@ const NewBooking = () => {
               </p>
             )}
 
-            <div className="grid gap-4 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-3 sm:gap-3 sm:gap-4 md:grid-cols-2">
               <Field label="Name *">
                 <input
                   value={guest.name}
                   onChange={(e) => setGuest({ ...guest, name: e.target.value })}
-                  className={inputClass}
+                  className={`${inputClass} w-full min-w-0`}
                 />
               </Field>
               <Field label="Phone *">
                 <input
                   value={guest.phone}
                   onChange={(e) => handlePhoneChange(e.target.value)}
-                  className={inputClass}
+                  className={`${inputClass} w-full min-w-0`}
                 />
               </Field>
               <Field label="Email">
@@ -991,7 +991,7 @@ const NewBooking = () => {
                   onChange={(e) =>
                     setGuest({ ...guest, email: e.target.value })
                   }
-                  className={inputClass}
+                  className={`${inputClass} w-full min-w-0`}
                 />
               </Field>
               <Field label="Gender">
@@ -1010,7 +1010,7 @@ const NewBooking = () => {
                 <input
                   value={guest.city}
                   onChange={(e) => setGuest({ ...guest, city: e.target.value })}
-                  className={inputClass}
+                  className={`${inputClass} w-full min-w-0`}
                 />
               </Field>
               <Field label="Address">
@@ -1019,7 +1019,7 @@ const NewBooking = () => {
                   onChange={(e) =>
                     setGuest({ ...guest, address: e.target.value })
                   }
-                  className={inputClass}
+                  className={`${inputClass} w-full min-w-0`}
                 />
               </Field>
               <Field label="ID proof type">
@@ -1045,15 +1045,15 @@ const NewBooking = () => {
                   onChange={(e) =>
                     setGuest({ ...guest, idNumber: e.target.value })
                   }
-                  className={inputClass}
+                  className={`${inputClass} w-full min-w-0`}
                 />
               </Field>
             </div>
           </div>
 
-          <div className="rounded border border-slate-200 bg-white p-5">
-            <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-base font-semibold text-slate-900">
+          <div className="min-w-0 rounded border border-slate-200 bg-white p-3 sm:p-4 lg:p-5">
+            <div className="mb-3 flex flex-col gap-2 min-[420px]:flex-row min-[420px]:items-center min-[420px]:justify-between sm:mb-4">
+              <h2 className="text-sm font-semibold text-slate-900 sm:text-base">
                 Additional guests
               </h2>
               <button
@@ -1061,27 +1061,27 @@ const NewBooking = () => {
                 onClick={() =>
                   setExtraGuests((l) => [...l, { ...emptyExtraGuest }])
                 }
-                className="flex items-center gap-1.5 rounded border border-slate-300 px-3 py-1.5 text-sm text-slate-700 transition hover:bg-slate-50"
+                className="flex items-center gap-1.5 rounded border border-slate-300 px-3 py-1.5 text-sm text-slate-700 transition "
               >
                 <Plus size={15} /> Add Guest
               </button>
             </div>
 
             {extraGuests.length === 0 && (
-              <p className="text-sm text-slate-500">No Additional Guests</p>
+              <p className="text-xs text-slate-500 sm:text-sm">No Additional Guests</p>
             )}
 
             <div className="space-y-4">
               {extraGuests.map((g, i) => (
-                <div key={i} className="rounded border border-slate-200 p-4">
-                  <div className="grid gap-3 md:grid-cols-4">
+                <div key={i} className="min-w-0 rounded border border-slate-200 p-3 sm:p-4">
+                  <div className="grid grid-cols-1 gap-3 min-[420px]:grid-cols-2 lg:grid-cols-4">
                     <Field label="Name *">
                       <input
                         value={g.name}
                         onChange={(e) =>
                           updateExtraGuest(i, { name: e.target.value })
                         }
-                        className={inputClass}
+                        className={`${inputClass} w-full min-w-0`}
                       />
                     </Field>
                     <Field label="Age">
@@ -1092,7 +1092,7 @@ const NewBooking = () => {
                         onChange={(e) =>
                           updateExtraGuest(i, { age: e.target.value })
                         }
-                        className={inputClass}
+                        className={`${inputClass} w-full min-w-0`}
                       />
                     </Field>
                     <Field label="Gender">
@@ -1113,7 +1113,7 @@ const NewBooking = () => {
                         onChange={(e) =>
                           updateExtraGuest(i, { relation: e.target.value })
                         }
-                        className={inputClass}
+                        className={`${inputClass} w-full min-w-0`}
                       />
                     </Field>
                     <Field label="ID type">
@@ -1136,7 +1136,7 @@ const NewBooking = () => {
                         onChange={(e) =>
                           updateExtraGuest(i, { idNumber: e.target.value })
                         }
-                        className={inputClass}
+                        className={`${inputClass} w-full min-w-0`}
                       />
                     </Field>
                     <label className="flex items-center gap-2 self-end pb-2 text-sm text-slate-700">
@@ -1154,7 +1154,7 @@ const NewBooking = () => {
                       onClick={() =>
                         setExtraGuests((l) => l.filter((_, idx) => idx !== i))
                       }
-                      className="flex items-center justify-center gap-1.5 self-end rounded px-3 py-2 text-sm text-rose-600 transition hover:bg-rose-50"
+                      className="flex items-center justify-center gap-1.5 self-end rounded px-3 py-2 text-sm text-rose-600 transition "
                     >
                       <Trash2 size={15} /> Remove
                     </button>
@@ -1164,11 +1164,11 @@ const NewBooking = () => {
             </div>
           </div>
 
-          <div className="rounded border border-slate-200 bg-white p-5">
-            <h2 className="mb-4 text-base font-semibold text-slate-900">
+          <div className="min-w-0 rounded border border-slate-200 bg-white p-3 sm:p-4 lg:p-5">
+            <h2 className="mb-4 text-sm font-semibold text-slate-900 sm:text-base">
               Booking details
             </h2>
-            <div className="grid gap-4 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-3 sm:gap-3 sm:gap-4 md:grid-cols-2">
               <Field label="Source">
                 <Select
                   value={extra.source}
@@ -1190,7 +1190,7 @@ const NewBooking = () => {
                   onChange={(e) =>
                     setExtra({ ...extra, expectedArrivalTime: e.target.value })
                   }
-                  className={inputClass}
+                  className={`${inputClass} w-full min-w-0`}
                 />
               </Field>
       
@@ -1201,7 +1201,7 @@ const NewBooking = () => {
                   onChange={(e) =>
                     setExtra({ ...extra, specialRequests: e.target.value })
                   }
-                  className={inputClass}
+                  className={`${inputClass} w-full min-w-0`}
                 />
               </Field>
               <Field label="Internal notes (Not visible to guests)">
@@ -1211,24 +1211,24 @@ const NewBooking = () => {
                   onChange={(e) =>
                     setExtra({ ...extra, internalNotes: e.target.value })
                   }
-                  className={inputClass}
+                  className={`${inputClass} w-full min-w-0`}
                 />
               </Field>
             </div>
           </div>
 
-          <div className="flex justify-between">
+          <div className="flex flex-col-reverse gap-2 min-[420px]:flex-row min-[420px]:items-center min-[420px]:justify-between">
             <button
               type="button"
               onClick={() => setStep(1)}
-              className="rounded border border-slate-300 px-5 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+              className="rounded border border-slate-300 px-4 py-2 text-xs font-medium sm:px-5 sm:py-2.5 sm:text-sm text-slate-700 transition"
             >
               Back
             </button>
             <button
               type="button"
               onClick={goStep3}
-              className="rounded bg-black px-6 py-2.5 text-sm font-semibold text-white transition "
+              className="rounded bg-black px-4 py-2 text-xs font-semibold sm:px-6 sm:py-2.5 sm:text-sm text-white transition"
             >
               Next
             </button>
@@ -1237,12 +1237,12 @@ const NewBooking = () => {
       )}
 
       {step === 3 && option && (
-        <div className="space-y-5">
-          <div className="rounded border border-slate-200 bg-white p-5">
-            <h2 className="mb-3 text-base font-semibold text-slate-900">
+        <div className="min-w-0 space-y-4 sm:space-y-5">
+          <div className="min-w-0 rounded border border-slate-200 bg-white p-3 sm:p-4 lg:p-5">
+            <h2 className="mb-3 text-sm font-semibold text-slate-900 sm:text-base">
               Booking type
             </h2>
-            <div className="grid gap-3 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               {[
                 {
                   value: false,
@@ -1262,10 +1262,10 @@ const NewBooking = () => {
                   className={`rounded border p-4 text-left transition ${
                     isHold === o.value
                       ? "border-indigo-500 bg-black ring-2 ring-indigo-100"
-                      : "border-slate-200 hover:bg-slate-50"
+                      : "border-slate-200 "
                   }`}
                 >
-                  <p className="text-sm font-semibold text-slate-900">
+                  <p className="text-xs font-semibold text-slate-900 sm:text-sm">
                     {o.title}
                   </p>
                   <p className="mt-0.5 text-xs text-slate-500">{o.text}</p>
@@ -1275,10 +1275,10 @@ const NewBooking = () => {
           </div>
 
           {canOfferCheckIn && (
-            <div className="rounded border border-slate-200 bg-white p-5">
-              <div className="flex items-start justify-between gap-4">
+            <div className="min-w-0 rounded border border-slate-200 bg-white p-3 sm:p-4 lg:p-5">
+              <div className="flex items-start justify-between gap-3 sm:gap-4">
                 <div className="min-w-0">
-                  <h2 className="text-base font-semibold text-slate-900">
+                  <h2 className="text-sm font-semibold text-slate-900 sm:text-base">
                     Check in now
                   </h2>
                   <p className="mt-0.5 text-sm text-slate-500">
@@ -1302,30 +1302,30 @@ const NewBooking = () => {
             </div>
           )}
 
-          <div className="rounded border border-slate-200 bg-white p-5">
-            <h2 className="mb-4 text-base font-semibold text-slate-900">
+          <div className="min-w-0 rounded border border-slate-200 bg-white p-3 sm:p-4 lg:p-5">
+            <h2 className="mb-4 text-sm font-semibold text-slate-900 sm:text-base">
               Booking summary
             </h2>
-            <dl className="grid gap-x-8 gap-y-3 text-sm md:grid-cols-2">
-              <div className="flex justify-between">
+            <dl className="grid grid-cols-1 gap-x-6 gap-y-2 text-xs sm:grid-cols-2 sm:gap-y-3 sm:text-sm">
+              <div className="flex flex-col-reverse gap-2 min-[420px]:flex-row min-[420px]:items-center min-[420px]:justify-between">
                 <dt className="text-slate-500">Guest</dt>
-                <dd className="font-medium text-slate-900">{guest.name}</dd>
+                <dd className="min-w-0 max-w-[60%] break-words text-right font-medium text-slate-900">{guest.name}</dd>
               </div>
-              <div className="flex justify-between">
+              <div className="flex flex-col-reverse gap-2 min-[420px]:flex-row min-[420px]:items-center min-[420px]:justify-between">
                 <dt className="text-slate-500">Room</dt>
-                <dd className="font-medium text-slate-900">
+                <dd className="min-w-0 max-w-[60%] break-words text-right font-medium text-slate-900">
                   {room?.roomNumber} ({option.roomType.name})
                 </dd>
               </div>
-              <div className="flex justify-between">
+              <div className="flex flex-col-reverse gap-2 min-[420px]:flex-row min-[420px]:items-center min-[420px]:justify-between">
                 <dt className="text-slate-500">Check-in</dt>
-                <dd className="font-medium text-slate-900">
+                <dd className="min-w-0 max-w-[60%] break-words text-right font-medium text-slate-900">
                   {formatDate(stay.checkIn)}
                 </dd>
               </div>
-              <div className="flex justify-between">
+              <div className="flex flex-col-reverse gap-2 min-[420px]:flex-row min-[420px]:items-center min-[420px]:justify-between">
                 <dt className="text-slate-500">Check-out</dt>
-                <dd className="text-right font-medium text-slate-900">
+                <dd className="min-w-0 max-w-[60%] break-words text-right font-medium text-slate-900">
                   {isOpenStay ? (
                     <>
                       Not confirmed
@@ -1338,36 +1338,36 @@ const NewBooking = () => {
                   )}
                 </dd>
               </div>
-              <div className="flex justify-between">
+              <div className="flex flex-col-reverse gap-2 min-[420px]:flex-row min-[420px]:items-center min-[420px]:justify-between">
                 <dt className="text-slate-500">Guests</dt>
-                <dd className="font-medium text-slate-900">
+                <dd className="min-w-0 max-w-[60%] break-words text-right font-medium text-slate-900">
                   {stay.adults} adults, {stay.children} children
                 </dd>
               </div>
-              <div className="flex justify-between">
+              <div className="flex flex-col-reverse gap-2 min-[420px]:flex-row min-[420px]:items-center min-[420px]:justify-between">
                 <dt className="text-slate-500">Type</dt>
-                <dd className="font-medium text-slate-900">
+                <dd className="min-w-0 max-w-[60%] break-words text-right font-medium text-slate-900">
                   {bookingTypeLabel}
                 </dd>
               </div>
             </dl>
 
             <div className="mt-4 space-y-1.5 border-t border-slate-100 pt-4 text-sm">
-              <div className="flex justify-between">
+              <div className="flex flex-col-reverse gap-2 min-[420px]:flex-row min-[420px]:items-center min-[420px]:justify-between">
                 <span className="text-slate-500">
                   Room ({nights} x {formatINR(option.pricePerNight)})
                 </span>
                 <span>{formatINR(option.roomCharges)}</span>
               </div>
               {option.taxPercent > 0 && (
-                <div className="flex justify-between">
+                <div className="flex flex-col-reverse gap-2 min-[420px]:flex-row min-[420px]:items-center min-[420px]:justify-between">
                   <span className="text-slate-500">
                     GST {option.taxPercent}%
                   </span>
                   <span>{formatINR(option.taxAmount)}</span>
                 </div>
               )}
-              <div className="flex justify-between text-base font-semibold text-slate-900">
+              <div className="flex justify-between text-xs font-semibold text-slate-900 sm:text-sm sm:text-base">
                 <span>Total</span>
                 <span>{formatINR(option.totalAmount)}</span>
               </div>
@@ -1388,14 +1388,14 @@ const NewBooking = () => {
           </div>
 
           {isManager && (
-            <div className="rounded border border-slate-200 bg-white p-5">
-              <h2 className="mb-1 text-base font-semibold text-slate-900">
+            <div className="min-w-0 rounded border border-slate-200 bg-white p-3 sm:p-4 lg:p-5">
+              <h2 className="mb-1 text-sm font-semibold text-slate-900 sm:text-base">
                 Manager options
               </h2>
               <p className="mb-4 text-sm text-slate-500">
                 Leave blank to apply the standard rate and policy.
               </p>
-              <div className="grid gap-4 md:grid-cols-2">
+              <div className="grid grid-cols-1 gap-3 sm:gap-3 sm:gap-4 md:grid-cols-2">
                 <Field label="Custom Price per Night">
                   <input
                     type="number"
@@ -1404,7 +1404,7 @@ const NewBooking = () => {
                     onChange={(e) =>
                       setPricing({ ...pricing, pricePerNight: e.target.value })
                     }
-                    className={inputClass}
+                    className={`${inputClass} w-full min-w-0`}
                   />
                 </Field>
                 {!isHold && (
@@ -1419,7 +1419,7 @@ const NewBooking = () => {
                           advanceRequired: e.target.value,
                         })
                       }
-                      className={inputClass}
+                      className={`${inputClass} w-full min-w-0`}
                     />
                   </Field>
                 )}
@@ -1431,7 +1431,7 @@ const NewBooking = () => {
                     onChange={(e) =>
                       setPricing({ ...pricing, discountAmount: e.target.value })
                     }
-                    className={inputClass}
+                    className={`${inputClass} w-full min-w-0`}
                   />
                 </Field>
                 <Field label="Discount Reason">
@@ -1440,7 +1440,7 @@ const NewBooking = () => {
                     onChange={(e) =>
                       setPricing({ ...pricing, discountReason: e.target.value })
                     }
-                    className={inputClass}
+                    className={`${inputClass} w-full min-w-0`}
                   />
                 </Field>
               </div>
@@ -1448,15 +1448,15 @@ const NewBooking = () => {
           )}
 
           {isHold ? (
-            <div className="rounded border border-slate-200 bg-white p-5">
-              <h2 className="mb-1 text-base font-semibold text-slate-900">
+            <div className="min-w-0 rounded border border-slate-200 bg-white p-3 sm:p-4 lg:p-5">
+              <h2 className="mb-1 text-sm font-semibold text-slate-900 sm:text-base">
                 Hold Details
               </h2>
               <p className="mb-4 text-sm text-slate-500">
                 The room will remain unavailable to others during the hold. Once
                 the hold expires, it will be released automatically.
               </p>
-              <div className="grid gap-4 md:grid-cols-2">
+              <div className="grid grid-cols-1 gap-3 sm:gap-3 sm:gap-4 md:grid-cols-2">
                 <Field label="Hold Until">
                   <Select
                     value={holdOpts.holdHours}
@@ -1478,14 +1478,14 @@ const NewBooking = () => {
                       setHoldOpts({ ...holdOpts, holdNote: e.target.value })
                     }
                     placeholder="“The guest requested a hold until tomorrow.”"
-                    className={inputClass}
+                    className={`${inputClass} w-full min-w-0`}
                   />
                 </Field>
               </div>
             </div>
           ) : (
-            <div className="rounded border border-slate-200 bg-white p-5">
-              <h2 className="mb-1 text-base font-semibold text-slate-900">
+            <div className="min-w-0 rounded border border-slate-200 bg-white p-3 sm:p-4 lg:p-5">
+              <h2 className="mb-1 text-sm font-semibold text-slate-900 sm:text-base">
                 Advance payment
               </h2>
               <p className="mb-4 text-sm text-slate-500">
@@ -1493,14 +1493,14 @@ const NewBooking = () => {
                   ? `An advance payment of ${formatINR(advanceDue)} is required to confirm this booking. The booking will remain pending until the payment is received.`
                   : "Advance payment is optional for today's booking. You can collect it now or at check-in."}
               </p>
-              <div className="grid gap-4 md:grid-cols-3">
+              <div className="grid grid-cols-1 gap-3 sm:gap-3 sm:gap-4 md:grid-cols-3">
                 <Field label="Amount">
                   <input
                     type="number"
                     min="0"
                     value={pay.amount}
                     onChange={(e) => setPay({ ...pay, amount: e.target.value })}
-                    className={inputClass}
+                    className={`${inputClass} w-full min-w-0`}
                   />
                 </Field>
                 <Field label="Method">
@@ -1521,7 +1521,7 @@ const NewBooking = () => {
                     onChange={(e) =>
                       setPay({ ...pay, reference: e.target.value })
                     }
-                    className={inputClass}
+                    className={`${inputClass} w-full min-w-0`}
                   />
                 </Field>
               </div>
@@ -1536,12 +1536,12 @@ const NewBooking = () => {
             </NoteBox>
           )}
 
-          <div className="flex justify-between">
+          <div className="flex flex-col-reverse gap-2 min-[420px]:flex-row min-[420px]:items-center min-[420px]:justify-between">
             <button
               type="button"
               onClick={() => setStep(2)}
               disabled={saving}
-              className="rounded border border-slate-300 px-5 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50 disabled:opacity-60"
+              className="rounded border border-slate-300 px-4 py-2 text-xs font-medium sm:px-5 sm:py-2.5 sm:text-sm text-slate-700 transition disabled:opacity-60"
             >
               Back
             </button>
@@ -1549,7 +1549,7 @@ const NewBooking = () => {
               type="button"
               onClick={submit}
               disabled={saving}
-              className="flex items-center gap-2 rounded bg-black px-6 py-2.5 text-sm font-semibold text-white transition  disabled:opacity-60"
+              className="flex items-center gap-2 rounded bg-black px-4 py-2 text-xs font-semibold sm:px-6 sm:py-2.5 sm:text-sm text-white transition disabled:opacity-60"
             >
               {saving && <Loader2 size={16} className="animate-spin" />}
               {isHold

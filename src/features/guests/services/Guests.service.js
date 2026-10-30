@@ -41,7 +41,7 @@ export const getMyGuestProfile = () =>
 
 
 
-/* ----------------------------- Guest requests ----------------------------- */
+
 
 export const getRequestList = (params) =>
   api.get("/guest-requests", { params }).then((res) => {

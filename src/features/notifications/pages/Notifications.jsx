@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Bell,
   CheckCheck,
@@ -25,9 +25,6 @@ import {
   clearReadNotifications,
 } from "../services/notifications.service";
 
-// import { requestNotificationPermission } from "../../firebase/notifications.js";
-import { requestNotificationPermission } from "../../../firebase/notifications.js";
-
 const CATEGORY_META = {
   booking: {
     label: "Booking",
@@ -53,6 +50,7 @@ const CATEGORY_META = {
   },
   system: { label: "System", icon: Info, color: "bg-slate-100 text-slate-600" },
 };
+
 const FILTERS = [
   { value: "all", label: "All notifications" },
   { value: "unread", label: "Unread" },
@@ -61,21 +59,25 @@ const FILTERS = [
     label: meta.label,
   })),
 ];
-const dateText = (value) =>
-  value
-    ? new Date(value).toLocaleString("en-IN", {
-        dateStyle: "medium",
-        timeStyle: "short",
-      })
-    : "";
+
+const announceChange = () =>
+  window.dispatchEvent(new Event("notifications:changed"));
+
+const LIST_POLL_MS = 10000;
+
+const dateText = (value) => {
+  if (!value) return "";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+  return date.toLocaleString("en-IN", {
+    dateStyle: "medium",
+    timeStyle: "short",
+  });
+};
 
 export default function Notifications() {
   const navigate = useNavigate();
   const [items, setItems] = useState([]);
-  const [pushLoading, setPushLoading] = useState(false);
-  const [pushStatus, setPushStatus] = useState(
-    "Push notifications have not been enabled yet.",
-  );
   const [pagination, setPagination] = useState({
     page: 1,
     pages: 1,
@@ -88,53 +90,84 @@ export default function Notifications() {
   const [loading, setLoading] = useState(true);
   const [reload, setReload] = useState(0);
 
-  const load = useCallback(async () => {
-    setLoading(true);
-    try {
-      const params = { page: pagination.page, limit: pagination.limit };
-      if (activeFilter === "unread") params.unread = true;
-      else if (activeFilter !== "all") params.category = activeFilter;
-      const data = await getNotifications(params);
-      setItems(data?.items || []);
-      setPagination(
-        data?.pagination || { page: 1, pages: 1, total: 0, limit: 20 },
-      );
-      setUnreadCount(Number(data?.unreadCount || 0));
-    } catch (error) {
-      toast.error(
-        error?.response?.data?.message || "Could not load notifications",
-      );
-    } finally {
-      setLoading(false);
-    }
-  }, [pagination.page, pagination.limit, activeFilter, reload]);
+  const load = useCallback(
+    async (silent = false) => {
+      if (!silent) setLoading(true);
+      try {
+        const params = { page: pagination.page, limit: pagination.limit };
+        if (activeFilter === "unread") params.unread = true;
+        else if (activeFilter !== "all") params.category = activeFilter;
+        const data = await getNotifications(params);
+        setItems(data?.items || []);
+        setPagination(
+          data?.pagination || { page: 1, pages: 1, total: 0, limit: 20 },
+        );
+        setUnreadCount(Number(data?.unreadCount || 0));
+      } catch (error) {
+        if (!silent) {
+          toast.error(
+            error?.response?.data?.message || "Could not load notifications",
+          );
+        }
+      } finally {
+        if (!silent) setLoading(false);
+      }
+    },
+    [pagination.page, pagination.limit, activeFilter, reload],
+  );
+
+  const loadRef = useRef(load);
+  loadRef.current = load;
 
   useEffect(() => {
     load();
   }, [load]);
+
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      if (document.visibilityState === "visible") loadRef.current(true);
+    }, LIST_POLL_MS);
+
+    const onFocus = () => loadRef.current(true);
+    window.addEventListener("focus", onFocus);
+
+    return () => {
+      window.clearInterval(timer);
+      window.removeEventListener("focus", onFocus);
+    };
+  }, []);
+
   const filtered = useMemo(() => {
     const query = search.trim().toLowerCase();
     return items.filter(
       (item) =>
         !query ||
-        `${item.title} ${item.message} ${item.category}`
+        `${item.title || ""} ${item.message || ""} ${item.category || ""}`
           .toLowerCase()
           .includes(query),
     );
   }, [items, search]);
+
   const refresh = () => setReload((n) => n + 1);
 
   const openItem = async (item) => {
     try {
       if (!item.read) await markNotificationRead(item._id);
       setItems((current) =>
-        current.map((n) =>
-          n._id === item._id
-            ? { ...n, read: true, readAt: n.readAt || new Date().toISOString() }
-            : n,
+        current.map((notification) =>
+          notification._id === item._id
+            ? {
+                ...notification,
+                read: true,
+                readAt: notification.readAt || new Date().toISOString(),
+              }
+            : notification,
         ),
       );
-      if (!item.read) setUnreadCount((n) => Math.max(0, n - 1));
+      if (!item.read) {
+        setUnreadCount((count) => Math.max(0, count - 1));
+        announceChange();
+      }
       if (item.link) navigate(item.link);
     } catch (error) {
       toast.error(
@@ -142,17 +175,19 @@ export default function Notifications() {
       );
     }
   };
+
   const markAll = async () => {
     try {
       await markAllNotificationsRead();
       setItems((current) =>
-        current.map((n) => ({
-          ...n,
+        current.map((notification) => ({
+          ...notification,
           read: true,
-          readAt: n.readAt || new Date().toISOString(),
+          readAt: notification.readAt || new Date().toISOString(),
         })),
       );
       setUnreadCount(0);
+      announceChange();
       toast.success("All notifications marked as read");
     } catch (error) {
       toast.error(
@@ -160,12 +195,19 @@ export default function Notifications() {
       );
     }
   };
+
   const remove = async (item) => {
     try {
       await deleteNotification(item._id);
-      setItems((current) => current.filter((n) => n._id !== item._id));
-      setPagination((p) => ({ ...p, total: Math.max(0, p.total - 1) }));
-      if (!item.read) setUnreadCount((n) => Math.max(0, n - 1));
+      setItems((current) =>
+        current.filter((notification) => notification._id !== item._id),
+      );
+      setPagination((current) => ({
+        ...current,
+        total: Math.max(0, current.total - 1),
+      }));
+      if (!item.read) setUnreadCount((count) => Math.max(0, count - 1));
+      announceChange();
       toast.success("Notification deleted");
     } catch (error) {
       toast.error(
@@ -173,12 +215,14 @@ export default function Notifications() {
       );
     }
   };
+
   const clearRead = async () => {
     try {
       await clearReadNotifications();
       toast.success("Read notifications cleared");
-      setPagination((p) => ({ ...p, page: 1 }));
+      setPagination((current) => ({ ...current, page: 1 }));
       refresh();
+      announceChange();
     } catch (error) {
       toast.error(
         error?.response?.data?.message || "Could not clear read notifications",
@@ -186,43 +230,11 @@ export default function Notifications() {
     }
   };
 
-  const enablePushNotifications = async () => {
-    try {
-      setPushLoading(true);
-      setPushStatus("Requesting notification permission...");
-
-      console.log("[FCM] Starting push notification setup");
-
-      const token = await requestNotificationPermission();
-
-      if (!token) {
-        setPushStatus("Notification permission was not granted.");
-        console.warn("[FCM] No token generated");
-        return;
-      }
-
-
-      setPushStatus(
-        "FCM token generated successfully. Backend registration is pending.",
-      );
-
-      toast.success("FCM token generated successfully");
-    } catch (error) {
-      console.error("[FCM] Setup failed:", error);
-
-      setPushStatus(error?.message || "Could not enable push notifications.");
-
-      toast.error("Could not enable push notifications");
-    } finally {
-      setPushLoading(false);
-    }
-  };
-
   return (
-    <main className="  space-y-6 ">
+    <main className="min-h-screen space-y-6">
       <header className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
-        <div>
-          <div className="mb-2 flex items-center gap-2 text-sm text-slate-500">
+        <div className="min-w-0">
+          <div className="mb-2 flex flex-wrap items-center gap-2 text-sm text-slate-500">
             <Bell size={16} />
             <span>Dashboard</span>
             <span>/</span>
@@ -231,66 +243,33 @@ export default function Notifications() {
           <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
             Notifications
           </h1>
-          <p className="mt-1 text-sm text-slate-500">
+          <p className="mt-1 max-w-2xl text-sm leading-6 text-slate-500">
             Stay updated with bookings, staff activity and payroll.
           </p>
         </div>
 
-        <div className="flex flex-wrap gap-2">
+        <div className="flex w-full flex-col gap-2 xs:flex-row sm:w-auto sm:flex-wrap">
           <button
             type="button"
             onClick={markAll}
             disabled={!unreadCount}
-            className="inline-flex items-center gap-2 rounded border border-slate-200 bg-white px-3.5 py-2.5 text-sm font-semibold text-slate-700 disabled:opacity-50"
+            className="inline-flex items-center justify-center gap-2 rounded border border-slate-200 bg-white px-3.5 py-2.5 text-sm font-semibold text-slate-700 disabled:opacity-50"
           >
-            <CheckCheck size={16} /> Mark all read
+            <CheckCheck size={16} />
+            Mark all read
           </button>
           <button
             type="button"
             onClick={clearRead}
-            className="inline-flex items-center gap-2 rounded border border-rose-100 bg-white px-3.5 py-2.5 text-sm font-semibold text-rose-600"
+            className="inline-flex items-center justify-center gap-2 rounded border border-rose-200 bg-white px-3.5 py-2.5 text-sm font-semibold text-rose-600"
           >
-            <Trash2 size={16} /> Clear read
+            <Trash2 size={16} />
+            Clear read
           </button>
         </div>
       </header>
-      <section className="rounded border border-slate-200 bg-white p-4 sm:p-5">
-        <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
-          <div>
-            <h2 className="font-semibold text-slate-900">
-              Browser Push Notifications
-            </h2>
 
-            <p className="mt-1 text-sm text-slate-500">
-              Receive notifications from your hotel management system.
-            </p>
-
-            <p className="mt-2 text-sm text-slate-600" role="status">
-              {pushStatus}
-            </p>
-          </div>
-
-          <button
-            type="button"
-            onClick={enablePushNotifications}
-            disabled={pushLoading}
-            className="inline-flex shrink-0 items-center justify-center gap-2 rounded border border-slate-300 px-4 py-2.5 text-sm font-semibold text-slate-700 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            {pushLoading ? (
-              <>
-                <Loader2 size={16} className="animate-spin" />
-                Enabling...
-              </>
-            ) : (
-              <>
-                <Bell size={16} />
-                Enable Push Notifications
-              </>
-            )}
-          </button>
-        </div>
-      </section>
-      <section className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+      <section className="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
         <Summary
           title="Total notifications"
           value={pagination.total}
@@ -317,19 +296,22 @@ export default function Notifications() {
                 {filtered.length} notifications on this page
               </p>
             </div>
-            <div className="relative w-full lg:max-w-xs">
+            <div className="relative w-full lg:max-w-sm">
               <Search
                 size={17}
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+                className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
               />
               <input
+                type="search"
                 value={search}
-                onChange={(e) => setSearch(e.target.value)}
+                onChange={(event) => setSearch(event.target.value)}
                 placeholder="Search notifications..."
-                className="w-full rounded border border-slate-200 bg-slate-50 py-2.5 pl-10 pr-3 text-sm outline-none focus:border-blue-400"
+                aria-label="Search notifications"
+                className="w-full rounded border border-slate-200 bg-white py-2.5 pl-10 pr-3 text-sm text-slate-700 outline-none placeholder:text-slate-400 focus:border-blue-500"
               />
             </div>
           </div>
+
           <div className="mt-4 flex items-center gap-2 overflow-x-auto pb-1">
             <Filter size={16} className="shrink-0 text-slate-400" />
             {FILTERS.map((filter) => (
@@ -338,9 +320,14 @@ export default function Notifications() {
                 type="button"
                 onClick={() => {
                   setActiveFilter(filter.value);
-                  setPagination((p) => ({ ...p, page: 1 }));
+                  setPagination((current) => ({ ...current, page: 1 }));
                 }}
-                className={`shrink-0 rounded px-3 py-2 text-xs font-semibold ${activeFilter === filter.value ? "bg-blue-100 text-black" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`}
+                aria-pressed={activeFilter === filter.value}
+                className={`shrink-0 rounded border px-3 py-2 text-xs font-semibold ${
+                  activeFilter === filter.value
+                    ? "border-blue-200 bg-blue-50 text-blue-700"
+                    : "border-slate-200 bg-white text-slate-600"
+                }`}
               >
                 {filter.label}
                 {filter.value === "unread" && unreadCount > 0
@@ -350,36 +337,41 @@ export default function Notifications() {
             ))}
           </div>
         </div>
+
         <div className="divide-y divide-slate-100">
           {loading ? (
             <div className="flex justify-center p-12 text-slate-400">
-              <Loader2 className="animate-spin" />
+              <Loader2 size={24} aria-label="Loading notifications" />
             </div>
           ) : filtered.length ? (
             filtered.map((item) => {
               const meta = CATEGORY_META[item.category] || CATEGORY_META.system;
               const Icon = meta.icon;
+
               return (
                 <article
                   key={item._id}
-                  className={`flex gap-3 p-4 sm:gap-4 sm:p-5 ${item.read ? "bg-white" : "bg-gray-100"}`}
+                  className={`flex gap-3 p-4 sm:gap-4 sm:p-5 ${
+                    item.read ? "bg-white" : "bg-slate-50"
+                  }`}
                 >
                   <span
-                    className={`flex h-11 w-11 shrink-0 items-center justify-center rounded ${meta.color}`}
+                    className={`flex h-10 w-10 shrink-0 items-center justify-center rounded sm:h-11 sm:w-11 ${meta.color}`}
                   >
                     <Icon size={20} />
                   </span>
+
                   <button
                     type="button"
                     onClick={() => openItem(item)}
                     className="min-w-0 flex-1 text-left"
                   >
                     <span className="flex flex-wrap items-center gap-2">
-                      <span className="font-semibold text-slate-900">
-                        {item.title}
+                      <span className="break-words font-semibold text-slate-900">
+                        {item.title || "Notification"}
                       </span>
                       {!item.read && (
-                        <span className="rounded-full bg-black px-2 py-0.5 text-[10px] font-bold text-white">
+                        <span className="rounded-full bg-slate-900 px-2 py-0.5 text-[10px] font-bold text-white">
                           UNREAD
                         </span>
                       )}
@@ -387,19 +379,20 @@ export default function Notifications() {
                         {meta.label}
                       </span>
                     </span>
-                    <span className="mt-1 block text-sm leading-6 text-slate-600">
+                    <span className="mt-1 block break-words text-sm leading-6 text-slate-600">
                       {item.message}
                     </span>
                     <span className="mt-2 block text-xs text-slate-400">
                       {dateText(item.createdAt)}
                     </span>
                   </button>
+
                   <button
                     type="button"
                     onClick={() => remove(item)}
                     title="Delete notification"
                     aria-label="Delete notification"
-                    className="self-start rounded p-2 text-slate-400 hover:bg-rose-50 hover:text-rose-600"
+                    className="self-start rounded p-2 text-slate-500"
                   >
                     <Trash2 size={16} />
                   </button>
@@ -407,7 +400,7 @@ export default function Notifications() {
               );
             })
           ) : (
-            <div className="p-12 text-center">
+            <div className="p-8 text-center sm:p-12">
               <Bell size={28} className="mx-auto text-slate-300" />
               <p className="mt-3 font-semibold text-slate-800">
                 No notifications found
@@ -418,27 +411,39 @@ export default function Notifications() {
             </div>
           )}
         </div>
-        <footer className="flex items-center justify-between border-t border-slate-100 px-4 py-3 text-sm text-slate-600">
-          <span>
-            Page {pagination.page} of {pagination.pages} · {pagination.total}{" "}
-            total
+
+        <footer className="flex flex-col gap-3 border-t border-slate-100 px-4 py-4 text-sm text-slate-600 sm:flex-row sm:items-center sm:justify-between sm:px-5">
+          <span className="text-xs sm:text-sm">
+            Page {pagination.page} of {pagination.pages} · {pagination.total} total
           </span>
-          <div className="flex gap-2">
+          <div className="flex items-center justify-between gap-2 sm:justify-end">
             <button
               type="button"
               disabled={pagination.page <= 1 || loading}
-              onClick={() => setPagination((p) => ({ ...p, page: p.page - 1 }))}
-              className="inline-flex items-center gap-1 rounded border border-slate-200 px-3 py-2 disabled:opacity-40"
+              onClick={() =>
+                setPagination((current) => ({
+                  ...current,
+                  page: current.page - 1,
+                }))
+              }
+              className="inline-flex items-center justify-center gap-1 rounded border border-slate-200 px-3 py-2 disabled:opacity-40"
             >
-              <ChevronLeft size={15} /> Previous
+              <ChevronLeft size={15} />
+              Previous
             </button>
             <button
               type="button"
               disabled={pagination.page >= pagination.pages || loading}
-              onClick={() => setPagination((p) => ({ ...p, page: p.page + 1 }))}
-              className="inline-flex items-center gap-1 rounded border border-slate-200 px-3 py-2 disabled:opacity-40"
+              onClick={() =>
+                setPagination((current) => ({
+                  ...current,
+                  page: current.page + 1,
+                }))
+              }
+              className="inline-flex items-center justify-center gap-1 rounded border border-slate-200 px-3 py-2 disabled:opacity-40"
             >
-              Next <ChevronRight size={15} />
+              Next
+              <ChevronRight size={15} />
             </button>
           </div>
         </footer>
@@ -446,14 +451,17 @@ export default function Notifications() {
     </main>
   );
 }
+
 function Summary({ title, value, icon }) {
   return (
-    <article className="flex items-center justify-between rounded border border-slate-200 bg-white p-5 ">
-      <div>
-        <p className="text-sm text-slate-500">{title}</p>
-        <p className="mt-2 text-3xl font-bold text-slate-900">{value}</p>
+    <article className="flex min-w-0 items-center justify-between gap-3 rounded border border-slate-200 bg-white p-4 sm:p-5">
+      <div className="min-w-0">
+        <p className="text-xs font-medium text-slate-500 sm:text-sm">{title}</p>
+        <p className="mt-2 text-2xl font-bold text-slate-900 sm:text-3xl">
+          {value}
+        </p>
       </div>
-      <span className="flex h-12 w-12 items-center justify-center rounded bg-blue-100 text-blue-600">
+      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded bg-blue-50 text-blue-600 sm:h-12 sm:w-12">
         {icon}
       </span>
     </article>

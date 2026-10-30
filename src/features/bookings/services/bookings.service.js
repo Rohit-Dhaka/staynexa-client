@@ -46,3 +46,5 @@ export const getAvailabilityGrid = (params) => unwrap(api.get("/calendar/availab
 export const createHold = (data) => unwrap(api.post("/bookings/hold", data));
 export const convertHold = (id, data) => unwrap(api.post(`/bookings/${id}/convert`, data));
 export const extendHold = (id, data) => unwrap(api.post(`/bookings/${id}/extend-hold`, data));
+
+export const quickCheckIn = (data) => unwrap(api.post("/bookings/quick-check-in", data));

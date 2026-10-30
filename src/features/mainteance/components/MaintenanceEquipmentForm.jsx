@@ -138,7 +138,7 @@ function toDateInput(value) {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return String(value).slice(0, 10);
 
-  // Use local date components to avoid shifting a date due to UTC conversion.
+  
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0");
   const day = String(date.getDate()).padStart(2, "0");
@@ -289,7 +289,7 @@ export default function MaintenanceEquipmentForm({
 
     if (saving || !validate()) return;
 
-    // Map frontend form names to the field names expected by the backend validator.
+    
     const payload = {
       ...(!isEditing ? { equipmentCode: form.equipmentCode.trim() } : {}),
       equipmentName: form.name.trim(),
@@ -324,7 +324,7 @@ export default function MaintenanceEquipmentForm({
       notes: form.notes.trim(),
     };
 
-    // Avoid sending an empty warranty object if no warranty fields were entered.
+    
     if (Object.keys(payload.warranty).length === 0) {
       delete payload.warranty;
     }
@@ -467,47 +467,7 @@ export default function MaintenanceEquipmentForm({
             </div>
           </FormSection>
 
-          {/* <FormSection>
-            <SectionHeading
-              icon={MapPin}
-              title="Location Information"
-              description="Specify where the equipment is installed."
-            />
-
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              <FormField label="Room" name="room" disabled={saving}>
-                <select
-                  id="room"
-                  name="room"
-                  value={form.room}
-                  onChange={handleChange}
-                  disabled={saving}
-                  className={inputClass}
-                >
-                  <option value="">No room assigned</option>
-                  {rooms.map((room, index) => {
-                    const roomId = getRoomId(room);
-                    if (!roomId) return null;
-
-                    return (
-                      <option key={roomId || index} value={roomId}>
-                        {getRoomLabel(room)}
-                      </option>
-                    );
-                  })}
-                </select>
-              </FormField>
-
-              <FormField
-                label="Location / Area"
-                name="location"
-                value={form.location}
-                onChange={handleChange}
-                placeholder="e.g. Second Floor, Room 204"
-                disabled={saving}
-              />
-            </div>
-          </FormSection> */}
+      
 
           <FormSection>
             <SectionHeading

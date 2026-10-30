@@ -1,4 +1,3 @@
-
 import { useEffect, useRef, useState } from "react";
 import {
   Bot,
@@ -10,17 +9,23 @@ import {
   RotateCcw,
   AlertCircle,
   Clock3,
-  Grip,
+  Maximize2,
+  Minimize2,
 } from "lucide-react";
 
 import { sendAIMessage } from "../services/ai.service";
 
+import AIMessage from "../../../components/common/AIMessage";
+
 const MAX_MESSAGE_LENGTH = 5000;
 const POSITION_STORAGE_KEY = "stay-nexa-ai-chat-position";
 
-const CHAT_WIDTH = 440;
+const CHAT_WIDTH = 400;
 const CHAT_HEIGHT = 720;
 const EDGE_GAP = 12;
+
+
+const SIDE_PADDING = "px-[max(1rem,calc((100%-60rem)/2))]";
 
 const SUGGESTED_QUESTIONS = [
   {
@@ -88,8 +93,7 @@ const SUGGESTED_QUESTIONS = [
 const createInitialMessage = () => ({
   id: "initial-assistant-message",
   role: "assistant",
-  content:
-    "Hello! I'm your Hotel AI Assistant. I can help you explore hotel operations, bookings, room availability, checkouts, and reports. What would you like to know?",
+  content: "Hi! Welcome to Stay Nexa. How can I help you?",
   timestamp: new Date().toISOString(),
 });
 
@@ -109,13 +113,11 @@ const formatTime = (timestamp) => {
 const getDefaultPosition = () => ({
   x: Math.max(
     EDGE_GAP,
-    window.innerWidth - Math.min(CHAT_WIDTH, window.innerWidth - 24) - 20
+    window.innerWidth - Math.min(CHAT_WIDTH, window.innerWidth - 24) - 20,
   ),
   y: Math.max(
     EDGE_GAP,
-    window.innerHeight -
-      Math.min(CHAT_HEIGHT, window.innerHeight - 24) -
-      20
+    window.innerHeight - Math.min(CHAT_HEIGHT, window.innerHeight - 24) - 20,
   ),
 });
 
@@ -126,11 +128,11 @@ const clampPosition = (position) => {
   return {
     x: Math.max(
       EDGE_GAP,
-      Math.min(position.x, window.innerWidth - width - EDGE_GAP)
+      Math.min(position.x, window.innerWidth - width - EDGE_GAP),
     ),
     y: Math.max(
       EDGE_GAP,
-      Math.min(position.y, window.innerHeight - height - EDGE_GAP)
+      Math.min(position.y, window.innerHeight - height - EDGE_GAP),
     ),
   };
 };
@@ -142,10 +144,7 @@ const loadSavedPosition = () => {
     if (saved) {
       const parsed = JSON.parse(saved);
 
-      if (
-        Number.isFinite(parsed.x) &&
-        Number.isFinite(parsed.y)
-      ) {
+      if (Number.isFinite(parsed.x) && Number.isFinite(parsed.y)) {
         return clampPosition(parsed);
       }
     }
@@ -161,6 +160,7 @@ export default function AIChatbot() {
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState([createInitialMessage()]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   const [position, setPosition] = useState(() => {
     if (typeof window === "undefined") {
@@ -184,10 +184,7 @@ export default function AIChatbot() {
 
   useEffect(() => {
     try {
-      localStorage.setItem(
-        POSITION_STORAGE_KEY,
-        JSON.stringify(position)
-      );
+      localStorage.setItem(POSITION_STORAGE_KEY, JSON.stringify(position));
     } catch {
       // The chat remains usable if localStorage is unavailable.
     }
@@ -214,8 +211,12 @@ export default function AIChatbot() {
 
   useEffect(() => {
     const handleEscape = (event) => {
-      if (event.key === "Escape" && isOpen) {
-        setIsOpen(false);
+      if (event.key === "Escape" && isOpen) {        
+        if (isFullscreen) {
+          setIsFullscreen(false);
+        } else {
+          setIsOpen(false);
+        }
       }
     };
 
@@ -230,9 +231,11 @@ export default function AIChatbot() {
       window.removeEventListener("keydown", handleEscape);
       window.removeEventListener("resize", handleResize);
     };
-  }, [isOpen]);
+  }, [isOpen, isFullscreen]);
 
   const handleDragStart = (event) => {
+    if (isFullscreen) return;
+
     if (event.button !== undefined && event.button !== 0) {
       return;
     }
@@ -300,7 +303,7 @@ export default function AIChatbot() {
       textareaRef.current.style.height = "auto";
       textareaRef.current.style.height = `${Math.min(
         textareaRef.current.scrollHeight,
-        112
+        112,
       )}px`;
     }
   };
@@ -341,9 +344,7 @@ export default function AIChatbot() {
       const reply = await sendAIMessage(message);
 
       if (typeof reply !== "string" || !reply.trim()) {
-        throw new Error(
-          "The AI returned an empty response. Please try again."
-        );
+        throw new Error("The AI returned an empty response. Please try again.");
       }
 
       setMessages((previous) => [
@@ -395,58 +396,66 @@ export default function AIChatbot() {
     inputRef.current?.focus();
   };
 
-  const chatWidth = Math.min(
-    CHAT_WIDTH,
-    window.innerWidth - EDGE_GAP * 2
-  );
+  const chatWidth = Math.min(CHAT_WIDTH, window.innerWidth - EDGE_GAP * 2);
 
-  const chatHeight = Math.min(
-    CHAT_HEIGHT,
-    window.innerHeight - EDGE_GAP * 2
-  );
+  const chatHeight = Math.min(CHAT_HEIGHT, window.innerHeight - EDGE_GAP * 2);
 
   return (
     <>
-     {!isOpen && (
-  <button
-    type="button"
-    onClick={() => setIsOpen(true)}
-    aria-label="Open AI Assistant"
-    title="Open AI Assistant"
-    style={{
-      position: "fixed",
-      right: "20px",
-      bottom: "20px",
-    }}
-    className="z-50 flex h-14 w-14 items-center justify-center rounded-full border border-blue-700 bg-blue-600 text-white transition-colors hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-  >
-    <MessageCircle size={25} />
-  </button>
-)}
+      {!isOpen && (
+        <button
+          type="button"
+          onClick={() => setIsOpen(true)}
+          aria-label="Open AI Assistant"
+          title="Open AI Assistant"
+          style={{
+            position: "fixed",
+            right: "20px",
+            bottom: "20px",
+          }}
+          className="z-50 flex h-14 w-14 items-center justify-center rounded-full border border-blue-700 bg-blue-600 text-white transition-colors  focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+        >
+          <MessageCircle size={25} />
+        </button>
+      )}
 
       {isOpen && (
         <section
           data-ai-chat-window
           aria-label="Hotel AI Assistant"
-          style={{
-            position: "fixed",
-            left: position.x,
-            top: position.y,
-            width: chatWidth,
-            height: chatHeight,
-            maxWidth: `calc(100vw - ${EDGE_GAP * 2}px)`,
-            maxHeight: `calc(100dvh - ${EDGE_GAP * 2}px)`,
-          }}
-          className="z-50 flex flex-col overflow-hidden rounded border border-gray-200 bg-white"
+          style={
+            isFullscreen
+              ? {
+                  position: "fixed",
+                  inset: 0,
+                  width: "100vw",
+                  height: "100dvh",
+                }
+              : {
+                  position: "fixed",
+                  left: position.x,
+                  top: position.y,
+                  width: chatWidth,
+                  height: chatHeight,
+                  maxWidth: `calc(100vw - ${EDGE_GAP * 2}px)`,
+                  maxHeight: `calc(100dvh - ${EDGE_GAP * 2}px)`,
+                }
+          }
+          className={`z-50 flex flex-col overflow-hidden border border-gray-200 bg-white ${
+            isFullscreen ? "" : "rounded"
+          }`}
         >
-          {/* Draggable Header */}
           <header
             onPointerDown={handleDragStart}
             onPointerMove={handleDragMove}
             onPointerUp={handleDragEnd}
             onPointerCancel={handleDragEnd}
-            className="flex touch-none cursor-grab items-center justify-between border-b border-gray-200 px-4 py-4 active:cursor-grabbing bg-black"
-            title="Drag to move the assistant"
+            className={`flex touch-none items-center justify-between border-b border-gray-200 bg-black px-4 py-4 ${
+              isFullscreen ? "" : "cursor-grab active:cursor-grabbing"
+            }`}
+            title={
+              isFullscreen ? "Hotel AI Assistant" : "Drag to move the assistant"
+            }
           >
             <div className="flex min-w-0 items-center gap-3">
               <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded border border-blue-100 bg-blue-50 text-blue-700">
@@ -463,15 +472,25 @@ export default function AIChatbot() {
                   Hotel AI Assistant
                 </p>
               </div>
-
-              {/* <Grip
-                size={17}
-                className="ml-1 shrink-0 text-gray-400"
-                aria-hidden="true"
-              /> */}
             </div>
 
             <div className="flex shrink-0 items-center gap-1">
+              <button
+                type="button"
+                onPointerDown={(event) => event.stopPropagation()}
+                onClick={() => setIsFullscreen((value) => !value)}
+                aria-label={isFullscreen ? "Exit full screen" : "Full screen"}
+                aria-pressed={isFullscreen}
+                title={isFullscreen ? "Exit full screen" : "Full screen"}
+                className="flex h-9 w-9 items-center justify-center rounded border border-transparent text-gray-500 transition-colors "
+              >
+                {isFullscreen ? (
+                  <Minimize2 size={17} />
+                ) : (
+                  <Maximize2 size={17} />
+                )}
+              </button>
+
               <button
                 type="button"
                 onPointerDown={(event) => event.stopPropagation()}
@@ -479,7 +498,7 @@ export default function AIChatbot() {
                 disabled={isLoading}
                 aria-label="Start a new conversation"
                 title="New conversation"
-                className="flex h-9 w-9 items-center justify-center rounded border border-transparent text-gray-500 transition-colors hover:border-gray-200 hover:bg-gray-50 hover:text-gray-900 disabled:cursor-not-allowed disabled:opacity-50"
+                className="flex h-9 w-9 items-center justify-center rounded border border-transparent text-gray-500 transition-colors  disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <RotateCcw size={17} />
               </button>
@@ -487,19 +506,23 @@ export default function AIChatbot() {
               <button
                 type="button"
                 onPointerDown={(event) => event.stopPropagation()}
-                onClick={() => setIsOpen(false)}
+                onClick={() => {
+                  setIsFullscreen(false);
+                  setIsOpen(false);
+                }}
                 aria-label="Close AI Assistant"
                 title="Close assistant"
-                className="flex h-9 w-9 items-center justify-center rounded border border-transparent text-gray-500 transition-colors hover:border-gray-200 hover:bg-gray-50 hover:text-gray-900"
+                className="flex h-9 w-9 items-center justify-center rounded border border-transparent text-gray-500 transition-colors "
               >
                 <X size={20} />
               </button>
             </div>
           </header>
 
-          {/* Messages */}
           <div
-            className="flex-1 space-y-5 overflow-y-auto bg-gray-50/70 p-4"
+            className={`flex-1 space-y-5 overflow-y-auto bg-gray-50/70 p-4 ${
+              isFullscreen ? SIDE_PADDING : ""
+            }`}
             aria-live="polite"
             aria-relevant="additions text"
           >
@@ -514,29 +537,17 @@ export default function AIChatbot() {
                     isUser ? "justify-end" : "justify-start"
                   }`}
                 >
-                  {!isUser && (
-                    <div
-                      className={`flex h-8 w-8 shrink-0 items-center justify-center rounded border ${
-                        isError
-                          ? "border-red-200 bg-red-50 text-red-600"
-                          : "border-blue-100 bg-blue-50 text-blue-700"
-                      }`}
-                    >
-                      {isError ? (
-                        <AlertCircle size={17} />
-                      ) : (
-                        <Bot size={17} />
-                      )}
-                    </div>
-                  )}
+            
 
                   <div
-                    className={`flex max-w-[84%] flex-col ${
-                      isUser ? "items-end" : "items-start"
+                    className={`flex min-w-0 flex-col ${
+                      isUser
+                        ? "max-w-[84%] items-end"
+                        : "max-w-[92%] items-start"
                     }`}
                   >
                     <div
-                      className={`rounded px-3.5 py-3 text-sm leading-6 ${
+                      className={`min-w-0 max-w-full rounded-3xl px-3.5 py-2 text-sm leading-6 ${
                         isUser
                           ? "rounded-br-md bg-blue-600 text-white"
                           : isError
@@ -544,9 +555,13 @@ export default function AIChatbot() {
                             : "rounded-bl-md border border-gray-200 bg-white text-gray-800"
                       }`}
                     >
-                      <p className="whitespace-pre-wrap break-words">
-                        {message.content}
-                      </p>
+                      {message.role === "assistant" ? (
+                        <AIMessage text={message.content} />
+                      ) : (
+                        <p className="whitespace-pre-wrap break-words">
+                          {message.content}
+                        </p>
+                      )}
                     </div>
 
                     {message.timestamp && (
@@ -567,7 +582,7 @@ export default function AIChatbot() {
                 </div>
 
                 <div
-                  className="flex items-center gap-2 rounded rounded-bl-md border border-gray-200 bg-white px-4 py-3 text-sm text-gray-500"
+                  className="flex items-center gap-2 rounded-full rounded-bl-lg border border-gray-200 bg-white px-4 py-3 text-sm text-gray-500"
                   role="status"
                   aria-label="Assistant is thinking"
                 >
@@ -580,77 +595,80 @@ export default function AIChatbot() {
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Suggested Questions */}
-          {messages.length === 1 && !isLoading && (
-            <div className="border-t border-gray-200 bg-white px-4 py-2">
-              <div className="mb-3 flex items-center gap-2 text-xs font-semibold text-gray-700">
-                <Sparkles size={15} className="text-blue-600" />
-                Suggested questions
-              </div>
-
-              <div className="flex gap-2 overflow-x-scroll hide-scrollbar">
-                {SUGGESTED_QUESTIONS.map((item) => (
-                  <button
-                    key={item.label}
-                    type="button"
-                    onClick={() => handleSendMessage(item.question)}
-                    disabled={isLoading}
-                    className="rounded-full border border-gray-200 bg-white px-3 py-2 text-left transition-colors hover:border-blue-300 hover:bg-blue-50 disabled:cursor-not-allowed disabled:opacity-50"
-                  >
-                    <span className="block whitespace-nowrap text-xs font-medium text-gray-800">
-                      {item.label}
-                    </span>
-                  </button>
-                ))}
-              </div>
+          
+          <div
+            className={`shrink-0 border-t border-gray-200 bg-white px-3 py-1.5 ${
+              isFullscreen ? SIDE_PADDING : ""
+            }`}
+          >
+            <div className="mb-2 flex items-center gap-2 text-xs font-semibold text-gray-700">
+              <Sparkles size={15} className="text-blue-600" />
+              Suggested questions
             </div>
-          )}
 
-          {/* Message Input */}
+            <div className="flex gap-2 overflow-x-auto pb-1 hide-scrollbar">
+              {SUGGESTED_QUESTIONS.map((item) => (
+                <button
+                  key={item.label}
+                  type="button"
+                  onClick={() => handleSendMessage(item.label)}
+                  disabled={isLoading}
+                  className="shrink-0 rounded-full border border-gray-200 bg-white px-3 py-2 text-left transition-colors  disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  <span className="block whitespace-nowrap text-xs font-medium text-gray-800">
+                    {item.label}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+
           <form
             onSubmit={handleSubmit}
-            className="border-t border-gray-200 bg-white p-3 sm:p-4"
+            className={`border-t border-gray-200 bg-white p-3 sm:p-2 ${
+              isFullscreen ? SIDE_PADDING : ""
+            }`}
           >
-            <div className="flex items-center gap-2 rounded-full border border-gray-300 px-2">
-              <textarea
-                ref={(element) => {
-                  textareaRef.current = element;
-                  inputRef.current = element;
-                }}
-                value={input}
-                onChange={handleInputChange}
-                onKeyDown={(event) => {
-                  if (
-                    event.key === "Enter" &&
-                    !event.shiftKey &&
-                    !event.nativeEvent.isComposing
-                  ) {
-                    event.preventDefault();
-                    handleSubmit(event);
-                  }
-                }}
-                placeholder="Ask about your hotel..."
-                aria-label="Message"
-                rows={1}
-                maxLength={MAX_MESSAGE_LENGTH}
-                disabled={isLoading}
-                className="max-h-28 min-h-11 w-full resize-none bg-transparent px-3 pt-3 text-sm leading-5 text-gray-900 outline-none placeholder:text-gray-400 disabled:cursor-not-allowed"
-              />
+           
+<div className="flex items-end gap-2 rounded-full border border-gray-300 bg-white py-1  pe-1 ps-3">
+  <textarea
+    ref={(element) => {
+      textareaRef.current = element;
+      inputRef.current = element;
+    }}
+    value={input}
+    onChange={handleInputChange}
+    onKeyDown={(event) => {
+      if (
+        event.key === "Enter" &&
+        !event.shiftKey &&
+        !event.nativeEvent.isComposing
+      ) {
+        event.preventDefault();
+        handleSubmit(event);
+      }
+    }}
+    placeholder="Ask about your hotel..."
+    aria-label="Message"
+    rows={1}
+    className="min-h-9 max-h-32 flex-1 resize-none overflow-y-auto bg-transparent px-2 py-2 text-sm leading-5 text-gray-900 outline-none placeholder:text-gray-400 disabled:cursor-not-allowed"
+  />
 
-              <button
-                type="submit"
-                disabled={!input.trim() || isLoading}
-                aria-label="Send message"
-                title="Send message"
-                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-black text-white transition-colors  disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400"
-              >
-                {isLoading ? (
-                  <LoaderCircle size={17} className="animate-spin" />
-                ) : (
-                  <Send size={17} />
-                )}
-              </button>
-            </div>
+  <button
+    type="submit"
+    disabled={!input.trim() || isLoading}
+    aria-label="Send message"
+    title="Send message"
+    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-black text-white transition-colors disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400"
+  >
+    {isLoading ? (
+      <LoaderCircle size={17} className="animate-spin" />
+    ) : (
+      <Send size={17} />
+    )}
+  </button>
+</div>
+
           </form>
         </section>
       )}

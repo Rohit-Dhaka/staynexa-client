@@ -36,9 +36,7 @@ import {
   formatDateTime,
 } from "../components/LostFoundUI";
 
-// =====================================================
-// CONSTANTS
-// =====================================================
+
 
 const PAGE_SIZE = 10;
 
@@ -67,9 +65,7 @@ const TABS = [
   { id: "found", label: "Found Inventory", icon: Package },
 ];
 
-// =====================================================
-// HELPERS
-// =====================================================
+
 
 function getErrorMessage(error) {
   return (
@@ -155,9 +151,7 @@ function getSummaryValue(summary, keys, fallback = 0) {
   return fallback;
 }
 
-// =====================================================
-// DETAIL MODAL
-// =====================================================
+
 
 function DetailRow({ label, value }) {
   return (
@@ -222,7 +216,7 @@ function ReportDetailsModal({ report, onClose }) {
             type="button"
             onClick={onClose}
             aria-label="Close report details"
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded border border-slate-200 text-slate-500 transition-colors hover:bg-slate-50"
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded border border-slate-200 text-slate-500  "
           >
             <X size={18} />
           </button>
@@ -333,9 +327,7 @@ function ReportDetailsModal({ report, onClose }) {
   );
 }
 
-// =====================================================
-// MATCH MODAL
-// =====================================================
+
 
 function MatchModal({
   report,
@@ -379,7 +371,7 @@ function MatchModal({
             type="button"
             onClick={onClose}
             aria-label="Close matching dialog"
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded border border-slate-200 text-slate-500 hover:bg-slate-50"
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded border border-slate-200 text-slate-500 "
           >
             <X size={18} />
           </button>
@@ -469,9 +461,7 @@ function MatchModal({
   );
 }
 
-// =====================================================
-// REPORT STATUS ACTIONS
-// =====================================================
+
 
 function ReportActions({
   report,
@@ -503,7 +493,7 @@ function ReportActions({
             if (nextStatus) onStatusChange(report, nextStatus);
             event.target.value = "";
           }}
-          className="min-h-9 rounded border border-slate-300 bg-white px-2.5 py-2 text-sm text-slate-700 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 disabled:cursor-not-allowed disabled:opacity-60"
+          className="min-h-9 rounded border border-slate-300 bg-white px-2.5 py-2 text-sm text-slate-700 outline-none focus:border-blue-500 focus:  disabled:cursor-not-allowed disabled:opacity-60"
         >
           <option value="" disabled>
             {updating ? "Updating..." : "Change Status"}
@@ -517,9 +507,7 @@ function ReportActions({
   );
 }
 
-// =====================================================
-// LOST REPORTS TABLE
-// =====================================================
+
 
 function ReportsTable({
   reports,
@@ -569,7 +557,7 @@ function ReportsTable({
               return (
                 <tr
                   key={id}
-                  className="align-top transition-colors hover:bg-slate-50/70"
+                  className="align-top  "
                 >
                   <td className="px-4 py-3">
                     <p className="font-medium text-slate-900">
@@ -685,9 +673,6 @@ function ReportsTable({
   );
 }
 
-// =====================================================
-// FOUND INVENTORY TABLE
-// =====================================================
 
 function FoundItemsTable({ items, onView, onFindMatches }) {
   if (!items.length) {
@@ -728,7 +713,7 @@ function FoundItemsTable({ items, onView, onFindMatches }) {
             {items.map((item) => (
               <tr
                 key={getId(item)}
-                className="align-top transition-colors hover:bg-slate-50/70"
+                className="align-top  "
               >
                 <td className="px-4 py-3">
                   <p className="font-medium text-slate-900">
@@ -861,9 +846,7 @@ function FoundItemsTable({ items, onView, onFindMatches }) {
   );
 }
 
-// =====================================================
-// MAIN ADMIN PAGE
-// =====================================================
+
 
 export default function AdminLostFound() {
   const [activeTab, setActiveTab] = useState("reports");
@@ -917,9 +900,7 @@ export default function AdminLostFound() {
   const [updatingId, setUpdatingId] = useState("");
   const [pendingStatusChange, setPendingStatusChange] = useState(null);
 
-  // ===================================================
-  // LOAD SUMMARY
-  // ===================================================
+
 
   const loadSummary = useCallback(async () => {
     setLoadingSummary(true);
@@ -935,9 +916,7 @@ export default function AdminLostFound() {
     }
   }, []);
 
-  // ===================================================
-  // LOAD REPORTS
-  // ===================================================
+  
 
   const loadReports = useCallback(async () => {
     setLoadingReports(true);
@@ -971,9 +950,7 @@ export default function AdminLostFound() {
     reportStatus,
   ]);
 
-  // ===================================================
-  // LOAD FOUND INVENTORY
-  // ===================================================
+
 
   const loadFoundItems = useCallback(async () => {
     setLoadingFound(true);
@@ -1007,9 +984,6 @@ export default function AdminLostFound() {
     foundStatus,
   ]);
 
-  // ===================================================
-  // INITIAL LOAD AND FILTER LOADS
-  // ===================================================
 
   useEffect(() => {
     loadSummary();
@@ -1023,9 +997,7 @@ export default function AdminLostFound() {
     loadFoundItems();
   }, [loadFoundItems]);
 
-  // ===================================================
-  // SEARCH AND FILTER HANDLERS
-  // ===================================================
+
 
   const handleReportSearch = (event) => {
     event.preventDefault();
@@ -1067,9 +1039,7 @@ export default function AdminLostFound() {
     }));
   };
 
-  // ===================================================
-  // REGISTER FOUND ITEM
-  // ===================================================
+
 
   const handleCreateFoundItem = async (payload) => {
     setActionError("");
@@ -1091,9 +1061,6 @@ export default function AdminLostFound() {
     ]);
   };
 
-  // ===================================================
-  // UPDATE REPORT STATUS
-  // ===================================================
 
   const handleStatusChange = (report, status) => {
     if (!getId(report)) return;
@@ -1139,9 +1106,7 @@ export default function AdminLostFound() {
     }
   };
 
-  // ===================================================
-  // OPEN REPORT MATCHES
-  // ===================================================
+
 
   const openReportMatches = async (report) => {
     const id = getId(report);
@@ -1170,9 +1135,7 @@ export default function AdminLostFound() {
     }
   };
 
-  // ===================================================
-  // OPEN FOUND ITEM MATCHES
-  // ===================================================
+
 
   const openFoundMatches = async (item) => {
     const id = getId(item);
@@ -1201,9 +1164,7 @@ export default function AdminLostFound() {
     }
   };
 
-  // ===================================================
-  // LINK MATCH
-  // ===================================================
+
 
   const handleMatchItem = async (foundItemId) => {
     if (!matchTarget || !foundItemId) return;
@@ -1218,9 +1179,7 @@ export default function AdminLostFound() {
           foundItemId,
         });
       } else {
-        // The found-item matches endpoint provides candidate
-        // lost reports. Link the selected lost report to this
-        // found item using the report-match endpoint.
+       
         await lostFoundService.matchFoundItem(foundItemId, {
           foundItemId: matchTarget.id,
         });
@@ -1242,9 +1201,7 @@ export default function AdminLostFound() {
     }
   };
 
-  // ===================================================
-  // REFRESH ALL DATA
-  // ===================================================
+
 
   const refreshAll = async () => {
     setActionError("");
@@ -1257,9 +1214,7 @@ export default function AdminLostFound() {
     ]);
   };
 
-  // ===================================================
-  // SUMMARY VALUES
-  // ===================================================
+
 
   const totalReports = getSummaryValue(summary, [
     "reports.total",
@@ -1297,14 +1252,12 @@ export default function AdminLostFound() {
     "reports.recoveryRate",
   ]);
 
-  // ===================================================
-  // RENDER
-  // ===================================================
+
 
   return (
     <div className="min-h-screen ">
-      <div className="mx-auto max-w-[1600px] px-3 py-3 sm:px-4 sm:py-4">
-        {/* PAGE HEADER */}
+      <div className="mx-auto max-w-[1600px] ">
+    
 
         <PageHeading
           title="Lost & Found Management"
@@ -1323,7 +1276,7 @@ export default function AdminLostFound() {
                   size={16}
                   className={
                     loadingSummary || loadingReports || loadingFound
-                      ? "animate-spin"
+                      ? ""
                       : ""
                   }
                 />
@@ -1338,7 +1291,7 @@ export default function AdminLostFound() {
           }
         />
 
-        {/* NOTIFICATIONS */}
+        
 
         {actionError && (
           <ErrorMessage
@@ -1364,14 +1317,14 @@ export default function AdminLostFound() {
               type="button"
               onClick={() => setSuccessMessage("")}
               aria-label="Dismiss notification"
-              className="rounded p-1 text-green-700 hover:bg-green-100"
+              className="rounded p-1 text-green-700 "
             >
               <X size={16} />
             </button>
           </div>
         )}
 
-        {/* SUMMARY */}
+        
 
         <section>
           <div className="mb-3 flex items-center justify-between gap-2.5">
@@ -1389,7 +1342,7 @@ export default function AdminLostFound() {
               <button
                 type="button"
                 onClick={loadSummary}
-                className="inline-flex items-center gap-1 rounded border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50"
+                className="inline-flex items-center gap-1 rounded border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-700 "
               >
                 <RefreshCw size={13} />
                 Retry
@@ -1465,7 +1418,7 @@ export default function AdminLostFound() {
           )}
         </section>
 
-        {/* TABS */}
+     
 
         <section className="overflow-hidden rounded border border-slate-200 bg-white space-y-4 mt-2">
           <div className="flex flex-col gap-2.5 border-b border-slate-200 p-3 sm:flex-row sm:items-center sm:justify-between sm:px-5">
@@ -1495,10 +1448,10 @@ export default function AdminLostFound() {
                     key={tab.id}
                     type="button"
                     onClick={() => setActiveTab(tab.id)}
-                    className={`inline-flex min-h-10 flex-1 items-center justify-center gap-2 rounded px-3 text-sm font-medium transition-colors sm:flex-none ${
+                    className={`inline-flex min-h-10 flex-1 items-center justify-center gap-2 rounded px-3 text-sm font-medium  sm:flex-none ${
                       active
                         ? "border border-slate-200 bg-white text-slate-900"
-                        : "border border-transparent text-slate-500 hover:text-slate-800"
+                        : "border border-transparent text-slate-500 "
                     }`}
                   >
                     <Icon size={16} />
@@ -1509,7 +1462,7 @@ export default function AdminLostFound() {
             </div>
           </div>
 
-          {/* REPORTS TAB */}
+          
 
           {activeTab === "reports" && (
             <>
@@ -1535,7 +1488,7 @@ export default function AdminLostFound() {
                         setReportSearch(event.target.value)
                       }
                       placeholder="Search item, guest, booking..."
-                      className="w-full rounded border border-slate-300 bg-white py-2.5 pl-10 pr-3 text-sm text-slate-800 outline-none placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                      className="w-full rounded border border-slate-300 bg-white py-2.5 pl-10 pr-3 text-sm text-slate-800 outline-none placeholder:text-slate-400 focus:border-blue-500 focus: "
                     />
                   </div>
 
@@ -1548,7 +1501,7 @@ export default function AdminLostFound() {
                     <select
                       value={reportStatus}
                       onChange={handleReportStatusChange}
-                      className="w-full rounded border border-slate-300 bg-white py-2.5 pl-9 pr-3 text-sm text-slate-800 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                      className="w-full rounded border border-slate-300 bg-white py-2.5 pl-9 pr-3 text-sm text-slate-800 outline-none focus:border-blue-500 focus: "
                     >
                       {REPORT_STATUSES.map((status) => (
                         <option
@@ -1606,7 +1559,7 @@ export default function AdminLostFound() {
             </>
           )}
 
-          {/* FOUND ITEMS TAB */}
+          
 
           {activeTab === "found" && (
             <>
@@ -1641,7 +1594,7 @@ export default function AdminLostFound() {
                         setFoundSearch(event.target.value)
                       }
                       placeholder="Search found items..."
-                      className="w-full rounded border border-slate-300 bg-white py-2.5 pl-10 pr-3 text-sm text-slate-800 outline-none placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                      className="w-full rounded border border-slate-300 bg-white py-2.5 pl-10 pr-3 text-sm text-slate-800 outline-none placeholder:text-slate-400 focus:border-blue-500 focus: "
                     />
                   </div>
 
@@ -1654,7 +1607,7 @@ export default function AdminLostFound() {
                     <select
                       value={foundStatus}
                       onChange={handleFoundStatusChange}
-                      className="w-full rounded border border-slate-300 bg-white py-2.5 pl-9 pr-3 text-sm text-slate-800 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                      className="w-full rounded border border-slate-300 bg-white py-2.5 pl-9 pr-3 text-sm text-slate-800 outline-none focus:border-blue-500 focus: "
                     >
                       {FOUND_STATUSES.map((status) => (
                         <option
@@ -1711,7 +1664,7 @@ export default function AdminLostFound() {
           )}
         </section>
 
-        {/* OPERATIONAL NOTE */}
+        
 
         <div className="flex items-start gap-2.5 rounded border border-blue-200 bg-blue-50 p-3">
           <AlertTriangle
@@ -1733,7 +1686,7 @@ export default function AdminLostFound() {
         </div>
       </div>
 
-      {/* STATUS CHANGE CONFIRMATION MODAL */}
+      
 
       {pendingStatusChange && (
         <div
@@ -1801,7 +1754,7 @@ export default function AdminLostFound() {
         </div>
       )}
 
-      {/* FOUND ITEM FORM MODAL */}
+      
 
       {showFoundForm && (
         <div
@@ -1836,7 +1789,7 @@ export default function AdminLostFound() {
                 type="button"
                 onClick={() => setShowFoundForm(false)}
                 aria-label="Close form"
-                className="flex h-9 w-9 shrink-0 items-center justify-center rounded border border-slate-200 text-slate-500 hover:bg-slate-50"
+                className="flex h-9 w-9 shrink-0 items-center justify-center rounded border border-slate-200 text-slate-500 "
               >
                 <X size={18} />
               </button>
@@ -1853,7 +1806,7 @@ export default function AdminLostFound() {
         </div>
       )}
 
-      {/* REPORT DETAILS MODAL */}
+      
 
       {selectedReport && (
         <ReportDetailsModal
@@ -1862,7 +1815,7 @@ export default function AdminLostFound() {
         />
       )}
 
-      {/* FOUND ITEM DETAILS MODAL */}
+      
 
       {selectedFoundItem && (
         <ReportDetailsModal
@@ -1878,7 +1831,7 @@ export default function AdminLostFound() {
         />
       )}
 
-      {/* MATCH MODAL */}
+      
 
       {matchTarget && (
         <MatchModal
@@ -1899,9 +1852,7 @@ export default function AdminLostFound() {
   );
 }
 
-// =====================================================
-// PAGE ICON
-// =====================================================
+
 
 function PackageSearchIcon(props) {
   return <Package {...props} />;

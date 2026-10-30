@@ -37,8 +37,8 @@ const cx = (...classes) => classes.filter(Boolean).join(" ");
 
 const sectionClass = "rounded border border-slate-200 bg-white p-4 sm:p-5";
 const headingClass = "text-base font-semibold text-slate-900";
-const labelClass = "text-sm font-medium text-slate-700";
-const buttonClass = "inline-flex items-center justify-center gap-2 rounded px-3 py-2 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-60";
+const buttonClass =
+  "inline-flex min-h-10 items-center justify-center gap-2 rounded px-3 py-2 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-60";
 
 const toForm = (s) => ({
   shiftStart: s.shiftStart,
@@ -68,7 +68,11 @@ const AttendanceSettings = () => {
   const [locking, setLocking] = useState("");
   const [holidayYear, setHolidayYear] = useState(new Date().getFullYear());
   const [holidays, setHolidays] = useState([]);
-  const [holiday, setHoliday] = useState({ date: "", name: "", type: "public" });
+  const [holiday, setHoliday] = useState({
+    date: "",
+    name: "",
+    type: "public",
+  });
 
   const previousMonth = new Date();
   previousMonth.setMonth(previousMonth.getMonth() - 1);
@@ -109,7 +113,10 @@ const AttendanceSettings = () => {
 
   const totalLeaveQuota = useMemo(() => {
     if (!form) return 0;
-    return [form.casual, form.sick, form.paid].reduce((sum, value) => sum + (Number(value) || 0), 0);
+    return [form.casual, form.sick, form.paid].reduce(
+      (sum, value) => sum + (Number(value) || 0),
+      0,
+    );
   }, [form]);
 
   const saveSettings = async () => {
@@ -123,11 +130,22 @@ const AttendanceSettings = () => {
       form.sick,
       form.paid,
     ];
-    if (numericValues.some((value) => value === "" || !Number.isFinite(Number(value)) || Number(value) < 0)) {
-      return flash("error", "Please enter valid zero or positive numbers in numeric fields.");
+    if (
+      numericValues.some(
+        (value) =>
+          value === "" || !Number.isFinite(Number(value)) || Number(value) < 0,
+      )
+    ) {
+      return flash(
+        "error",
+        "Please enter valid zero or positive numbers in numeric fields.",
+      );
     }
     if (Number(form.halfDayMinutes) > Number(form.fullDayMinutes)) {
-      return flash("error", "Half-day duration cannot exceed full-day duration.");
+      return flash(
+        "error",
+        "Half-day duration cannot exceed full-day duration.",
+      );
     }
 
     setSaving(true);
@@ -173,7 +191,11 @@ const AttendanceSettings = () => {
     }
     setAddingHoliday(true);
     try {
-      await createHoliday({ date: holiday.date, name: holiday.name.trim(), type: holiday.type });
+      await createHoliday({
+        date: holiday.date,
+        name: holiday.name.trim(),
+        type: holiday.type,
+      });
       setHoliday({ date: "", name: "", type: "public" });
       await loadHolidays();
       flash("ok", "Holiday added successfully.");
@@ -185,7 +207,8 @@ const AttendanceSettings = () => {
   };
 
   const removeHoliday = async (item) => {
-    if (!window.confirm(`Remove ${item.name} (${formatDay(item.dateKey)})?`)) return;
+    if (!window.confirm(`Remove ${item.name} (${formatDay(item.dateKey)})?`))
+      return;
     setRemovingId(item._id);
     flash("", "");
     try {
@@ -213,7 +236,9 @@ const AttendanceSettings = () => {
     }
   };
 
-  const updateField = (name, value) => setForm((current) => ({ ...current, [name]: value }));
+  const updateField = (name, value) =>
+    setForm((current) => ({ ...current, [name]: value }));
+
   const numberField = (name) => (
     <input
       type="number"
@@ -224,6 +249,7 @@ const AttendanceSettings = () => {
       className={inputClass}
     />
   );
+
   const formatMinutes = (value) => {
     const minutes = Number(value) || 0;
     const hours = Math.floor(minutes / 60);
@@ -235,21 +261,28 @@ const AttendanceSettings = () => {
   if (loadingSettings && !form) {
     return (
       <div className="flex min-h-64 items-center justify-center text-sm text-slate-500">
-        <RefreshCw size={17} className="mr-2 animate-spin" /> Loading attendance settings...
+        <RefreshCw size={17} className="mr-2" />
+        Loading attendance settings...
       </div>
     );
   }
 
   if (!form || !settings) {
-    return <div className="rounded border border-red-200 bg-red-50 p-4 text-sm text-red-700">Settings could not be loaded. Please refresh and try again.</div>;
+    return (
+      <div className="rounded border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+        Settings could not be loaded. Please refresh and try again.
+      </div>
+    );
   }
 
   return (
     <div className="w-full space-y-4 text-slate-800">
-      <header className="flex flex-col justify-between gap-3 border-b border-slate-200 pb-4 sm:flex-row sm:items-center">
-        <div>
-          <h1 className="text-xl font-semibold">Attendance Settings</h1>
-          <p className="mt-1 text-sm text-slate-500">Manage shifts, leave quotas, holidays and attendance locks.</p>
+      <header className="flex flex-col gap-3 border-b border-slate-200 pb-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="min-w-0">
+          <h1 className="text-xl font-semibold sm:text-2xl">Attendance Settings</h1>
+          <p className="mt-1 max-w-2xl text-sm text-slate-500">
+            Manage shifts, leave quotas, holidays and attendance locks.
+          </p>
         </div>
         <button
           type="button"
@@ -257,50 +290,84 @@ const AttendanceSettings = () => {
             loadSettings().catch((error) => flash("error", getErrorMessage(error)));
             loadHolidays().catch((error) => flash("error", getErrorMessage(error)));
           }}
-          className={cx(buttonClass, "border border-slate-300 bg-white text-slate-700 hover:bg-slate-50")}
+          disabled={loadingSettings || loadingHolidays}
+          className={cx(buttonClass, "w-full border border-slate-300 bg-white text-slate-700 sm:w-auto")}
         >
-          <RefreshCw size={15} className={cx((loadingSettings || loadingHolidays) && "animate-spin")} /> Refresh
+          <RefreshCw size={15} />
+          Refresh
         </button>
       </header>
 
       {msg.text && (
-        <div className={cx(
-          "flex items-start gap-2 rounded border p-3 text-sm",
-          msg.type === "ok" ? "border-green-200 bg-green-50 text-green-800" : "border-red-200 bg-red-50 text-red-700",
-        )}>
-          {msg.type === "ok" ? <CheckCircle2 size={17} className="mt-0.5 shrink-0" /> : <AlertTriangle size={17} className="mt-0.5 shrink-0" />}
-          <span className="flex-1">{msg.text}</span>
-          <button type="button" onClick={() => flash("", "")} aria-label="Dismiss message"><X size={16} /></button>
+        <div
+          role="alert"
+          className={cx(
+            "flex items-start gap-2 rounded border p-3 text-sm",
+            msg.type === "ok"
+              ? "border-green-200 bg-green-50 text-green-800"
+              : "border-red-200 bg-red-50 text-red-700",
+          )}
+        >
+          {msg.type === "ok" ? (
+            <CheckCircle2 size={17} className="mt-0.5 shrink-0" />
+          ) : (
+            <AlertTriangle size={17} className="mt-0.5 shrink-0" />
+          )}
+          <span className="min-w-0 flex-1 break-words">{msg.text}</span>
+          <button
+            type="button"
+            onClick={() => flash("", "")}
+            aria-label="Dismiss message"
+            className="shrink-0 rounded p-1"
+          >
+            <X size={16} />
+          </button>
         </div>
       )}
 
       <section className={sectionClass}>
         <div className="mb-4 flex items-center gap-2">
-          <Clock3 size={18} className="text-slate-500" />
+          <Clock3 size={18} className="shrink-0 text-slate-500" />
           <h2 className={headingClass}>Shift & Attendance</h2>
         </div>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <Field label="Shift starts"><input type="time" value={form.shiftStart} onChange={(e) => updateField("shiftStart", e.target.value)} className={inputClass} /></Field>
-          <Field label="Shift ends"><input type="time" value={form.shiftEnd} onChange={(e) => updateField("shiftEnd", e.target.value)} className={inputClass} /></Field>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          <Field label="Shift starts">
+            <input type="time" value={form.shiftStart} onChange={(e) => updateField("shiftStart", e.target.value)} className={inputClass} />
+          </Field>
+          <Field label="Shift ends">
+            <input type="time" value={form.shiftEnd} onChange={(e) => updateField("shiftEnd", e.target.value)} className={inputClass} />
+          </Field>
           <Field label="Grace period (minutes)">{numberField("graceMinutes")}</Field>
           <Field label="Full-day duration (minutes)">{numberField("fullDayMinutes")}</Field>
           <Field label="Half-day duration (minutes)">{numberField("halfDayMinutes")}</Field>
           <Field label="Overtime threshold (minutes)">{numberField("overtimeAfterMinutes")}</Field>
         </div>
-        <p className="mt-3 text-xs text-slate-500">Current shift: {form.shiftStart}–{form.shiftEnd}. Full day: {formatMinutes(form.fullDayMinutes)}; half day: {formatMinutes(form.halfDayMinutes)}.</p>
+        <p className="mt-3 break-words text-xs leading-5 text-slate-500">
+          Current shift: {form.shiftStart}–{form.shiftEnd}. Full day: {formatMinutes(form.fullDayMinutes)}; half day: {formatMinutes(form.halfDayMinutes)}.
+        </p>
       </section>
 
       <section className={sectionClass}>
-        <div className="mb-3 flex items-center gap-2"><CalendarDays size={18} className="text-slate-500" /><h2 className={headingClass}>Weekly Off Days</h2></div>
-        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-7">
+        <div className="mb-3 flex items-center gap-2">
+          <CalendarDays size={18} className="shrink-0 text-slate-500" />
+          <h2 className={headingClass}>Weekly Off Days</h2>
+        </div>
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 xl:grid-cols-7">
           {WEEKDAY_LABELS.map((label, day) => {
             const active = form.weeklyOffDays.includes(day);
             return (
-              <button key={label} type="button" aria-pressed={active} onClick={() => toggleOff(day)} className={cx(
-                "rounded border px-3 py-2 text-sm font-medium",
-                active ? " bg-black text-white" : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50",
-              )}>
-                {label}<span className="mt-1 block text-xs font-normal">{active ? "Day off" : "Working"}</span>
+              <button
+                key={label}
+                type="button"
+                aria-pressed={active}
+                onClick={() => toggleOff(day)}
+                className={cx(
+                  "rounded border px-3 py-3 text-sm font-medium",
+                  active ? "border-slate-900 bg-slate-900 text-white" : "border-slate-200 bg-white text-slate-700",
+                )}
+              >
+                {label}
+                <span className="mt-1 block text-xs font-normal">{active ? "Day off" : "Working"}</span>
               </button>
             );
           })}
@@ -308,43 +375,106 @@ const AttendanceSettings = () => {
       </section>
 
       <section className={sectionClass}>
-        <div className="mb-4 flex items-center gap-2"><Wallet size={18} className="text-slate-500" /><h2 className={headingClass}>Leave Quotas</h2></div>
+        <div className="mb-4 flex items-center gap-2">
+          <Wallet size={18} className="shrink-0 text-slate-500" />
+          <h2 className={headingClass}>Leave Quotas</h2>
+        </div>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           <Field label="Casual leave (days/year)">{numberField("casual")}</Field>
           <Field label="Sick leave (days/year)">{numberField("sick")}</Field>
           <Field label="Paid leave (days/year)">{numberField("paid")}</Field>
         </div>
-        <p className="mt-3 text-sm text-slate-500">Total default annual quota: <strong className="text-slate-800">{totalLeaveQuota} days</strong>. These defaults apply to new staff; existing balances are not changed.</p>
+        <p className="mt-3 text-sm leading-5 text-slate-500">
+          Total default annual quota: <strong className="text-slate-800">{totalLeaveQuota} days</strong>. These defaults apply to new staff; existing balances are not changed.
+        </p>
       </section>
 
       <section className={sectionClass}>
-        <div className="mb-4 flex items-center gap-2"><Users size={18} className="text-slate-500" /><h2 className={headingClass}>Employee Self-Service</h2></div>
-        <label className="flex cursor-pointer items-center justify-between gap-4">
-          <span><span className="block text-sm font-medium">Allow staff to clock in/out</span><span className="mt-1 block text-xs text-slate-500">Employees can record their own attendance.</span></span>
-          <input type="checkbox" checked={form.allowSelfClockIn} onChange={(e) => updateField("allowSelfClockIn", e.target.checked)} className="h-4 w-4 accent-slate-800" />
+        <div className="mb-4 flex items-center gap-2">
+          <Users size={18} className="shrink-0 text-slate-500" />
+          <h2 className={headingClass}>Employee Self-Service</h2>
+        </div>
+        <label className="flex items-start justify-between gap-4">
+          <span className="min-w-0">
+            <span className="block text-sm font-medium">Allow staff to clock in/out</span>
+            <span className="mt-1 block text-xs leading-5 text-slate-500">Employees can record their own attendance.</span>
+          </span>
+          <input
+            type="checkbox"
+            checked={form.allowSelfClockIn}
+            onChange={(e) => updateField("allowSelfClockIn", e.target.checked)}
+            className="mt-1 h-4 w-4 shrink-0 accent-slate-800"
+          />
         </label>
       </section>
 
       <section className={sectionClass}>
-        <div className="mb-4 flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
-          <div className="flex items-center gap-2"><CalendarDays size={18} className="text-slate-500" /><h2 className={headingClass}>Holiday Calendar</h2></div>
-          <select aria-label="Holiday year" value={holidayYear} onChange={(e) => setHolidayYear(Number(e.target.value))} className="rounded border border-slate-300 bg-white px-3 py-2 text-sm">
-            {[-1, 0, 1].map((offset) => { const year = new Date().getFullYear() + offset; return <option key={year} value={year}>{year}</option>; })}
+        <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-2">
+            <CalendarDays size={18} className="shrink-0 text-slate-500" />
+            <h2 className={headingClass}>Holiday Calendar</h2>
+          </div>
+          <select
+            aria-label="Holiday year"
+            value={holidayYear}
+            onChange={(e) => setHolidayYear(Number(e.target.value))}
+            className="w-full rounded border border-slate-300 bg-white px-3 py-2 text-sm sm:w-auto"
+          >
+            {[-1, 0, 1].map((offset) => {
+              const year = new Date().getFullYear() + offset;
+              return <option key={year} value={year}>{year}</option>;
+            })}
           </select>
         </div>
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          <Field label="Holiday date"><input type="date" value={holiday.date} onChange={(e) => setHoliday({ ...holiday, date: e.target.value })} className={inputClass} /></Field>
-          <Field label="Holiday name"><input value={holiday.name} onChange={(e) => setHoliday({ ...holiday, name: e.target.value })} placeholder="e.g. Diwali" className={inputClass} /></Field>
-          <Field label="Holiday type"><select value={holiday.type} onChange={(e) => setHoliday({ ...holiday, type: e.target.value })} className={inputClass}><option value="public">Public</option><option value="company">Company</option><option value="optional">Optional</option></select></Field>
-          <div className="flex items-end"><button type="button" onClick={addHoliday} disabled={addingHoliday} className={cx(buttonClass, "w-full bg-black text-white hover:bg-slate-700")}>{addingHoliday ? <RefreshCw size={15} className="animate-spin" /> : <Plus size={15} />} Add holiday</button></div>
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          <Field label="Holiday date">
+            <input type="date" value={holiday.date} onChange={(e) => setHoliday({ ...holiday, date: e.target.value })} className={inputClass} />
+          </Field>
+          <Field label="Holiday name">
+            <input value={holiday.name} onChange={(e) => setHoliday({ ...holiday, name: e.target.value })} placeholder="e.g. Diwali" className={inputClass} />
+          </Field>
+          <Field label="Holiday type">
+            <select value={holiday.type} onChange={(e) => setHoliday({ ...holiday, type: e.target.value })} className={inputClass}>
+              <option value="public">Public</option>
+              <option value="company">Company</option>
+              <option value="optional">Optional</option>
+            </select>
+          </Field>
+          <div className="flex items-end">
+            <button
+              type="button"
+              onClick={addHoliday}
+              disabled={addingHoliday}
+              className={cx(buttonClass, "w-full bg-slate-900 text-white")}
+            >
+              <Plus size={15} />
+              {addingHoliday ? "Adding holiday..." : "Add holiday"}
+            </button>
+          </div>
         </div>
         <div className="mt-4 border-t border-slate-100 pt-3">
-          {loadingHolidays ? <p className="py-4 text-sm text-slate-500">Loading holidays...</p> : holidays.length === 0 ? <p className="py-4 text-sm text-slate-500">No holidays added for {holidayYear}.</p> : (
+          {loadingHolidays ? (
+            <p className="py-4 text-sm text-slate-500">Loading holidays...</p>
+          ) : holidays.length === 0 ? (
+            <p className="py-4 text-sm text-slate-500">No holidays added for {holidayYear}.</p>
+          ) : (
             <ul className="divide-y divide-slate-100">
               {holidays.map((item) => (
-                <li key={item._id} className="flex items-center gap-3 py-3">
-                  <div className="min-w-0 flex-1"><p className="text-sm font-medium text-slate-800">{item.name}</p><p className="mt-0.5 text-xs text-slate-500">{formatDay(item.dateKey)} · {item.type}</p></div>
-                  <button type="button" onClick={() => removeHoliday(item)} disabled={removingId === item._id} title="Remove holiday" aria-label={`Remove ${item.name}`} className="rounded p-2 text-slate-500 hover:bg-red-50 hover:text-red-600 disabled:opacity-50">{removingId === item._id ? <RefreshCw size={16} className="animate-spin" /> : <Trash2 size={16} />}</button>
+                <li key={item._id} className="flex min-w-0 items-start gap-3 py-3 sm:items-center">
+                  <div className="min-w-0 flex-1">
+                    <p className="break-words text-sm font-medium text-slate-800">{item.name}</p>
+                    <p className="mt-0.5 text-xs text-slate-500">{formatDay(item.dateKey)} · {item.type}</p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => removeHoliday(item)}
+                    disabled={removingId === item._id}
+                    title="Remove holiday"
+                    aria-label={`Remove ${item.name}`}
+                    className="shrink-0 rounded border border-slate-200 p-2 text-slate-600 disabled:opacity-50"
+                  >
+                    {removingId === item._id ? <RefreshCw size={16} /> : <Trash2 size={16} />}
+                  </button>
                 </li>
               ))}
             </ul>
@@ -353,25 +483,77 @@ const AttendanceSettings = () => {
       </section>
 
       <section className={sectionClass}>
-        <div className="mb-4 flex items-center gap-2"><LockKeyhole size={18} className="text-slate-500" /><h2 className={headingClass}>Monthly Attendance Lock</h2></div>
-        <div className="mb-4 rounded bg-slate-50 p-3 text-sm">
-          <span className="font-medium">Status: </span>{settings.lockedUntil ? `Locked through ${formatDay(settings.lockedUntil)}` : "No months are locked"}
+        <div className="mb-4 flex items-center gap-2">
+          <LockKeyhole size={18} className="shrink-0 text-slate-500" />
+          <h2 className={headingClass}>Monthly Attendance Lock</h2>
+        </div>
+        <div className="mb-4 rounded border border-slate-200 bg-slate-50 p-3 text-sm leading-5">
+          <span className="font-medium">Status: </span>
+          {settings.lockedUntil ? `Locked through ${formatDay(settings.lockedUntil)}` : "No months are locked"}
         </div>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-          <Field label="Month"><select value={lockYm.month} onChange={(e) => setLockYm({ ...lockYm, month: Number(e.target.value) })} className={inputClass}>{MONTH_NAMES.map((name, index) => <option key={name} value={index + 1}>{name}</option>)}</select></Field>
-          <Field label="Year"><select value={lockYm.year} onChange={(e) => setLockYm({ ...lockYm, year: Number(e.target.value) })} className={inputClass}>{[-1, 0].map((offset) => { const year = new Date().getFullYear() + offset; return <option key={year} value={year}>{year}</option>; })}</select></Field>
+          <Field label="Month">
+            <select value={lockYm.month} onChange={(e) => setLockYm({ ...lockYm, month: Number(e.target.value) })} className={inputClass}>
+              {MONTH_NAMES.map((name, index) => <option key={name} value={index + 1}>{name}</option>)}
+            </select>
+          </Field>
+          <Field label="Year">
+            <select value={lockYm.year} onChange={(e) => setLockYm({ ...lockYm, year: Number(e.target.value) })} className={inputClass}>
+              {[-1, 0].map((offset) => {
+                const year = new Date().getFullYear() + offset;
+                return <option key={year} value={year}>{year}</option>;
+              })}
+            </select>
+          </Field>
         </div>
-        <div className="mt-4 flex flex-wrap gap-2">
-          <button type="button" onClick={() => doLock(lockMonth, "lock", "Month locked successfully.")} disabled={Boolean(locking)} className={cx(buttonClass, "bg-black text-white ")}><LockKeyhole size={15} />{locking === "lock" ? "Locking..." : "Lock month"}</button>
-          {isSuperAdmin && <button type="button" onClick={() => doLock(unlockMonth, "unlock", "Month unlocked successfully.")} disabled={Boolean(locking)} className={cx(buttonClass, "border border-slate-300 bg-white text-slate-700 hover:bg-slate-50")}><UnlockKeyhole size={15} />{locking === "unlock" ? "Unlocking..." : "Unlock month"}</button>}
+        <div className="mt-4 grid grid-cols-1 gap-2 sm:flex sm:flex-wrap">
+          <button
+            type="button"
+            onClick={() => doLock(lockMonth, "lock", "Month locked successfully.")}
+            disabled={Boolean(locking)}
+            className={cx(buttonClass, "w-full bg-slate-900 text-white sm:w-auto")}
+          >
+            <LockKeyhole size={15} />
+            {locking === "lock" ? "Locking..." : "Lock month"}
+          </button>
+          {isSuperAdmin && (
+            <button
+              type="button"
+              onClick={() => doLock(unlockMonth, "unlock", "Month unlocked successfully.")}
+              disabled={Boolean(locking)}
+              className={cx(buttonClass, "w-full border border-slate-300 bg-white text-slate-700 sm:w-auto")}
+            >
+              <UnlockKeyhole size={15} />
+              {locking === "unlock" ? "Unlocking..." : "Unlock month"}
+            </button>
+          )}
         </div>
-        <p className="mt-3 flex items-start gap-2 text-xs text-slate-500"><ShieldCheck size={14} className="mt-0.5 shrink-0" /> A month can only be locked after it ends. Locking a month also locks all earlier months. Only a Super Admin can unlock a month.</p>
+        <p className="mt-3 flex items-start gap-2 text-xs leading-5 text-slate-500">
+          <ShieldCheck size={14} className="mt-0.5 shrink-0" />
+          <span>A month can only be locked after it ends. Locking a month also locks all earlier months. Only a Super Admin can unlock a month.</span>
+        </p>
       </section>
 
       <div className="flex flex-col-reverse gap-2 border-t border-slate-200 pt-4 sm:flex-row sm:justify-end">
-        <button type="button" onClick={() => { setForm(toForm(settings)); flash("", ""); }} disabled={saving} className={cx(buttonClass, "border border-slate-300 bg-white text-slate-700 ")}>Reset changes</button>
-        <button type="button" onClick={saveSettings} disabled={saving} className={cx(buttonClass, "bg-black px-5 text-white hover:bg-slate-700")}>
-          {saving ? <RefreshCw size={15} className="animate-spin" /> : <CheckCircle2 size={15} />}{saving ? "Saving..." : "Save settings"}
+        <button
+          type="button"
+          onClick={() => {
+            setForm(toForm(settings));
+            flash("", "");
+          }}
+          disabled={saving}
+          className={cx(buttonClass, "w-full border border-slate-300 bg-white text-slate-700 sm:w-auto")}
+        >
+          Reset changes
+        </button>
+        <button
+          type="button"
+          onClick={saveSettings}
+          disabled={saving}
+          className={cx(buttonClass, "w-full bg-slate-900 px-5 text-white sm:w-auto")}
+        >
+          {saving ? <RefreshCw size={15} /> : <CheckCircle2 size={15} />}
+          {saving ? "Saving..." : "Save settings"}
         </button>
       </div>
     </div>

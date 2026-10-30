@@ -79,7 +79,7 @@ export default function GuestBanquetReservationDetails() {
 
         <button
           onClick={() => navigate("/guest/banquet/my-reservations")}
-          className="text-sm font-medium text-indigo-600 hover:underline"
+          className="text-sm font-medium text-indigo-600 "
         >
           ← Back to My Reservations
         </button>
@@ -114,14 +114,14 @@ export default function GuestBanquetReservationDetails() {
         <div className="flex items-center justify-between border-b border-slate-200 pb-5">
           <button
             onClick={() => navigate("/guest/banquet/my-reservations")}
-            className="text-sm font-medium text-slate-600 transition hover:text-indigo-600"
+            className="text-sm font-medium text-slate-600 transition "
           >
             ← My Banquet Reservations
           </button>
 
           <button
             onClick={() => navigate("/guest/banquet")}
-            className="text-sm font-medium text-indigo-600 transition hover:text-indigo-800"
+            className="text-sm font-medium text-indigo-600 transition "
           >
             Book a Hall +
           </button>

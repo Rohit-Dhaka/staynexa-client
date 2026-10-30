@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
 import {
-  ArrowLeft,
   CarFront,
   CheckCircle2,
   Clock3,
@@ -9,7 +8,6 @@ import {
   RefreshCw,
   CalendarCheck,
 } from "lucide-react";
-import { Link } from "react-router-dom";
 
 import {
   VEHICLE_TYPES,
@@ -49,7 +47,7 @@ const PAYMENT_OPTIONS = [
 ];
 
 const inputClass =
-  "mt-1.5 w-full rounded border border-neutral-300 bg-white px-3.5 py-3 text-sm text-neutral-950 outline-none transition placeholder:text-neutral-400 focus:border-black focus:ring-1 focus:ring-black";
+  "mt-1.5 w-full rounded border border-neutral-300 bg-white px-3.5 py-3 text-sm text-neutral-950 outline-none placeholder:text-neutral-400 focus:border-black focus:ring-1 focus:ring-black";
 
 const labelClass = "block text-sm font-medium text-neutral-800";
 
@@ -177,9 +175,14 @@ export default function CabBookingPage() {
         setLoadingRates(true);
 
         const response = await getCabRates();
-        const list = Array.isArray(response)
+        const rateCandidate = Array.isArray(response)
           ? response
-          : response?.rates || [];
+          : response?.rates ||
+            response?.data?.rates ||
+            response?.data?.data?.rates ||
+            response?.data ||
+            [];
+        const list = Array.isArray(rateCandidate) ? rateCandidate : [];
 
         if (!active) return;
 
@@ -222,9 +225,16 @@ export default function CabBookingPage() {
       setBookingListError("");
 
       const response = await getCabBookings({ page: 1, limit: 100 });
-      const list = Array.isArray(response)
+      const bookingCandidate = Array.isArray(response)
         ? response
-        : response?.cabs || response?.bookings || response?.items || response?.data?.cabs || [];
+        : response?.cabs ||
+          response?.bookings ||
+          response?.items ||
+          response?.data?.cabs ||
+          response?.data?.bookings ||
+          response?.data?.items ||
+          (Array.isArray(response?.data) ? response.data : []);
+      const list = Array.isArray(bookingCandidate) ? bookingCandidate : [];
       setMyBookings(list);
     } catch (err) {
       setBookingListError(getErrorMessage(err));
@@ -239,14 +249,18 @@ export default function CabBookingPage() {
   }, []);
 
   async function handleCancelCabBooking(booking) {
-    if (!booking?._id) return;
+    const bookingId = booking?._id || booking?.id;
+    if (!bookingId) {
+      setBookingListError("This booking cannot be cancelled because its ID is missing.");
+      return;
+    }
     const confirmed = window.confirm(`Cancel cab booking ${booking.cabNumber || ""}?`);
     if (!confirmed) return;
 
     try {
-      setCancellingId(booking._id);
+      setCancellingId(String(bookingId));
       setBookingListError("");
-      await cancelCabBooking(booking._id, "Cancelled by guest");
+      await cancelCabBooking(bookingId, "Cancelled by guest");
       await loadMyCabBookings({ silent: true });
       setSuccessMessage(`Cab booking ${booking.cabNumber || ""} cancelled successfully.`);
     } catch (err) {
@@ -426,7 +440,7 @@ function buildPayload() {
       setForm(initialForm());
       setEstimate(null);
 
-      // Refresh the list on this page; do not navigate away.
+      
       await loadMyCabBookings({ silent: true });
     } catch (err) {
       setError(getErrorMessage(err));
@@ -489,9 +503,9 @@ function buildPayload() {
               type="button"
               onClick={() => loadMyCabBookings({ silent: true })}
               disabled={refreshingBookings}
-              className="inline-flex items-center justify-center gap-2 rounded border border-neutral-300 px-4 py-2.5 text-sm font-semibold text-neutral-800 transition hover:bg-neutral-50 disabled:cursor-not-allowed disabled:opacity-60"
+              className="inline-flex items-center justify-center gap-2 rounded border border-neutral-300 px-4 py-2.5 text-sm font-semibold text-neutral-800 disabled:cursor-not-allowed disabled:opacity-60"
             >
-              <RefreshCw size={16} className={refreshingBookings ? "animate-spin" : ""} />
+              <RefreshCw size={16} className="" />
               {refreshingBookings ? "Refreshing..." : "Refresh Bookings"}
             </button>
           </div>
@@ -515,19 +529,20 @@ function buildPayload() {
           ) : (
             <div className="mt-5 space-y-3">
               {myBookings.map((booking) => {
-                const status = String(booking.status || "requested").replaceAll("_", " ");
+                const rawStatus = String(booking.status || "requested").toLowerCase();
+                const status = rawStatus.replaceAll("_", " ");
                 const amount = booking?.estimate?.total ?? booking?.final?.total;
-                const canCancel = ["requested", "confirmed"].includes(String(booking.status || "").toLowerCase());
+                const canCancel = ["requested", "pending", "confirmed"].includes(rawStatus);
 
                 return (
-                  <article key={booking._id || booking.cabNumber} className="rounded border border-neutral-200 p-4 sm:p-5">
+                  <article key={booking._id || booking.id || booking.cabNumber} className="rounded border border-neutral-200 p-4 sm:p-5">
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                       <div>
                         <div className="flex flex-wrap items-center gap-2">
                           <h3 className="font-semibold text-neutral-950">{booking.cabNumber || "Cab booking"}</h3>
                           <span className={`rounded-full px-2.5 py-1 text-xs font-semibold capitalize ${
-                            ["completed"].includes(String(booking.status).toLowerCase()) ? "bg-neutral-100 text-neutral-800" :
-                            ["cancelled", "rejected"].includes(String(booking.status).toLowerCase()) ? "bg-neutral-100 text-neutral-800" :
+                            ["completed"].includes(rawStatus) ? "bg-neutral-100 text-neutral-800" :
+                            ["cancelled", "rejected"].includes(rawStatus) ? "bg-neutral-100 text-neutral-800" :
                             "bg-neutral-100 text-black"
                           }`}>{status}</span>
                         </div>
@@ -558,10 +573,10 @@ function buildPayload() {
                         <button
                           type="button"
                           onClick={() => handleCancelCabBooking(booking)}
-                          disabled={cancellingId === booking._id}
-                          className="rounded border border-neutral-300 px-4 py-2 text-sm font-semibold text-neutral-800 transition hover:bg-neutral-100 disabled:cursor-not-allowed disabled:opacity-60"
+                          disabled={cancellingId === String(booking._id || booking.id)}
+                          className="rounded border border-neutral-300 px-4 py-2 text-sm font-semibold text-neutral-800 disabled:cursor-not-allowed disabled:opacity-60"
                         >
-                          {cancellingId === booking._id ? "Cancelling..." : "Cancel Request"}
+                          {cancellingId === String(booking._id || booking.id) ? "Cancelling..." : "Cancel Request"}
                         </button>
                       </div>
                     )}
@@ -879,14 +894,14 @@ function buildPayload() {
                 Choose how you would like the cab fare to be collected.
               </p>
 
-              <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
+              <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
                 {PAYMENT_OPTIONS.map((option) => (
                   <label
                     key={option.value}
-                    className={`flex cursor-pointer items-start gap-3 rounded border p-4 transition ${
+                    className={`flex cursor-pointer items-start gap-3 rounded border p-4 ${
                       form.paymentMode === option.value
                         ? "border-black bg-neutral-100"
-                        : "border-neutral-200 hover:border-neutral-300"
+                        : "border-neutral-200"
                     }`}
                   >
                     <input
@@ -1029,7 +1044,7 @@ function buildPayload() {
                   rates.length === 0 ||
                   !vehicleIsAvailable
                 }
-                className="mt-5 flex w-full items-center justify-center rounded border border-neutral-300 bg-white px-4 py-3 text-sm font-semibold text-black transition hover:bg-neutral-100 disabled:cursor-not-allowed disabled:opacity-50"
+                className="mt-5 flex w-full items-center justify-center rounded border border-neutral-300 bg-white px-4 py-3 text-sm font-semibold text-black disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {estimating ? "Calculating Fare..." : "Calculate Fare"}
               </button>
@@ -1042,7 +1057,7 @@ function buildPayload() {
                   rates.length === 0 ||
                   !vehicleIsAvailable
                 }
-                className="mt-3 flex w-full items-center justify-center rounded bg-black px-4 py-3 text-sm font-semibold text-white transition hover:bg-neutral-800 disabled:cursor-not-allowed disabled:opacity-50"
+                className="mt-3 flex w-full items-center justify-center rounded bg-black px-4 py-3 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {submitting ? "Submitting Request..." : "Confirm Cab Booking"}
               </button>

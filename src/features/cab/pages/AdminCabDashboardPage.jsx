@@ -1,10 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import {
-  Activity,
-  ArrowDownRight,
-  ArrowRight,
-  ArrowUpRight,
+  Activity,  
+  ArrowRight,  
   CarFront,
   CheckCircle2,
   CircleDollarSign,
@@ -27,9 +25,7 @@ import {
   getCabRates,
 } from "../services/cab.service";
 
-/* -------------------------------------------------------------------------- */
-/* Configuration                                                              */
-/* -------------------------------------------------------------------------- */
+
 
 const CAB_STATUSES = {
   requested: {
@@ -38,7 +34,7 @@ const CAB_STATUSES = {
   },
   confirmed: {
     label: "Confirmed",
-    className: "bg-black text-blue-700 border-blue-200",
+    className: "bg-black text-white border-blue-200",
   },
   assigned: {
     label: "Assigned",
@@ -46,7 +42,7 @@ const CAB_STATUSES = {
   },
   in_progress: {
     label: "In Progress",
-    className: "bg-black text-indigo-700 border-indigo-200",
+    className: "bg-black text-white border-indigo-200",
   },
   completed: {
     label: "Completed",
@@ -96,15 +92,12 @@ const NAV_ITEMS = [
   },
 ];
 
-/* -------------------------------------------------------------------------- */
-/* Helpers                                                                    */
-/* -------------------------------------------------------------------------- */
+
 
 function getList(response) {
   if (Array.isArray(response)) return response;
 
-  // Support the API's common response envelopes, including cab service's
-  // { cabs, meta } response and axios-style nested data wrappers.
+
   const candidates = [
     response?.cabs,
     response?.items,
@@ -314,9 +307,7 @@ function getDisplayName(value) {
   );
 }
 
-/* -------------------------------------------------------------------------- */
-/* Small Components                                                           */
-/* -------------------------------------------------------------------------- */
+
 
 function StatusBadge({ status }) {
   const normalized = normalizeStatus(status);
@@ -337,12 +328,12 @@ function StatusBadge({ status }) {
 
 function SectionHeading({ title, description, action }) {
   return (
-    <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+    <div className="mb-3 flex flex-col gap-2 sm:mb-4 sm:flex-row sm:items-center sm:justify-between">
       <div>
-        <h2 className="text-base font-bold text-gray-900">{title}</h2>
+        <h2 className="text-sm font-bold text-gray-900 sm:text-base">{title}</h2>
 
         {description && (
-          <p className="mt-1 text-sm text-gray-500">{description}</p>
+          <p className="mt-1 text-xs text-gray-500 sm:text-sm">{description}</p>
         )}
       </div>
 
@@ -360,12 +351,12 @@ function SummaryCard({
   footer,
 }) {
   return (
-    <div className="rounded border border-gray-200 bg-white p-5">
+    <div className="rounded border border-gray-200 bg-white p-3 sm:p-4 lg:p-5">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <p className="text-sm font-medium text-gray-500">{title}</p>
+          <p className="text-xs font-medium text-gray-500 sm:text-sm">{title}</p>
 
-          <p className="mt-3 text-2xl font-bold tracking-tight text-gray-900">
+          <p className="mt-2 text-xl font-bold tracking-tight text-gray-900 sm:mt-3 sm:text-2xl">
             {value}
           </p>
 
@@ -394,9 +385,9 @@ function QuickActionCard({ title, description, path, icon: Icon }) {
   return (
     <Link
       to={path}
-      className="group flex items-center gap-4 rounded border border-gray-200 bg-white p-4 transition-colors hover:border-blue-300 hover:bg-black/40"
+      className="flex min-w-0 items-center gap-3 rounded border border-gray-200 bg-white p-3 sm:gap-4 sm:p-4"
     >
-      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded border border-gray-200 bg-gray-50 text-gray-700 transition-colors group-hover:border-blue-200 group-hover:bg-black group-hover:text-blue-700">
+      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded border border-gray-200 bg-gray-50 text-gray-700 sm:h-11 sm:w-11">
         <Icon size={21} />
       </div>
 
@@ -407,7 +398,7 @@ function QuickActionCard({ title, description, path, icon: Icon }) {
 
       <ArrowRight
         size={18}
-        className="shrink-0 text-gray-400 transition-transform group-hover:translate-x-1 group-hover:text-blue-700"
+        className="shrink-0 text-gray-400"
       />
     </Link>
   );
@@ -429,9 +420,7 @@ function EmptyState({ message }) {
   );
 }
 
-/* -------------------------------------------------------------------------- */
-/* Main Dashboard                                                             */
-/* -------------------------------------------------------------------------- */
+
 
 export default function AdminCabDashboardPage() {
   const location = useLocation();
@@ -536,9 +525,7 @@ export default function AdminCabDashboardPage() {
     loadDashboard();
   }, [loadDashboard]);
 
-  /* ------------------------------------------------------------------------ */
-  /* Calculated Statistics                                                    */
-  /* ------------------------------------------------------------------------ */
+
 
   const stats = useMemo(() => {
     const todayBookings = bookings.filter((booking) =>
@@ -644,16 +631,14 @@ export default function AdminCabDashboardPage() {
       .slice(0, 8);
   }, [bookings, search, statusFilter]);
 
-  /* ------------------------------------------------------------------------ */
-  /* Render                                                                   */
-  /* ------------------------------------------------------------------------ */
+
 
   return (
-    <div className="min-h-screen ">
-      {/* Page Header */}
+    <div className="min-h-screen w-full  text-gray-900">
+      
       <header className="border-b border-gray-200 bg-white">
-        <div className="mx-auto max-w-[1600px] px-4 pt-5 sm:pt-6 lg:px-8">
-          <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+        <div className="mx-auto w-full max-w-[1600px] ">
+          <div className="flex flex-col gap-4 rounded border border-gray-200  p-4 sm:gap-5 sm:p-5 lg:flex-row lg:items-center lg:justify-between">
             <div>
               <div className="flex items-center gap-2 text-sm text-gray-500">
                 <CarFront size={17} />
@@ -662,18 +647,18 @@ export default function AdminCabDashboardPage() {
                 <span className="font-medium text-gray-900">Dashboard</span>
               </div>
 
-              <h1 className="mt-3 text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
+              <h1 className="mt-2 text-xl font-bold tracking-tight text-gray-900 sm:text-2xl lg:text-3xl">
                 Cab Dashboard
               </h1>
 
-              <p className="mt-2 max-w-2xl text-sm leading-6 text-gray-500">
+              <p className="mt-2 max-w-2xl text-xs leading-5 text-gray-500 sm:text-sm sm:leading-6">
                 Monitor bookings, dispatch operations, vehicles, drivers, and
                 cab service performance.
               </p>
             </div>
 
-            <div className="flex flex-wrap items-center gap-3">
-              <div className="rounded border border-gray-200 bg-gray-50 px-4 py-2.5">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+              <div className="rounded border border-gray-200 bg-white px-3 py-2 sm:px-4 sm:py-2.5">
                 <p className="text-xs text-gray-500">Today's Date</p>
                 <p className="mt-1 text-sm font-semibold text-gray-900">
                   {formatDate(new Date())}
@@ -684,7 +669,7 @@ export default function AdminCabDashboardPage() {
                 type="button"
                 onClick={() => loadDashboard(true)}
                 disabled={refreshing}
-                className="inline-flex items-center justify-center gap-2 rounded border border-gray-200 bg-white px-4 py-3 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-60"
+                className="inline-flex items-center justify-center gap-2 rounded border border-gray-300 bg-white px-3 py-2.5 text-xs font-semibold text-gray-700 disabled:cursor-not-allowed disabled:opacity-60 sm:px-4 sm:py-3 sm:text-sm"
               >
                 <RefreshCw
                   size={16}
@@ -695,8 +680,8 @@ export default function AdminCabDashboardPage() {
             </div>
           </div>
 
-          {/* Navigation Tabs */}
-          <nav className="-mb-px mt-6 flex gap-2 overflow-x-auto pb-px" aria-label="Cab management sections">
+          
+          <nav className="mt-4 flex gap-2 overflow-x-auto border-b border-gray-200 pb-2 sm:mt-5 sm:gap-3" aria-label="Cab management sections">
             {NAV_ITEMS.map((item) => {
               const Icon = item.icon;
               const isActive = item.end
@@ -709,10 +694,10 @@ export default function AdminCabDashboardPage() {
                   key={item.path}
                   to={item.path}
                   aria-current={isActive ? "page" : undefined}
-                  className={`inline-flex shrink-0 items-center gap-2 rounded-t-xl border-b-2 px-4 py-3 text-sm font-semibold transition-colors ${
+                  className={`inline-flex shrink-0 items-center gap-2 rounded border px-3 py-2.5 text-xs font-semibold sm:px-4 sm:py-3 sm:text-sm ${
                     isActive
-                      ? "border-blue-600 bg-black/50 text-blue-700"
-                      : "border-transparent text-gray-500 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-900"
+                      ? "border-gray-900 bg-gray-900 text-white"
+                      : "border-gray-200 bg-white text-gray-600"
                   }`}
                 >
                   <Icon size={17} />
@@ -724,16 +709,16 @@ export default function AdminCabDashboardPage() {
         </div>
       </header>
 
-      {/* Main Content: child tab pages render below the shared header and tabs. */}
+    
       {!isCabDashboardHome ? (
-        <main className="mx-auto max-w-[1600px] p-4 sm:p-6">
+        <main className="mx-auto w-full max-w-[1600px] py-4  ">
           
             <Outlet />
           
         </main>
       ) : (
-      <main className="mx-auto max-w-[1600px] space-y-8 px-4 py-6 sm:px-6 lg:px-8">
-        {/* Error Message */}
+      <main className="mx-auto w-full max-w-[1600px] space-y-5  py-4 pb-6 sm:space-y-6">
+        
         {error && (
           <div
             role="alert"
@@ -759,7 +744,7 @@ export default function AdminCabDashboardPage() {
             <button
               type="button"
               onClick={() => loadDashboard(true)}
-              className="inline-flex shrink-0 items-center justify-center gap-2 self-start rounded border border-amber-300 bg-white px-3 py-2 text-sm font-semibold text-amber-900 hover:bg-amber-100"
+              className="inline-flex shrink-0 items-center justify-center gap-2 self-start rounded border border-amber-300 bg-white px-3 py-2 text-sm font-semibold text-amber-900 "
             >
               <RefreshCw size={15} />
               Retry
@@ -767,9 +752,9 @@ export default function AdminCabDashboardPage() {
           </div>
         )}
 
-        {/* Loading State */}
+   
         {loading ? (
-          <div className="rounded border border-gray-200 bg-white p-10">
+          <div className="rounded border border-gray-200 bg-white p-5 sm:p-10">
             <div className="flex flex-col items-center justify-center text-center">
               <RefreshCw
                 size={28}
@@ -780,21 +765,21 @@ export default function AdminCabDashboardPage() {
                 Loading cab dashboard
               </p>
 
-              <p className="mt-1 text-sm text-gray-500">
+              <p className="mt-1 text-xs text-gray-500 sm:text-sm">
                 Fetching bookings, vehicles, drivers, and rates.
               </p>
             </div>
           </div>
         ) : (
           <>
-            {/* Primary Statistics */}
+           
             <section>
               <SectionHeading
                 title="Overview"
                 description="A summary of your cab operations."
               />
 
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 xl:grid-cols-4">
                 <SummaryCard
                   title="Total Bookings"
                   value={stats.totalBookings}
@@ -804,7 +789,7 @@ export default function AdminCabDashboardPage() {
                   footer={
                     <Link
                       to="/admin/cab/bookings"
-                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-700 hover:text-blue-800"
+                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-700 "
                     >
                       View bookings
                       <ArrowRight size={14} />
@@ -821,7 +806,7 @@ export default function AdminCabDashboardPage() {
                   footer={
                     <Link
                       to="/admin/cab/bookings"
-                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-700 hover:text-blue-800"
+                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-700 "
                     >
                       Review requests
                       <ArrowRight size={14} />
@@ -838,7 +823,7 @@ export default function AdminCabDashboardPage() {
                   footer={
                     <Link
                       to="/admin/cab/dispatch"
-                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-700 hover:text-blue-800"
+                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-700 "
                     >
                       Manage dispatch
                       <ArrowRight size={14} />
@@ -855,7 +840,7 @@ export default function AdminCabDashboardPage() {
                   footer={
                     <Link
                       to="/admin/cab/dispatch"
-                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-700 hover:text-blue-800"
+                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-700 "
                     >
                       View active trips
                       <ArrowRight size={14} />
@@ -878,14 +863,13 @@ export default function AdminCabDashboardPage() {
               </div>
             </section>
 
-            {/* Fleet and Drivers */}
             <section>
               <SectionHeading
                 title="Fleet and Drivers"
                 description="Check the availability of your transport resources."
               />
 
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 xl:grid-cols-4">
                 <SummaryCard
                   title="Total Vehicles"
                   value={stats.totalVehicles}
@@ -895,7 +879,7 @@ export default function AdminCabDashboardPage() {
                   footer={
                     <Link
                       to="/admin/cab/vehicles"
-                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-700 hover:text-blue-800"
+                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-700 "
                     >
                       Manage vehicles
                       <ArrowRight size={14} />
@@ -920,7 +904,7 @@ export default function AdminCabDashboardPage() {
                   footer={
                     <Link
                       to="/admin/cab/drivers"
-                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-700 hover:text-blue-800"
+                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-700 "
                     >
                       Manage drivers
                       <ArrowRight size={14} />
@@ -938,16 +922,16 @@ export default function AdminCabDashboardPage() {
               </div>
             </section>
 
-            {/* Booking Status and Revenue */}
-            <section className="grid grid-cols-1 gap-6 xl:grid-cols-3">
-              <div className="rounded border border-gray-200 bg-white p-5 sm:p-6 xl:col-span-2">
+          
+            <section className="grid grid-cols-1 gap-4 sm:gap-6 xl:grid-cols-3">
+              <div className="rounded border border-gray-200 bg-white p-3 sm:p-5 lg:p-6 xl:col-span-2">
                 <SectionHeading
                   title="Booking Status"
                   description="Current distribution of cab bookings."
                   action={
                     <Link
                       to="/admin/cab/bookings"
-                      className="inline-flex items-center gap-1.5 text-sm font-semibold text-blue-700 hover:text-blue-800"
+                      className="inline-flex items-center gap-1.5 text-sm font-semibold text-blue-700 "
                     >
                       All bookings
                       <ArrowRight size={16} />
@@ -955,7 +939,7 @@ export default function AdminCabDashboardPage() {
                   }
                 />
 
-                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3">
                   {[
                     {
                       label: "Requested",
@@ -990,12 +974,12 @@ export default function AdminCabDashboardPage() {
                   ].map((item) => (
                     <div
                       key={item.label}
-                      className="rounded border border-gray-200 p-4"
+                      className="rounded border border-gray-200 p-3 sm:p-4"
                     >
-                      <p className="text-sm text-gray-500">{item.label}</p>
+                      <p className="text-xs text-gray-500 sm:text-sm">{item.label}</p>
 
                       <div className="mt-3 flex items-center justify-between gap-2">
-                        <span className="text-2xl font-bold text-gray-900">
+                        <span className="text-xl font-bold text-gray-900 sm:text-2xl">
                           {item.value}
                         </span>
 
@@ -1010,13 +994,13 @@ export default function AdminCabDashboardPage() {
                 </div>
               </div>
 
-              <div className="rounded border border-gray-200 bg-white p-5 sm:p-6">
+              <div className="rounded border border-gray-200 bg-white p-3 sm:p-5 lg:p-6">
                 <SectionHeading
                   title="Revenue Overview"
                   description="Revenue from completed bookings."
                 />
 
-                <div className="rounded border border-emerald-200 bg-emerald-50 p-5">
+                <div className="rounded border border-emerald-200 bg-emerald-50 p-3 sm:p-5">
                   <div className="flex h-11 w-11 items-center justify-center rounded bg-white text-emerald-700">
                     <CircleDollarSign size={23} />
                   </div>
@@ -1025,7 +1009,7 @@ export default function AdminCabDashboardPage() {
                     Completed Booking Value
                   </p>
 
-                  <p className="mt-2 break-words text-2xl font-bold text-emerald-950">
+                  <p className="mt-2 break-words text-xl font-bold text-emerald-950 sm:text-2xl">
                     {formatCurrency(stats.completedRevenue)}
                   </p>
 
@@ -1036,7 +1020,7 @@ export default function AdminCabDashboardPage() {
                   </p>
                 </div>
 
-                <div className="mt-4 flex items-start gap-3 rounded border border-gray-200 p-4">
+                <div className="mt-3 flex items-start gap-3 rounded border border-gray-200 p-3 sm:mt-4 sm:p-4">
                   <div className="rounded bg-gray-100 p-2 text-gray-700">
                     <Settings2 size={18} />
                   </div>
@@ -1046,13 +1030,13 @@ export default function AdminCabDashboardPage() {
                       Cab Rates
                     </p>
 
-                    <p className="mt-1 text-sm text-gray-500">
+                    <p className="mt-1 text-xs text-gray-500 sm:text-sm">
                       {stats.totalRates} rate records loaded
                     </p>
 
                     <Link
                       to="/admin/cab/rates"
-                      className="mt-2 inline-flex items-center gap-1 text-sm font-semibold text-blue-700 hover:text-blue-800"
+                      className="mt-2 inline-flex items-center gap-1 text-sm font-semibold text-blue-700 "
                     >
                       Manage rates
                       <ArrowRight size={15} />
@@ -1062,14 +1046,14 @@ export default function AdminCabDashboardPage() {
               </div>
             </section>
 
-            {/* Quick Actions */}
+       
             <section>
               <SectionHeading
                 title="Quick Actions"
                 description="Navigate directly to frequently used cab management pages."
               />
 
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 xl:grid-cols-4">
                 <QuickActionCard
                   title="Manage Bookings"
                   description="Review, confirm, and track cab reservations."
@@ -1100,16 +1084,16 @@ export default function AdminCabDashboardPage() {
               </div>
             </section>
 
-            {/* Recent Bookings */}
+            
             <section className="rounded border border-gray-200 bg-white">
-              <div className="border-b border-gray-200 p-5 sm:p-6">
+              <div className="border-b border-gray-200 p-3 sm:p-5 lg:p-6">
                 <SectionHeading
                   title="Recent Bookings"
                   description="Review recent cab requests and trip statuses."
                   action={
                     <Link
                       to="/admin/cab/bookings"
-                      className="inline-flex items-center gap-1.5 text-sm font-semibold text-blue-700 hover:text-blue-800"
+                      className="inline-flex items-center gap-1.5 text-sm font-semibold text-blue-700 "
                     >
                       View all
                       <ArrowRight size={16} />
@@ -1117,7 +1101,7 @@ export default function AdminCabDashboardPage() {
                   }
                 />
 
-                <div className="mt-5 flex flex-col gap-3 md:flex-row">
+                <div className="mt-4 flex min-w-0 flex-col gap-2 sm:mt-5 sm:gap-3 md:flex-row">
                   <div className="relative min-w-0 flex-1">
                     <Search
                       size={18}
@@ -1130,7 +1114,7 @@ export default function AdminCabDashboardPage() {
                       onChange={(event) => setSearch(event.target.value)}
                       placeholder="Search guest, booking, or location..."
                       aria-label="Search bookings"
-                      className="w-full rounded border border-gray-200 bg-white py-3 pl-10 pr-4 text-sm text-gray-900 outline-none transition-colors placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                      className="w-full rounded border border-gray-200 bg-white py-2.5 pl-10 pr-3 text-xs text-gray-900 outline-none placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 sm:py-3 sm:pr-4 sm:text-sm"
                     />
                   </div>
 
@@ -1138,7 +1122,7 @@ export default function AdminCabDashboardPage() {
                     value={statusFilter}
                     onChange={(event) => setStatusFilter(event.target.value)}
                     aria-label="Filter bookings by status"
-                    className="rounded border border-gray-200 bg-white px-4 py-3 text-sm text-gray-700 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                    className="w-full rounded border border-gray-200 bg-white px-3 py-2.5 text-xs text-gray-700 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 sm:w-auto sm:px-4 sm:py-3 sm:text-sm"
                   >
                     <option value="all">All Statuses</option>
                     <option value="requested">Requested</option>
@@ -1164,34 +1148,34 @@ export default function AdminCabDashboardPage() {
                 </div>
               ) : (
                 <div className="overflow-x-auto">
-                  <table className="w-full min-w-[1050px] text-left">
+                  <table className="w-full min-w-[900px] text-left text-xs sm:min-w-[1050px] sm:text-sm">
                     <thead>
                       <tr className="border-b border-gray-200 bg-gray-50">
-                        <th className="px-5 py-4 text-xs font-semibold uppercase tracking-wider text-gray-500">
+                        <th className="px-3 py-3 text-[10px] font-semibold uppercase tracking-wider text-gray-500 sm:px-5 sm:py-4 sm:text-xs">
                           Booking
                         </th>
 
-                        <th className="px-5 py-4 text-xs font-semibold uppercase tracking-wider text-gray-500">
+                        <th className="px-3 py-3 text-[10px] font-semibold uppercase tracking-wider text-gray-500 sm:px-5 sm:py-4 sm:text-xs">
                           Guest
                         </th>
 
-                        <th className="px-5 py-4 text-xs font-semibold uppercase tracking-wider text-gray-500">
+                        <th className="px-3 py-3 text-[10px] font-semibold uppercase tracking-wider text-gray-500 sm:px-5 sm:py-4 sm:text-xs">
                           Route
                         </th>
 
-                        <th className="px-5 py-4 text-xs font-semibold uppercase tracking-wider text-gray-500">
+                        <th className="px-3 py-3 text-[10px] font-semibold uppercase tracking-wider text-gray-500 sm:px-5 sm:py-4 sm:text-xs">
                           Pickup
                         </th>
 
-                        <th className="px-5 py-4 text-xs font-semibold uppercase tracking-wider text-gray-500">
+                        <th className="px-3 py-3 text-[10px] font-semibold uppercase tracking-wider text-gray-500 sm:px-5 sm:py-4 sm:text-xs">
                           Vehicle / Driver
                         </th>
 
-                        <th className="px-5 py-4 text-xs font-semibold uppercase tracking-wider text-gray-500">
+                        <th className="px-3 py-3 text-[10px] font-semibold uppercase tracking-wider text-gray-500 sm:px-5 sm:py-4 sm:text-xs">
                           Amount
                         </th>
 
-                        <th className="px-5 py-4 text-xs font-semibold uppercase tracking-wider text-gray-500">
+                        <th className="px-3 py-3 text-[10px] font-semibold uppercase tracking-wider text-gray-500 sm:px-5 sm:py-4 sm:text-xs">
                           Status
                         </th>
                       </tr>
@@ -1213,24 +1197,24 @@ export default function AdminCabDashboardPage() {
                         return (
                           <tr
                             key={bookingId || index}
-                            className="transition-colors hover:bg-gray-50"
+                            className=""
                           >
-                            <td className="px-5 py-4">
+                            <td className="px-3 py-3 sm:px-5 sm:py-4">
                               <div className="font-semibold text-gray-900">
                                 {bookingNumber}
                               </div>
 
-                              <div className="mt-1 text-xs text-gray-500">
+                              <div className="mt-1 text-[11px] text-gray-500 sm:text-xs">
                                 {formatDate(booking?.createdAt)}
                               </div>
                             </td>
 
-                            <td className="px-5 py-4">
+                            <td className="px-3 py-3 sm:px-5 sm:py-4">
                               <div className="font-medium text-gray-900">
                                 {getBookingGuest(booking)}
                               </div>
 
-                              <div className="mt-1 text-xs text-gray-500">
+                              <div className="mt-1 text-[11px] text-gray-500 sm:text-xs">
                                 {getBookingPhone(booking) || "No phone number"}
                               </div>
                             </td>
@@ -1254,37 +1238,37 @@ export default function AdminCabDashboardPage() {
                               </div>
                             </td>
 
-                            <td className="px-5 py-4">
+                            <td className="px-3 py-3 sm:px-5 sm:py-4">
                               <p className="text-sm font-medium text-gray-800">
                                 {formatDate(pickupDate)}
                               </p>
 
-                              <p className="mt-1 text-xs text-gray-500">
+                              <p className="mt-1 text-[11px] text-gray-500 sm:text-xs">
                                 {formatTime(pickupDate)}
                               </p>
                             </td>
 
-                            <td className="px-5 py-4">
+                            <td className="px-3 py-3 sm:px-5 sm:py-4">
                               <p className="text-sm font-medium text-gray-800">
                                 {getDisplayName(booking?.vehicle) !== "—"
                                   ? getDisplayName(booking?.vehicle)
                                   : (booking?.vehicleType || "Vehicle not assigned")}
                               </p>
 
-                              <p className="mt-1 text-xs text-gray-500">
+                              <p className="mt-1 text-[11px] text-gray-500 sm:text-xs">
                                 {getDisplayName(booking?.driver) !== "—"
                                   ? getDisplayName(booking?.driver)
                                   : (booking?.tripType || "Driver not assigned")}
                               </p>
                             </td>
 
-                            <td className="px-5 py-4">
+                            <td className="px-3 py-3 sm:px-5 sm:py-4">
                               <span className="whitespace-nowrap text-sm font-semibold text-gray-900">
                                 {formatCurrency(getBookingAmount(booking))}
                               </span>
                             </td>
 
-                            <td className="px-5 py-4">
+                            <td className="px-3 py-3 sm:px-5 sm:py-4">
                               <StatusBadge status={booking?.status} />
                             </td>
                           </tr>
@@ -1295,7 +1279,7 @@ export default function AdminCabDashboardPage() {
                 </div>
               )}
 
-              <div className="flex flex-col gap-2 border-t border-gray-200 px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+              <div className="flex flex-col gap-2 border-t border-gray-200 px-3 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-4">
                 <p className="text-xs text-gray-500">
                   Showing {recentBookings.length} of{" "}
                   {
@@ -1333,7 +1317,7 @@ export default function AdminCabDashboardPage() {
 
                 <Link
                   to="/admin/cab/bookings"
-                  className="inline-flex items-center gap-1.5 text-sm font-semibold text-blue-700 hover:text-blue-800"
+                  className="inline-flex items-center gap-1.5 text-sm font-semibold text-blue-700 "
                 >
                   Open booking management
                   <ArrowRight size={16} />
@@ -1341,8 +1325,8 @@ export default function AdminCabDashboardPage() {
               </div>
             </section>
 
-            {/* Footer */}
-            <footer className="flex flex-col gap-2 border-t border-gray-200 py-5 text-xs text-gray-500 sm:flex-row sm:items-center sm:justify-between">
+            
+            <footer className="flex flex-col gap-2 border-t border-gray-200 py-4 text-xs text-gray-500 sm:flex-row sm:items-center sm:justify-between sm:py-5">
               <p>Cab Management Dashboard</p>
 
               <p>

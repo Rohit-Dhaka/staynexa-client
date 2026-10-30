@@ -10,14 +10,7 @@ const STATUSES = [
 
 const MAX_REPLY_LENGTH = 1000;
 
-/**
- * Status dropdown + reply box for one guest request.
- *
- * Props:
- * - request:     the guest request object
- * - onSetStatus: async (request, status) => void   (throw to signal failure)
- * - onReply:     async (request, text)   => void   (throw to signal failure)
- */
+
 export default function RequestActions({ request, onSetStatus, onReply }) {
   const [status, setStatus] = useState(request.status);
   const [reply, setReply] = useState(request.adminReply || "");
@@ -25,7 +18,7 @@ export default function RequestActions({ request, onSetStatus, onReply }) {
   const [sending, setSending] = useState(false);
   const [replyError, setReplyError] = useState("");
 
-  // Keep local state in sync when the list is refreshed.
+  
   useEffect(() => {
     setStatus(request.status);
   }, [request.status]);

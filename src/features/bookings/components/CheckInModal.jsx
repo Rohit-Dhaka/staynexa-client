@@ -607,7 +607,7 @@ const CheckInModal = ({ booking, onClose, onDone }) => {
                       )
                     }
                     disabled={saving}
-                    className="inline-flex items-center gap-1.5 rounded px-2 py-1.5 text-xs font-medium text-rose-600 transition hover:bg-rose-50 disabled:cursor-not-allowed disabled:opacity-50"
+                    className="inline-flex items-center gap-1.5 rounded px-2 py-1.5 text-xs font-medium text-rose-600 transition  disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     <Trash2 size={14} />
                     Remove Guest
@@ -717,7 +717,7 @@ const CheckInModal = ({ booking, onClose, onDone }) => {
               ])
             }
             disabled={saving}
-            className="mt-3 inline-flex items-center gap-2 rounded border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
+            className="mt-3 inline-flex items-center gap-2 rounded border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 transition  disabled:cursor-not-allowed disabled:opacity-50"
           >
             <Plus size={16} />
             Add Guest

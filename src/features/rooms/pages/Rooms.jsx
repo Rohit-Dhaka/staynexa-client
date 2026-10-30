@@ -1,12 +1,17 @@
+
+
+
+
 import { useCallback, useEffect, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import {
   BedDouble,
   ChevronLeft,
-  ChevronRight,
-  Pencil,
+  ChevronRight,  
+  MoreVertical,
+  Pencil,  
   Plus,
-  Search,
+  Search,  
   Trash2,
 } from "lucide-react";
 import toast from "react-hot-toast";
@@ -37,9 +42,9 @@ const STATUS_META = {
 };
 const STATUS_KEYS = Object.keys(STATUS_META);
 const inputClass =
-  "rounded border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100";
+  "w-full min-w-0 rounded border border-slate-300 bg-white px-3 py-2 text-xs text-slate-900 outline-none transition placeholder:text-slate-400  focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 sm:px-3.5 sm:py-2.5 sm:text-sm";
 const primaryButton =
-  "flex items-center justify-center gap-2 rounded bg-black px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-700";
+  "inline-flex min-h-9 items-center justify-center gap-2 rounded bg-black px-3 py-2 text-xs font-semibold text-white transition  sm:min-h-10 sm:px-4 sm:py-2.5 sm:text-sm";
 const formatPrice = (value) => `₹${Number(value || 0).toLocaleString("en-IN")}`;
 const useDebounce = (value, delay = 400) => {
   const [debounced, setDebounced] = useState(value);
@@ -92,15 +97,19 @@ const roomTypeExportColumns = [
 const SummaryCards = ({ summary }) => {
   if (!summary) return <SummaryCardsSkeleton count={STATUS_KEYS.length + 1} />;
   return (
-    <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-7">
-      <div className="rounded border border-slate-200 bg-white p-4">
-        <p className="text-xs text-slate-500">Total Rooms</p>
-        <p className="mt-1 text-2xl font-bold text-slate-900">{summary.total ?? 0}</p>
+    <div className="grid min-w-0 grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3 md:grid-cols-4 xl:grid-cols-7">
+      <div className="min-w-0 rounded border border-slate-200 bg-white p-2.5 transition-colors  sm:p-3 lg:p-4">
+        <p className="text-[10px] leading-4 text-slate-500 sm:text-xs">Total Rooms</p>
+        <p className="mt-1 text-xl font-bold text-slate-900 sm:text-2xl">
+          {summary.total ?? 0}
+        </p>
       </div>
       {STATUS_KEYS.map((key) => (
-        <div key={key} className="rounded border border-slate-200 bg-white p-4">
-          <p className="text-xs text-slate-500">{STATUS_META[key].label}</p>
-          <p className="mt-1 text-2xl font-bold text-slate-900">{summary[key] ?? 0}</p>
+        <div key={key} className="min-w-0 rounded border border-slate-200 bg-white p-2.5 transition-colors  sm:p-3 lg:p-4">
+          <p className="break-words text-[10px] leading-4 text-slate-500 sm:text-xs">{STATUS_META[key].label}</p>
+          <p className="mt-1 text-xl font-bold text-slate-900 sm:text-2xl">
+            {summary[key] ?? 0}
+          </p>
         </div>
       ))}
     </div>
@@ -110,11 +119,29 @@ const SummaryCards = ({ summary }) => {
 const Pagination = ({ page, totalPages, onChange }) => {
   if (totalPages <= 1) return null;
   return (
-    <div className="flex items-center justify-between border-t border-slate-200 px-4 py-3">
-      <p className="text-xs text-slate-500">Page {page} of {totalPages}</p>
+    <div className="flex items-center justify-between gap-3 border-t border-slate-200 px-3 py-3 sm:px-4">
+      <p className="text-xs text-slate-500">
+        Page {page} of {totalPages}
+      </p>
       <div className="flex gap-2">
-        <button type="button" onClick={() => onChange(page - 1)} disabled={page <= 1} aria-label="Previous page" className="rounded border border-slate-300 p-2 text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"><ChevronLeft size={16} /></button>
-        <button type="button" onClick={() => onChange(page + 1)} disabled={page >= totalPages} aria-label="Next page" className="rounded border border-slate-300 p-2 text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"><ChevronRight size={16} /></button>
+        <button
+          type="button"
+          onClick={() => onChange(page - 1)}
+          disabled={page <= 1}
+          aria-label="Previous page"
+          className="rounded border border-slate-300 p-2 text-slate-600 transition  disabled:cursor-not-allowed disabled:opacity-40"
+        >
+          <ChevronLeft size={16} />
+        </button>
+        <button
+          type="button"
+          onClick={() => onChange(page + 1)}
+          disabled={page >= totalPages}
+          aria-label="Next page"
+          className="rounded border border-slate-300 p-2 text-slate-600 transition  disabled:cursor-not-allowed disabled:opacity-40"
+        >
+          <ChevronRight size={16} />
+        </button>
       </div>
     </div>
   );
@@ -136,12 +163,20 @@ const RoomsTab = ({ canManage }) => {
   const debouncedSearch = useDebounce(search);
 
   const loadSummary = useCallback(() => {
-    getRoomsSummary().then((data) => setSummary(data.summary)).catch(() => {});
+    getRoomsSummary()
+      .then((data) => setSummary(data.summary))
+      .catch(() => {});
   }, []);
   const loadRooms = useCallback(async () => {
     setLoading(true);
     try {
-      const data = await getRooms({ page, limit: 10, search: debouncedSearch || undefined, status: status || undefined, roomType: roomType || undefined });
+      const data = await getRooms({
+        page,
+        limit: 10,
+        search: debouncedSearch || undefined,
+        status: status || undefined,
+        roomType: roomType || undefined,
+      });
       setRooms(data.rooms || []);
       setMeta(data.meta || {});
     } catch (error) {
@@ -150,23 +185,34 @@ const RoomsTab = ({ canManage }) => {
       setLoading(false);
     }
   }, [page, debouncedSearch, status, roomType]);
-  useEffect(() => { loadRooms(); }, [loadRooms]);
+  useEffect(() => {
+    loadRooms();
+  }, [loadRooms]);
   useEffect(() => {
     loadSummary();
-    getRoomTypes({ limit: 100 }).then((data) => setRoomTypes(data.roomTypes || [])).catch(() => {});
+    getRoomTypes({ limit: 100 })
+      .then((data) => setRoomTypes(data.roomTypes || []))
+      .catch(() => {});
   }, [loadSummary]);
-  const refresh = () => { loadRooms(); loadSummary(); };
+  const refresh = () => {
+    loadRooms();
+    loadSummary();
+  };
 
   const handleStatusChange = async (room, nextStatus) => {
     if (nextStatus === room.status) return;
     setBusyId(room._id);
     try {
       await updateRoomStatus(room._id, nextStatus);
-      toast.success(`Room ${room.roomNumber} is now ${STATUS_META[nextStatus].label}`);
+      toast.success(
+        `Room ${room.roomNumber} is now ${STATUS_META[nextStatus].label}`,
+      );
       refresh();
     } catch (error) {
       toast.error(error.response?.data?.message || "Could not update status");
-    } finally { setBusyId(null); }
+    } finally {
+      setBusyId(null);
+    }
   };
   const confirmDelete = async () => {
     if (!deleteTarget) return;
@@ -175,51 +221,223 @@ const RoomsTab = ({ canManage }) => {
       await deleteRoom(deleteTarget._id);
       toast.success("Room deleted successfully");
       setDeleteTarget(null);
-      if (rooms.length === 1 && page > 1) setPage(page - 1); else refresh();
+      if (rooms.length === 1 && page > 1) setPage(page - 1);
+      else refresh();
     } catch (error) {
       toast.error(error.response?.data?.message || "Could not delete room");
-    } finally { setBusyId(null); }
+    } finally {
+      setBusyId(null);
+    }
   };
 
   const getAllFilteredRooms = async () => {
-    const first = await getRooms({ page: 1, limit: 100, search: debouncedSearch || undefined, status: status || undefined, roomType: roomType || undefined });
+    const first = await getRooms({
+      page: 1,
+      limit: 100,
+      search: debouncedSearch || undefined,
+      status: status || undefined,
+      roomType: roomType || undefined,
+    });
     const allRooms = [...(first.rooms || [])];
     const pages = getTotalPages(first.meta || {});
     for (let currentPage = 2; currentPage <= pages; currentPage += 1) {
-      const data = await getRooms({ page: currentPage, limit: 100, search: debouncedSearch || undefined, status: status || undefined, roomType: roomType || undefined });
+      const data = await getRooms({
+        page: currentPage,
+        limit: 100,
+        search: debouncedSearch || undefined,
+        status: status || undefined,
+        roomType: roomType || undefined,
+      });
       allRooms.push(...(data.rooms || []));
     }
     return allRooms;
   };
 
   return (
-    <div className="space-y-5">
+    <div className="min-w-0 space-y-4 sm:space-y-5">
       <SummaryCards summary={summary} />
-      <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-        <div className="grid flex-1 grid-cols-1 gap-3 sm:grid-cols-3 lg:max-w-3xl">
-          <div className="relative"><Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" /><input value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} placeholder="Search room number" className={`${inputClass} w-full pl-10`} /></div>
-          <select value={status} onChange={(e) => { setStatus(e.target.value); setPage(1); }} className={inputClass}><option value="">All Statuses</option>{STATUS_KEYS.map((key) => <option key={key} value={key}>{STATUS_META[key].label}</option>)}</select>
-          <select value={roomType} onChange={(e) => { setRoomType(e.target.value); setPage(1); }} className={inputClass}><option value="">All Room Types</option>{roomTypes.map((type) => <option key={type._id} value={type._id}>{type.name}</option>)}</select>
+      <div className="flex min-w-0 flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+        <div className="grid min-w-0 flex-1 grid-cols-1 gap-2.5 sm:grid-cols-2 sm:gap-3 lg:grid-cols-3 lg:max-w-3xl">
+          <div className="relative">
+            <Search
+              size={16}
+              className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"
+            />
+            <input
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setPage(1);
+              }}
+              placeholder="Search room number"
+              className={`${inputClass} w-full pl-10`}
+            />
+          </div>
+          <select
+            value={status}
+            onChange={(e) => {
+              setStatus(e.target.value);
+              setPage(1);
+            }}
+            className={`${inputClass} sm:text-sm`}
+          >
+            <option value="">All Statuses</option>
+            {STATUS_KEYS.map((key) => (
+              <option key={key} value={key}>
+                {STATUS_META[key].label}
+              </option>
+            ))}
+          </select>
+          <select
+            value={roomType}
+            onChange={(e) => {
+              setRoomType(e.target.value);
+              setPage(1);
+            }}
+            className={`${inputClass} sm:text-sm`}
+          >
+            <option value="">All Room Types</option>
+            {roomTypes.map((type) => (
+              <option key={type._id} value={type._id}>
+                {type.name}
+              </option>
+            ))}
+          </select>
         </div>
-        <div className="flex flex-wrap items-center gap-2">
-          <ExportButtons title="Rooms Report" fileName="rooms" columns={roomExportColumns} rows={rooms} getRows={getAllFilteredRooms} />
-          {canManage && <button type="button" onClick={() => navigate("/rooms/new")} className={primaryButton}><Plus size={16} />Add Room</button>}
+        <div className="flex min-w-0 flex-col gap-2 min-[420px]:flex-row min-[420px]:flex-wrap min-[420px]:items-center">
+          <ExportButtons
+            title="Rooms Report"
+            fileName="rooms"
+            columns={roomExportColumns}
+            rows={rooms}
+            getRows={getAllFilteredRooms}
+          />
+          {canManage && (
+            <button
+              type="button"
+              onClick={() => navigate("/rooms/new")}
+              className={primaryButton}
+            >
+              <Plus size={16} />
+              Add Room
+            </button>
+          )}
         </div>
       </div>
-      <div className="overflow-hidden rounded border border-slate-200 bg-white">
-        {loading ? <TableSkeleton rows={6} columns={6} /> : rooms.length === 0 ? <EmptyState text="No rooms found" /> : (
-          <div className="overflow-x-auto"><table className="w-full min-w-[720px] text-left text-sm">
-            <thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-500"><tr><th className="px-4 py-3 font-medium">Room</th><th className="px-4 py-3 font-medium">Floor</th><th className="px-4 py-3 font-medium">Type</th><th className="px-4 py-3 font-medium">Price / Night</th><th className="px-4 py-3 font-medium">Status</th><th className="px-4 py-3 text-right font-medium">Actions</th></tr></thead>
-            <tbody className="divide-y divide-slate-100">{rooms.map((room) => { const price = room.priceOverride ?? room.roomType?.basePrice ?? 0; const busy = busyId === room._id; return (
-              <tr key={room._id} className="hover:bg-slate-50/60"><td className="px-4 py-3 font-semibold text-slate-900">{room.roomNumber}</td><td className="px-4 py-3 text-slate-600">{room.floor}</td><td className="px-4 py-3 text-slate-600">{room.roomType?.name || "-"}</td><td className="px-4 py-3 text-slate-600">{formatPrice(price)}{room.priceOverride != null && <span className="ml-1.5 text-xs text-white">custom</span>}</td>
-                <td className="px-3 py-3"><div className="flex items-center gap-1.5 whitespace-nowrap">{STATUS_KEYS.map((key) => { const selected = room.status === key; return <label key={key} className={`inline-flex cursor-pointer items-center gap-1.5 rounded border px-2 py-1.5 text-xs font-medium transition-colors ${selected ? "border-blue-500 bg-black text-white" : "border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50"} ${busy ? "cursor-not-allowed opacity-60" : ""}`}><input type="radio" name={`room-status-${room._id || room.id}`} value={key} checked={selected} onChange={() => handleStatusChange(room, key)} disabled={busy} className="h-3.5 w-3.5 accent-blue-600" /><span className="leading-none">{STATUS_META[key].label}</span></label>; })}</div></td>
-                <td className="px-4 py-3">{canManage && <div className="flex justify-end gap-1"><button type="button" onClick={() => navigate(`/rooms/${room._id}/edit`)} disabled={busy} aria-label="Edit room" className="rounded p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 disabled:opacity-40"><Pencil size={15} /></button><button type="button" onClick={() => setDeleteTarget(room)} disabled={busy} aria-label="Delete room" className="rounded p-2 text-slate-500 transition hover:bg-rose-50 hover:text-rose-600 disabled:opacity-40"><Trash2 size={15} /></button></div>}</td>
-              </tr>); })}</tbody>
-          </table></div>
+      <div className="min-w-0 overflow-hidden rounded border border-slate-200 bg-white">
+        {loading ? (
+          <TableSkeleton rows={6} columns={6} />
+        ) : rooms.length === 0 ? (
+          <EmptyState text="No rooms found" />
+        ) : (
+          <div className="w-full overflow-x-auto">
+            <table className="w-full min-w-[680px] text-left text-xs sm:min-w-[720px] sm:text-sm">
+              <thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
+                <tr>
+                  <th className="whitespace-nowrap px-3 py-2.5 font-medium sm:px-4 sm:py-3">Room</th>
+                  <th className="whitespace-nowrap px-3 py-2.5 font-medium sm:px-4 sm:py-3">Floor</th>
+                  <th className="whitespace-nowrap px-3 py-2.5 font-medium sm:px-4 sm:py-3">Type</th>
+                  <th className="whitespace-nowrap px-3 py-2.5 font-medium sm:px-4 sm:py-3">Price / Night</th>
+                  <th className="whitespace-nowrap px-3 py-2.5 font-medium sm:px-4 sm:py-3">Status</th>
+                  <th className="px-4 py-3 text-right font-medium">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {rooms.map((room) => {
+                  const price =
+                    room.priceOverride ?? room.roomType?.basePrice ?? 0;
+                  const busy = busyId === room._id;
+                  return (
+                    <tr key={room._id} className="">
+                      <td className="whitespace-nowrap px-3 py-2.5 font-semibold text-slate-900 sm:px-4 sm:py-3">
+                        {room.roomNumber}
+                      </td>
+                      <td className="whitespace-nowrap px-3 py-2.5 text-slate-600 sm:px-4 sm:py-3">{room.floor}</td>
+                      <td className="whitespace-nowrap px-3 py-2.5 text-slate-600 sm:px-4 sm:py-3">
+                        {room.roomType?.name || "-"}
+                      </td>
+                      <td className="whitespace-nowrap px-3 py-2.5 text-slate-600 sm:px-4 sm:py-3">
+                        {formatPrice(price)}
+                        {room.priceOverride != null && (
+                          <span className="ml-1.5 text-xs text-white">
+                            custom
+                          </span>
+                        )}
+                      </td>
+                      <td className="px-2 py-2.5 sm:px-3 sm:py-3">
+                        <div className="flex items-center gap-1 whitespace-nowrap">
+                          {STATUS_KEYS.map((key) => {
+                            const selected = room.status === key;
+                            return (
+                              <label
+                                key={key}
+                                className={`inline-flex cursor-pointer items-center gap-1 rounded border px-1.5 py-1 text-[10px] font-medium sm:gap-1.5 sm:px-2 sm:py-1.5 sm:text-xs transition-colors ${selected ? "border-blue-500 bg-black text-white" : "border-slate-200 bg-white text-slate-600 "} ${busy ? "cursor-not-allowed opacity-60" : ""}`}
+                              >
+                                <input
+                                  type="radio"
+                                  name={`room-status-${room._id || room.id}`}
+                                  value={key}
+                                  checked={selected}
+                                  onChange={() => handleStatusChange(room, key)}
+                                  disabled={busy}
+                                  className="h-3.5 w-3.5 accent-blue-600"
+                                />
+                                <span className="leading-none">
+                                  {STATUS_META[key].label}
+                                </span>
+                              </label>
+                            );
+                          })}
+                        </div>
+                      </td>
+                      <td className="px-3 py-2.5 sm:px-4 sm:py-3">
+                        {canManage && (
+                          <div className="flex justify-end gap-1">
+                            <button
+                              type="button"
+                              onClick={() =>
+                                navigate(`/rooms/${room._id}/edit`)
+                              }
+                              disabled={busy}
+                              aria-label="Edit room"
+                              className="rounded p-2 text-slate-500 transition  disabled:opacity-40"
+                            >
+                              <Pencil size={15} />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setDeleteTarget(room)}
+                              disabled={busy}
+                              aria-label="Delete room"
+                              className="rounded p-2 text-slate-500 transition  disabled:opacity-40"
+                            >
+                              <Trash2 size={15} />
+                            </button>
+                          </div>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         )}
-        <Pagination page={page} totalPages={getTotalPages(meta)} onChange={setPage} />
+        <Pagination
+          page={page}
+          totalPages={getTotalPages(meta)}
+          onChange={setPage}
+        />
       </div>
-      <ConfirmDialog open={Boolean(deleteTarget)} title="Delete this room?" message={`Room ${deleteTarget?.roomNumber ?? ""} will be permanently removed. This action cannot be undone.`} confirmText="Delete Room" loading={Boolean(deleteTarget) && busyId === deleteTarget?._id} onConfirm={confirmDelete} onCancel={() => setDeleteTarget(null)} />
+      <ConfirmDialog
+        open={Boolean(deleteTarget)}
+        title="Delete this room?"
+        message={`Room ${deleteTarget?.roomNumber ?? ""} will be permanently removed. This action cannot be undone.`}
+        confirmText="Delete Room"
+        loading={Boolean(deleteTarget) && busyId === deleteTarget?._id}
+        onConfirm={confirmDelete}
+        onCancel={() => setDeleteTarget(null)}
+      />
     </div>
   );
 };
@@ -235,13 +453,20 @@ const RoomTypesTab = ({ canManage }) => {
   const loadRoomTypes = useCallback(async () => {
     setLoading(true);
     try {
-      const data = await getRoomTypes({ limit: 100, search: debouncedSearch || undefined });
+      const data = await getRoomTypes({
+        limit: 100,
+        search: debouncedSearch || undefined,
+      });
       setRoomTypes(data.roomTypes || []);
     } catch (error) {
       toast.error(error.response?.data?.message || "Could not load room types");
-    } finally { setLoading(false); }
+    } finally {
+      setLoading(false);
+    }
   }, [debouncedSearch]);
-  useEffect(() => { loadRoomTypes(); }, [loadRoomTypes]);
+  useEffect(() => {
+    loadRoomTypes();
+  }, [loadRoomTypes]);
   const confirmDelete = async () => {
     if (!deleteTarget) return;
     setBusyId(deleteTarget._id);
@@ -251,26 +476,147 @@ const RoomTypesTab = ({ canManage }) => {
       setDeleteTarget(null);
       loadRoomTypes();
     } catch (error) {
-      toast.error(error.response?.data?.message || "Could not delete room type");
-    } finally { setBusyId(null); }
+      toast.error(
+        error.response?.data?.message || "Could not delete room type",
+      );
+    } finally {
+      setBusyId(null);
+    }
   };
   return (
-    <div className="space-y-5">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="relative sm:w-72"><Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" /><input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search room type" className={`${inputClass} w-full pl-10`} /></div>
-        <div className="flex flex-wrap items-center gap-2"><ExportButtons title="Room Types Report" fileName="room-types" columns={roomTypeExportColumns} rows={roomTypes} />{canManage && <button type="button" onClick={() => navigate("/rooms/types/new")} className={primaryButton}><Plus size={16} />Add Room Type</button>}</div>
+    <div className="min-w-0 space-y-4 sm:space-y-5">
+      <div className="flex min-w-0 flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="relative min-w-0 sm:w-72">
+          <Search
+            size={16}
+            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"
+          />
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search room type"
+            className={`${inputClass} w-full pl-10`}
+          />
+        </div>
+        <div className="flex min-w-0 flex-col gap-2 min-[420px]:flex-row min-[420px]:flex-wrap min-[420px]:items-center">
+          <ExportButtons
+            title="Room Types Report"
+            fileName="room-types"
+            columns={roomTypeExportColumns}
+            rows={roomTypes}
+          />
+          {canManage && (
+            <button
+              type="button"
+              onClick={() => navigate("/rooms/types/new")}
+              className={primaryButton}
+            >
+              <Plus size={16} />
+              Add Room Type
+            </button>
+          )}
+        </div>
       </div>
-      <div className="overflow-hidden rounded border border-slate-200 bg-white">
-        {loading ? <TableSkeleton rows={5} columns={6} /> : roomTypes.length === 0 ? <EmptyState text="No room types found" /> : (
-          <div className="overflow-x-auto"><table className="w-full min-w-[720px] text-left text-sm">
-            <thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-500"><tr><th className="px-4 py-3 font-medium">Name</th><th className="px-4 py-3 font-medium">Base Price</th><th className="px-4 py-3 font-medium">Capacity</th><th className="px-4 py-3 font-medium">Bed</th><th className="px-4 py-3 font-medium">Amenities</th><th className="px-4 py-3 text-right font-medium">Actions</th></tr></thead>
-            <tbody className="divide-y divide-slate-100">{roomTypes.map((type) => { const busy = busyId === type._id; const amenities = type.amenities || []; return (
-              <tr key={type._id} className="hover:bg-slate-50/60"><td className="px-4 py-3"><div className="flex items-center gap-3">{type.images?.[0]?.url ? <img src={type.images[0].url} alt={type.name} className="h-10 w-14 shrink-0 rounded object-cover" /> : <div className="flex h-10 w-14 shrink-0 items-center justify-center rounded bg-slate-100 text-slate-400"><BedDouble size={16} /></div>}<span className="font-semibold text-slate-900">{type.name}</span></div></td><td className="px-4 py-3 text-slate-600">{formatPrice(type.basePrice)}</td><td className="px-4 py-3 text-slate-600">{type.capacity?.adults ?? 0} adults, {type.capacity?.children ?? 0} children</td><td className="px-4 py-3 capitalize text-slate-600">{type.bedType}</td><td className="px-4 py-3 text-slate-600">{amenities.length === 0 ? "-" : `${amenities.slice(0, 3).join(", ")}${amenities.length > 3 ? ` +${amenities.length - 3}` : ""}`}</td><td className="px-4 py-3">{canManage && <div className="flex justify-end gap-1"><button type="button" onClick={() => navigate(`/rooms/types/${type._id}/edit`)} disabled={busy} aria-label="Edit room type" className="rounded p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 disabled:opacity-40"><Pencil size={15} /></button><button type="button" onClick={() => setDeleteTarget(type)} disabled={busy} aria-label="Delete room type" className="rounded p-2 text-slate-500 transition hover:bg-rose-50 hover:text-rose-600 disabled:opacity-40"><Trash2 size={15} /></button></div>}</td></tr>
-            ); })}</tbody>
-          </table></div>
+      <div className="min-w-0 overflow-hidden rounded border border-slate-200 bg-white">
+        {loading ? (
+          <TableSkeleton rows={5} columns={6} />
+        ) : roomTypes.length === 0 ? (
+          <EmptyState text="No room types found" />
+        ) : (
+          <div className="w-full overflow-x-auto">
+            <table className="w-full min-w-[680px] text-left text-xs sm:min-w-[720px] sm:text-sm">
+              <thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
+                <tr>
+                  <th className="whitespace-nowrap px-3 py-2.5 font-medium sm:px-4 sm:py-3">Name</th>
+                  <th className="whitespace-nowrap px-3 py-2.5 font-medium sm:px-4 sm:py-3">Base Price</th>
+                  <th className="whitespace-nowrap px-3 py-2.5 font-medium sm:px-4 sm:py-3">Capacity</th>
+                  <th className="whitespace-nowrap px-3 py-2.5 font-medium sm:px-4 sm:py-3">Bed</th>
+                  <th className="whitespace-nowrap px-3 py-2.5 font-medium sm:px-4 sm:py-3">Amenities</th>
+                  <th className="px-4 py-3 text-right font-medium">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {roomTypes.map((type) => {
+                  const busy = busyId === type._id;
+                  const amenities = type.amenities || [];
+                  return (
+                    <tr key={type._id} className="">
+                      <td className="px-3 py-2.5 sm:px-4 sm:py-3">
+                        <div className="flex items-center gap-3">
+                          {type.images?.[0]?.url ? (
+                            <img
+                              src={type.images[0].url}
+                              alt={type.name}
+                              className="h-10 w-14 shrink-0 rounded object-cover"
+                            />
+                          ) : (
+                            <div className="flex h-10 w-14 shrink-0 items-center justify-center rounded bg-slate-100 text-slate-400">
+                              <BedDouble size={16} />
+                            </div>
+                          )}
+                          <span className="font-semibold text-slate-900">
+                            {type.name}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="whitespace-nowrap px-3 py-2.5 text-slate-600 sm:px-4 sm:py-3">
+                        {formatPrice(type.basePrice)}
+                      </td>
+                      <td className="whitespace-nowrap px-3 py-2.5 text-slate-600 sm:px-4 sm:py-3">
+                        {type.capacity?.adults ?? 0} adults,{" "}
+                        {type.capacity?.children ?? 0} children
+                      </td>
+                      <td className="px-4 py-3 capitalize text-slate-600">
+                        {type.bedType}
+                      </td>
+                      <td className="whitespace-nowrap px-3 py-2.5 text-slate-600 sm:px-4 sm:py-3">
+                        {amenities.length === 0
+                          ? "-"
+                          : `${amenities.slice(0, 3).join(", ")}${amenities.length > 3 ? ` +${amenities.length - 3}` : ""}`}
+                      </td>
+                      <td className="px-3 py-2.5 sm:px-4 sm:py-3">
+                        {canManage && (
+                          <div className="flex justify-end gap-1">
+                            <button
+                              type="button"
+                              onClick={() =>
+                                navigate(`/rooms/types/${type._id}/edit`)
+                              }
+                              disabled={busy}
+                              aria-label="Edit room type"
+                              className="rounded p-2 text-slate-500 transition  disabled:opacity-40"
+                            >
+                              <Pencil size={15} />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setDeleteTarget(type)}
+                              disabled={busy}
+                              aria-label="Delete room type"
+                              className="rounded p-2 text-slate-500 transition  disabled:opacity-40"
+                            >
+                              <Trash2 size={15} />
+                            </button>
+                          </div>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
-      <ConfirmDialog open={Boolean(deleteTarget)} title="Delete this room type?" message={`"${deleteTarget?.name ?? ""}" will be permanently removed. This action cannot be undone.`} confirmText="Delete Room Type" loading={Boolean(deleteTarget) && busyId === deleteTarget?._id} onConfirm={confirmDelete} onCancel={() => setDeleteTarget(null)} />
+      <ConfirmDialog
+        open={Boolean(deleteTarget)}
+        title="Delete this room type?"
+        message={`"${deleteTarget?.name ?? ""}" will be permanently removed. This action cannot be undone.`}
+        confirmText="Delete Room Type"
+        loading={Boolean(deleteTarget) && busyId === deleteTarget?._id}
+        onConfirm={confirmDelete}
+        onCancel={() => setDeleteTarget(null)}
+      />
     </div>
   );
 };
@@ -282,13 +628,75 @@ const TABS = [
 const Rooms = () => {
   const { user } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const tab = searchParams.get("tab") === "types" ? "types" : "rooms";
-  const changeTab = (key) => setSearchParams(key === "types" ? { tab: "types" } : {});
+  const changeTab = (key) =>
+    setSearchParams(key === "types" ? { tab: "types" } : {});
   const canManage = [ROLES.SUPER_ADMIN, ROLES.MANAGER].includes(user?.role);
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:justify-between"><div><h1 className="text-xl font-bold text-slate-900">Room Management</h1><p className="mt-1 text-sm text-slate-500">Manage rooms, room types and room status from one place.</p></div><div className="flex gap-1 border-b border-slate-200">{TABS.map((item) => <button key={item.key} type="button" onClick={() => changeTab(item.key)} className={`-mb-px whitespace-nowrap border-b-2 px-4 py-2.5 text-sm font-medium transition ${tab === item.key ? "border-slate-900 text-slate-900" : "border-transparent text-slate-500 hover:text-slate-800"}`}>{item.label}</button>)}</div></div>
-      {tab === "rooms" ? <RoomsTab canManage={canManage} /> : <RoomTypesTab canManage={canManage} />}
+    <div className="min-w-0 space-y-4 sm:space-y-6">
+      <div className="flex min-w-0 flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
+        <div>
+          <h1 className="text-lg font-bold text-slate-900 sm:text-xl">Room Management</h1>
+          <p className="mt-1 max-w-2xl text-xs leading-5 text-slate-500 sm:text-sm sm:leading-6">
+            Manage rooms, room types and room status from one place.
+          </p>
+        </div>
+        <div className="flex w-full min-w-0 items-center justify-between gap-1 border-b border-slate-200 sm:w-auto sm:justify-start">
+          {TABS.map((item) => (
+            <button
+              key={item.key}
+              type="button"
+              onClick={() => changeTab(item.key)}
+              className={`-mb-px whitespace-nowrap border-b-2 px-3 py-2 text-xs font-medium transition sm:px-4 sm:py-2.5 sm:text-sm ${tab === item.key ? "border-slate-900 text-slate-900" : "border-transparent text-slate-500 "}`}
+            >
+              {item.label}
+            </button>
+          ))}
+          
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => setSettingsOpen((open) => !open)}
+              aria-label="Open room management options"
+              aria-haspopup="menu"
+              aria-expanded={settingsOpen}
+              className="inline-flex h-9 w-9 items-center justify-center rounded border border-slate-200 bg-white text-slate-600 transition  sm:h-10 sm:w-10"
+            >
+              <MoreVertical size={18} />
+            </button>
+            {settingsOpen && (
+              <>
+                <button
+                  type="button"
+                  aria-label="Close options menu"
+                  className="fixed inset-0 z-10 cursor-default"
+                  onClick={() => setSettingsOpen(false)}
+                />
+                <div
+                  role="menu"
+                  className="absolute right-0 top-full z-20 mt-2 w-44 rounded border border-slate-200 bg-white p-1"
+                >
+                  <Link
+                    to="/settings/gst"
+                    role="menuitem"
+                    onClick={() => setSettingsOpen(false)}
+                    className="flex w-full items-center rounded px-3 py-2.5 text-xs font-medium text-slate-700 transition  sm:text-sm"
+                  >
+                    GST Settings
+                  </Link>
+                </div>
+              </>
+            )}
+          </div>
+          
+        </div>
+      </div>
+      {tab === "rooms" ? (
+        <RoomsTab canManage={canManage} />
+      ) : (
+        <RoomTypesTab canManage={canManage} />
+      )}
     </div>
   );
 };

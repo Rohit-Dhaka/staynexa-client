@@ -145,7 +145,7 @@ const BanquetBookingDetail = () => {
   if (loadError || !booking) {
     return (
       <div className="max-w-xl space-y-4">
-        <Link to="/banquet" className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 hover:text-slate-900">
+        <Link to="/banquet" className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 ">
           <ArrowLeft size={16} />
           Back to Banquet
         </Link>
@@ -176,7 +176,7 @@ const BanquetBookingDetail = () => {
       <div>
         <Link
           to="/banquet"
-          className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 transition hover:text-slate-900"
+          className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 transition "
         >
           <ArrowLeft size={16} />
           Back to Banquet
@@ -414,7 +414,7 @@ const BanquetBookingDetail = () => {
                                 setVoidTarget(p);
                                 setVoidReason("");
                               }}
-                              className="text-xs font-medium text-rose-600 hover:underline"
+                              className="text-xs font-medium text-rose-600 "
                             >
                               Void
                             </button>

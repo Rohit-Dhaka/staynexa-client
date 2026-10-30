@@ -53,8 +53,8 @@ const ACTIONS = {
 
 const TONES = {
   primary: "bg-black text-white ",
-  default: "border border-slate-300 bg-white text-slate-700 hover:bg-slate-50",
-  danger: "border border-rose-200 bg-white text-rose-600 hover:bg-rose-50",
+  default: "border border-slate-300 bg-white text-slate-700 ",
+  danger: "border border-rose-200 bg-white text-rose-600",
 };
 
 const PAYMENT_TYPE_LABELS = {
@@ -248,7 +248,7 @@ const BookingDetail = () => {
           <button
             type="button"
             onClick={() => navigate("/bookings")}
-            className="mt-1 rounded p-2 text-slate-500 transition hover:bg-slate-100"
+            className="mt-1 rounded p-2 text-slate-500 transition "
           >
             <ArrowLeft size={18} />
           </button>
@@ -281,7 +281,7 @@ const BookingDetail = () => {
           <button
             type="button"
             onClick={() => navigate(`/bookings/${booking._id}/invoice`)}
-            className="flex items-center gap-2 rounded border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+            className="flex items-center gap-2 rounded border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition "
           >
             <FileText size={16} /> Invoice
           </button>
@@ -391,7 +391,7 @@ const BookingDetail = () => {
             className={`-mb-px border-b-2 px-4 py-2.5 text-sm font-medium transition ${
               tab === t.value
                 ? "border-indigo-600 text-indigo-600"
-                : "border-transparent text-slate-500 hover:text-slate-800"
+                : "border-transparent text-slate-500 "
             }`}
           >
             {t.label}
@@ -770,7 +770,7 @@ const BookingDetail = () => {
               type="button"
               onClick={() => setVoidTarget(null)}
               disabled={voidBusy}
-              className="rounded border border-slate-300 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-60"
+              className="rounded border border-slate-300 px-4 py-2.5 text-sm font-medium text-slate-700  disabled:opacity-60"
             >
               Cancel
             </button>
@@ -778,7 +778,7 @@ const BookingDetail = () => {
               type="button"
               onClick={submitVoid}
               disabled={voidBusy}
-              className="flex items-center justify-center gap-2 rounded bg-rose-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-rose-700 disabled:opacity-70"
+              className="flex items-center justify-center gap-2 rounded bg-rose-600 px-4 py-2.5 text-sm font-semibold text-white  disabled:opacity-70"
             >
               {voidBusy && <Loader2 size={16} className="animate-spin" />}
               Void Payment

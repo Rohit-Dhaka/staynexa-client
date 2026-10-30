@@ -112,10 +112,7 @@ export const createOrderQr = (orderId) => {
   );
 };
 
-/**
- * Retrieve tracking information using the QR token.
- * Backend: GET /api/restaurant/orders/track?token=...
- */
+
 export const trackOrderByQr = (token) => {
   if (!token) {
     throw new Error("Tracking token is required.");
@@ -138,9 +135,7 @@ export const updateRestaurantSettings = (data) =>
 
 
 
-/* =========================================================
-   RAZORPAY PAYMENTS
-========================================================= */
+
 
 export const createRazorpayOrder = async (orderId) => {
   const response = await api.post(

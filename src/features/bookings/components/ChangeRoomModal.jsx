@@ -139,7 +139,7 @@ const ChangeRoomModal = ({ booking, onClose, onDone }) => {
                         className={`rounded px-3 py-1.5 text-sm transition ${
                           selected.roomId === r._id
                             ? "bg-black text-white"
-                            : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                            : "bg-slate-100 text-slate-700 "
                         }`}
                       >
                         {r.roomNumber} <span className="text-xs opacity-70">(F{r.floor})</span>

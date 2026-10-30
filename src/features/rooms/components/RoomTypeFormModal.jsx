@@ -1,13 +1,10 @@
-
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import {
   ArrowLeft,
   BedDouble,
   Check,
-  ChevronDown,
   CircleDollarSign,
-  ClipboardList,
   ImagePlus,
   Loader2,
   Maximize2,
@@ -40,10 +37,9 @@ const MAX_SIZE_MB = 5;
 const BACK_PATH = "/rooms?tab=types";
 
 const inputClass =
-  "w-full rounded border border-slate-200 bg-white px-4 py-3 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 hover:border-slate-300 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 disabled:cursor-not-allowed disabled:opacity-60";
+  "w-full rounded border border-slate-200 bg-white px-4 py-3 text-sm text-slate-800 outline-none placeholder:text-slate-400 focus:border-indigo-500 disabled:cursor-not-allowed disabled:opacity-60";
 
-const labelClass =
-  "mb-2 block text-sm font-semibold text-slate-700";
+const labelClass = "mb-2 block text-sm font-semibold text-slate-700";
 
 const emptyForm = {
   name: "",
@@ -80,7 +76,7 @@ const toForm = (roomType) => ({
   children: roomType.capacity?.children ?? 0,
   bedType: roomType.bedType || "double",
   sizeSqFt: roomType.sizeSqFt ?? "",
-  amenities: (roomType.amenities || []).join(", "),
+  amenities: (roomType.amenities || []).join(","),
 });
 
 const SectionTitle = ({ icon: Icon, eyebrow, title, description }) => (
@@ -94,12 +90,8 @@ const SectionTitle = ({ icon: Icon, eyebrow, title, description }) => (
           {eyebrow}
         </p>
       )}
-      <h2 className="text-base font-bold text-slate-900 sm:text-lg">
-        {title}
-      </h2>
-      <p className="mt-1 text-sm leading-5 text-slate-500">
-        {description}
-      </p>
+      <h2 className="text-base font-bold text-slate-900 sm:text-lg">{title}</h2>
+      <p className="mt-1 text-sm leading-5 text-slate-500">{description}</p>
     </div>
   </div>
 );
@@ -122,7 +114,7 @@ const RoomTypeForm = () => {
   newImagesRef.current = newImages;
 
   const keptExisting = existingImages.filter(
-    (image) => !removedIds.includes(image.publicId)
+    (image) => !removedIds.includes(image.publicId),
   );
 
   const totalImages = keptExisting.length + newImages.length;
@@ -156,8 +148,7 @@ const RoomTypeForm = () => {
         console.error("Room type loading failed:", error);
 
         toast.error(
-          error.response?.data?.message ||
-            "Could not load room type details"
+          error.response?.data?.message || "Could not load room type details",
         );
 
         navigate(BACK_PATH, { replace: true });
@@ -197,7 +188,7 @@ const RoomTypeForm = () => {
 
     incoming.forEach((file) => {
       if (
-        file.type.startsWith("image/") &&
+        ["image/jpeg", "image/png", "image/webp"].includes(file.type) &&
         file.size <= MAX_SIZE_MB * 1024 * 1024
       ) {
         accepted.push(file);
@@ -208,7 +199,7 @@ const RoomTypeForm = () => {
 
     if (rejected) {
       toast.error(
-        `${rejected} file(s) skipped. Use images up to ${MAX_SIZE_MB} MB each.`
+        `${rejected} file(s) skipped. Use images up to ${MAX_SIZE_MB} MB each.`,
       );
     }
 
@@ -255,22 +246,22 @@ const RoomTypeForm = () => {
     }
 
     setRemovedIds((prev) =>
-      prev.includes(publicId) ? prev : [...prev, publicId]
+      prev.includes(publicId) ? prev : [...prev, publicId],
     );
   };
 
   const toggleAmenity = (amenity) => {
     const exists = amenitiesList.some(
-      (item) => item.toLowerCase() === amenity.toLowerCase()
+      (item) => item.toLowerCase() === amenity.toLowerCase(),
     );
 
     const updated = exists
       ? amenitiesList.filter(
-          (item) => item.toLowerCase() !== amenity.toLowerCase()
+          (item) => item.toLowerCase() !== amenity.toLowerCase(),
         )
       : [...amenitiesList, amenity];
 
-    updateField("amenities", updated.join(", "));
+    updateField("amenities", updated.join(","));
   };
 
   const handleSubmit = async (e) => {
@@ -282,17 +273,28 @@ const RoomTypeForm = () => {
     const children = Number(form.children || 0);
     const size = Number(form.sizeSqFt || 0);
 
+    if (!form.name.trim()) {
+      toast.error("Enter a room type name");
+      return;
+    }
+
     if (!Number.isFinite(price) || price < 0) {
       toast.error("Enter a valid base price");
       return;
     }
 
-    if (!Number.isFinite(adults) || adults < 1) {
-      toast.error("Capacity must include at least one adult");
+    if (!Number.isInteger(adults) || adults < 1 || adults > 50) {
+      toast.error("Adult capacity must be between 1 and 50");
       return;
     }
 
-    if (!Number.isFinite(children) || children < 0 || size < 0) {
+    if (
+      !Number.isInteger(children) ||
+      children < 0 ||
+      children > 50 ||
+      !Number.isFinite(size) ||
+      size < 0
+    ) {
       toast.error("Enter valid capacity and room size");
       return;
     }
@@ -331,12 +333,10 @@ const RoomTypeForm = () => {
     } catch (error) {
       console.error(
         "Room type submission failed:",
-        error.response?.data || error
+        error.response?.data || error,
       );
 
-      toast.error(
-        error.response?.data?.message || "Something went wrong"
-      );
+      toast.error(error.response?.data?.message || "Something went wrong");
 
       setSubmitting(false);
     }
@@ -344,12 +344,11 @@ const RoomTypeForm = () => {
 
   return (
     <div className="min-h-screen w-full bg-[#f5f7fc] text-slate-800">
-      
       <header className="border-b border-slate-200/80 bg-white">
         <div className="w-full px-4 py-5 sm:px-6 lg:px-8 xl:px-10">
           <Link
             to={BACK_PATH}
-            className="mb-5 inline-flex items-center gap-2 text-sm font-semibold text-slate-500 transition hover:text-indigo-600"
+            className="mb-5 inline-flex items-center gap-2 text-sm font-semibold text-slate-500"
           >
             <ArrowLeft size={16} />
             Back to Room Types
@@ -357,7 +356,7 @@ const RoomTypeForm = () => {
 
           <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
             <div className="flex items-start gap-4">
-              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded bg-black text-white ">
+              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded bg-black text-white">
                 <BedDouble size={28} />
               </div>
 
@@ -380,7 +379,7 @@ const RoomTypeForm = () => {
             </div>
 
             <div className="flex items-center gap-3 rounded border border-slate-200 bg-slate-50 p-3.5 sm:max-w-sm">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded bg-white text-indigo-600 ">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded bg-white text-indigo-600">
                 <Sparkles size={20} />
               </div>
               <div>
@@ -404,10 +403,8 @@ const RoomTypeForm = () => {
         ) : (
           <form onSubmit={handleSubmit}>
             <div className="grid grid-cols-1 items-start gap-6 xl:grid-cols-[minmax(0,1fr)_350px] 2xl:grid-cols-[minmax(0,1fr)_390px]">
-              
               <div className="min-w-0 space-y-6">
-                
-                <section className="rounded border border-slate-200/80 bg-white p-5  sm:p-7">
+                <section className="rounded border border-slate-200/80 bg-white p-5 sm:p-7">
                   <SectionTitle
                     icon={Building2}
                     eyebrow="01 / Overview"
@@ -466,8 +463,7 @@ const RoomTypeForm = () => {
                   </div>
                 </section>
 
-                
-                <section className="rounded border border-slate-200/80 bg-white p-5  sm:p-7">
+                <section className="rounded border border-slate-200/80 bg-white p-5 sm:p-7">
                   <SectionTitle
                     icon={CircleDollarSign}
                     eyebrow="02 / Pricing"
@@ -478,7 +474,8 @@ const RoomTypeForm = () => {
                   <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
                     <div>
                       <label htmlFor="basePrice" className={labelClass}>
-                        Base Price / Night <span className="text-rose-500">*</span>
+                        Base Price / Night{" "}
+                        <span className="text-rose-500">*</span>
                       </label>
 
                       <div className="relative">
@@ -546,8 +543,7 @@ const RoomTypeForm = () => {
                   </div>
                 </section>
 
-                
-                <section className="rounded border border-slate-200/80 bg-white p-5  sm:p-7">
+                <section className="rounded border border-slate-200/80 bg-white p-5 sm:p-7">
                   <SectionTitle
                     icon={Users}
                     eyebrow="03 / Configuration"
@@ -578,11 +574,11 @@ const RoomTypeForm = () => {
                             onClick={() =>
                               updateField(
                                 "adults",
-                                Math.max(1, Number(form.adults) - 1)
+                                Math.max(1, Number(form.adults) - 1),
                               )
                             }
                             disabled={submitting || Number(form.adults) <= 1}
-                            className="flex h-9 w-9 items-center justify-center rounded border border-slate-200 bg-white text-slate-600 hover:border-indigo-300 hover:text-indigo-600 disabled:opacity-40"
+                            className="flex h-9 w-9 items-center justify-center rounded border border-slate-200 bg-white text-slate-600 disabled:opacity-40"
                             aria-label="Decrease adult capacity"
                           >
                             <Minus size={15} />
@@ -608,11 +604,11 @@ const RoomTypeForm = () => {
                             onClick={() =>
                               updateField(
                                 "adults",
-                                Math.min(50, Number(form.adults) + 1)
+                                Math.min(50, Number(form.adults) + 1),
                               )
                             }
                             disabled={submitting || Number(form.adults) >= 50}
-                            className="flex h-9 w-9 items-center justify-center rounded border border-slate-200 bg-white text-slate-600 hover:border-indigo-300 hover:text-indigo-600 disabled:opacity-40"
+                            className="flex h-9 w-9 items-center justify-center rounded border border-slate-200 bg-white text-slate-600 disabled:opacity-40"
                             aria-label="Increase adult capacity"
                           >
                             <Plus size={15} />
@@ -643,13 +639,11 @@ const RoomTypeForm = () => {
                             onClick={() =>
                               updateField(
                                 "children",
-                                Math.max(0, Number(form.children) - 1)
+                                Math.max(0, Number(form.children) - 1),
                               )
                             }
-                            disabled={
-                              submitting || Number(form.children) <= 0
-                            }
-                            className="flex h-9 w-9 items-center justify-center rounded border border-slate-200 bg-white text-slate-600 hover:border-indigo-300 hover:text-indigo-600 disabled:opacity-40"
+                            disabled={submitting || Number(form.children) <= 0}
+                            className="flex h-9 w-9 items-center justify-center rounded border border-slate-200 bg-white text-slate-600 disabled:opacity-40"
                             aria-label="Decrease child capacity"
                           >
                             <Minus size={15} />
@@ -674,13 +668,11 @@ const RoomTypeForm = () => {
                             onClick={() =>
                               updateField(
                                 "children",
-                                Math.min(50, Number(form.children) + 1)
+                                Math.min(50, Number(form.children) + 1),
                               )
                             }
-                            disabled={
-                              submitting || Number(form.children) >= 50
-                            }
-                            className="flex h-9 w-9 items-center justify-center rounded border border-slate-200 bg-white text-slate-600 hover:border-indigo-300 hover:text-indigo-600 disabled:opacity-40"
+                            disabled={submitting || Number(form.children) >= 50}
+                            className="flex h-9 w-9 items-center justify-center rounded border border-slate-200 bg-white text-slate-600 disabled:opacity-40"
                             aria-label="Increase child capacity"
                           >
                             <Plus size={15} />
@@ -703,18 +695,16 @@ const RoomTypeForm = () => {
                             type="button"
                             onClick={() => updateField("bedType", bed)}
                             disabled={submitting}
-                            className={`relative flex min-w-0 flex-col items-center rounded border p-4 text-center transition ${
+                            className={`relative flex min-w-0 flex-col items-center rounded border p-4 text-center ${
                               selected
                                 ? "border-indigo-500 bg-black ring-2 ring-indigo-100"
-                                : "border-slate-200 bg-white hover:border-indigo-200 hover:bg-slate-50"
+                                : "border-slate-200 bg-white"
                             }`}
                           >
                             <BedDouble
                               size={25}
                               className={
-                                selected
-                                  ? "text-indigo-600"
-                                  : "text-slate-400"
+                                selected ? "text-indigo-600" : "text-slate-400"
                               }
                             />
 
@@ -738,8 +728,7 @@ const RoomTypeForm = () => {
                   </div>
                 </section>
 
-                
-                <section className="rounded border border-slate-200/80 bg-white p-5  sm:p-7">
+                <section className="rounded border border-slate-200/80 bg-white p-5 sm:p-7">
                   <SectionTitle
                     icon={Sparkles}
                     eyebrow="04 / Experience"
@@ -750,7 +739,7 @@ const RoomTypeForm = () => {
                   <div className="flex flex-wrap gap-2">
                     {AMENITY_SUGGESTIONS.map(({ label, icon: Icon }) => {
                       const active = amenitiesList.some(
-                        (item) => item.toLowerCase() === label.toLowerCase()
+                        (item) => item.toLowerCase() === label.toLowerCase(),
                       );
 
                       return (
@@ -759,10 +748,10 @@ const RoomTypeForm = () => {
                           type="button"
                           onClick={() => toggleAmenity(label)}
                           disabled={submitting}
-                          className={`inline-flex items-center gap-2 rounded-full border px-3.5 py-2 text-sm font-semibold transition ${
+                          className={`inline-flex items-center gap-2 rounded-full border px-3.5 py-2 text-sm font-semibold ${
                             active
                               ? "border-indigo-500 bg-black text-indigo-700"
-                              : "border-slate-200 bg-white text-slate-600 hover:border-indigo-200 hover:bg-slate-50"
+                              : "border-slate-200 bg-white text-slate-600"
                           }`}
                         >
                           <Icon size={15} />
@@ -782,9 +771,7 @@ const RoomTypeForm = () => {
                       id="amenities"
                       name="amenities"
                       value={form.amenities}
-                      onChange={(e) =>
-                        updateField("amenities", e.target.value)
-                      }
+                      onChange={(e) => updateField("amenities", e.target.value)}
                       placeholder="WiFi, AC, TV, Mini Bar, Bathtub"
                       disabled={submitting}
                       className={inputClass}
@@ -809,8 +796,7 @@ const RoomTypeForm = () => {
                   )}
                 </section>
 
-                
-                <section className="rounded border border-slate-200/80 bg-white p-5  sm:p-7">
+                <section className="rounded border border-slate-200/80 bg-white p-5 sm:p-7">
                   <SectionTitle
                     icon={ImagePlus}
                     eyebrow="05 / Gallery"
@@ -835,7 +821,7 @@ const RoomTypeForm = () => {
                     }}
                     onDragLeave={() => setDragging(false)}
                     onDrop={handleDrop}
-                    className={`rounded border-2 border-dashed p-4 transition sm:p-6 ${
+                    className={`rounded border-2 border-dashed p-4 sm:p-6 ${
                       dragging
                         ? "border-indigo-400 bg-black"
                         : "border-slate-200 bg-slate-50/70"
@@ -846,7 +832,7 @@ const RoomTypeForm = () => {
                         {keptExisting.map((image, index) => (
                           <div
                             key={image.publicId || image.url}
-                            className="group relative aspect-[4/3] overflow-hidden rounded border border-slate-200 bg-white"
+                            className="relative aspect-[4/3] overflow-hidden rounded border border-slate-200 bg-white"
                           >
                             <img
                               src={image.url}
@@ -861,7 +847,7 @@ const RoomTypeForm = () => {
                               }
                               disabled={submitting}
                               aria-label="Remove saved image"
-                              className="absolute right-2 top-2 rounded bg-slate-950/75 p-2 text-white transition hover:bg-rose-600 disabled:opacity-50 sm:opacity-0 sm:group-hover:opacity-100"
+                              className="absolute right-2 top-2 rounded bg-slate-950/75 p-2 text-white disabled:opacity-50 sm:opacity-0"
                             >
                               <X size={14} />
                             </button>
@@ -871,7 +857,7 @@ const RoomTypeForm = () => {
                         {newImages.map((item, index) => (
                           <div
                             key={item.preview}
-                            className="group relative aspect-[4/3] overflow-hidden rounded border border-indigo-200 bg-white"
+                            className="relative aspect-[4/3] overflow-hidden rounded border border-indigo-200 bg-white"
                           >
                             <img
                               src={item.preview}
@@ -888,7 +874,7 @@ const RoomTypeForm = () => {
                               onClick={() => removeNewImage(index)}
                               disabled={submitting}
                               aria-label="Remove new image"
-                              className="absolute right-2 top-2 rounded bg-slate-950/75 p-2 text-white transition hover:bg-rose-600 disabled:opacity-50"
+                              className="absolute right-2 top-2 rounded bg-slate-950/75 p-2 text-white disabled:opacity-50"
                             >
                               <X size={14} />
                             </button>
@@ -901,7 +887,7 @@ const RoomTypeForm = () => {
                       type="button"
                       onClick={() => fileInputRef.current?.click()}
                       disabled={submitting || totalImages >= MAX_IMAGES}
-                      className="flex min-h-36 w-full flex-col items-center justify-center rounded px-4 py-6 text-center transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-50"
+                      className="flex min-h-36 w-full flex-col items-center justify-center rounded px-4 py-6 text-center disabled:cursor-not-allowed disabled:opacity-50"
                     >
                       <span className="flex h-12 w-12 items-center justify-center rounded bg-black text-indigo-600">
                         <ImagePlus size={23} />
@@ -929,9 +915,8 @@ const RoomTypeForm = () => {
                 </section>
               </div>
 
-              
               <aside className="min-w-0 space-y-5 xl:sticky xl:top-6">
-                <section className="overflow-hidden rounded border border-slate-200/80 bg-white ">
+                <section className="overflow-hidden rounded border border-slate-200/80 bg-white">
                   <div className="relative overflow-hidden bg-gradient-to-br from-indigo-800 via-indigo-700 to-violet-700 p-6 text-white sm:p-7">
                     <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full border border-white/10" />
                     <div className="absolute -right-4 -top-4 h-28 w-28 rounded-full border border-white/10" />
@@ -947,9 +932,7 @@ const RoomTypeForm = () => {
                     </div>
 
                     <div className="relative mt-8">
-                      <p className="text-sm text-indigo-200">
-                        Room category
-                      </p>
+                      <p className="text-sm text-indigo-200">Room category</p>
 
                       <h2 className="mt-2 break-words text-3xl font-black tracking-tight sm:text-4xl">
                         {form.name.trim() || "Your Room Type"}
@@ -990,9 +973,7 @@ const RoomTypeForm = () => {
                           : "₹—"}
                       </span>
 
-                      <span className="text-sm text-slate-500">
-                        / night
-                      </span>
+                      <span className="text-sm text-slate-500">/ night</span>
                     </div>
 
                     <div className="my-5 border-t border-slate-100" />
@@ -1039,7 +1020,7 @@ const RoomTypeForm = () => {
                   </div>
                 </section>
 
-                <section className="rounded border border-slate-200/80 bg-white p-5  sm:p-6">
+                <section className="rounded border border-slate-200/80 bg-white p-5 sm:p-6">
                   <div className="flex items-center gap-3">
                     <div className="flex h-10 w-10 items-center justify-center rounded bg-emerald-50 text-emerald-600">
                       <Check size={20} />
@@ -1077,10 +1058,7 @@ const RoomTypeForm = () => {
                         complete: Boolean(form.bedType),
                       },
                     ].map((item) => (
-                      <div
-                        key={item.label}
-                        className="flex items-center gap-3"
-                      >
+                      <div key={item.label} className="flex items-center gap-3">
                         <span
                           className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full ${
                             item.complete
@@ -1088,9 +1066,9 @@ const RoomTypeForm = () => {
                               : "bg-slate-100 text-slate-400"
                           }`}
                         >
-                          <Check size={12} />
-                        </span>
-
+                          {" "}
+                          <Check size={12} />{" "}
+                        </span>{" "}
                         <span
                           className={`text-sm ${
                             item.complete
@@ -1107,8 +1085,7 @@ const RoomTypeForm = () => {
               </aside>
             </div>
 
-            
-            <div className="mt-6 rounded border border-slate-200/80 bg-white p-4  sm:p-5">
+            <div className="mt-6 rounded border border-slate-200/80 bg-white p-4 sm:p-5">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div className="min-w-0">
                   <p className="text-sm font-bold text-slate-800">
@@ -1118,7 +1095,8 @@ const RoomTypeForm = () => {
                   </p>
 
                   <p className="mt-1 text-xs leading-5 text-slate-500">
-                    Your room details and pricing will be saved to your property.
+                    Your room details and pricing will be saved to your
+                    property.
                   </p>
                 </div>
 
@@ -1127,7 +1105,7 @@ const RoomTypeForm = () => {
                     type="button"
                     onClick={() => navigate(BACK_PATH)}
                     disabled={submitting}
-                    className="inline-flex items-center justify-center gap-2 rounded border border-slate-200 px-5 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 disabled:opacity-60"
+                    className="inline-flex items-center justify-center gap-2 rounded border border-slate-200 px-5 py-3 text-sm font-semibold text-slate-700 disabled:opacity-60"
                   >
                     <ArrowLeft size={16} />
                     Cancel
@@ -1136,10 +1114,10 @@ const RoomTypeForm = () => {
                   <button
                     type="submit"
                     disabled={submitting}
-                    className="inline-flex items-center justify-center gap-2 rounded bg-black px-6 py-3 text-sm font-bold text-white  transition  disabled:cursor-not-allowed disabled:opacity-60"
+                    className="inline-flex items-center justify-center gap-2 rounded bg-black px-6 py-3 text-sm font-bold text-white disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     {submitting ? (
-                      <Loader2 size={17} className="animate-spin" />
+                      <Loader2 size={17} className="" />
                     ) : (
                       <Save size={17} />
                     )}

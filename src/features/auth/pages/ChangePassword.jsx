@@ -31,7 +31,7 @@ const PasswordField = ({ label, name, value, onChange, show, onToggle }) => (
       <button
         type="button"
         onClick={onToggle}
-        className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-400 hover:text-gray-600"
+        className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-400 "
       >
         {show ? <EyeOff size={18} /> : <Eye size={18} />}
       </button>
@@ -144,7 +144,7 @@ const ChangePassword = () => {
           <button
             type="submit"
             disabled={submitting}
-            className="flex w-full items-center justify-center gap-2 rounded bg-black py-2.5 text-sm font-semibold text-white transition hover:bg-black disabled:cursor-not-allowed disabled:opacity-70"
+            className="flex w-full items-center justify-center gap-2 rounded bg-black py-2.5 text-sm font-semibold text-white transition  disabled:cursor-not-allowed disabled:opacity-70"
           >
             {submitting && <Loader2 size={16} className="animate-spin" />}
             {submitting ? "Updating..." : "Update password"}

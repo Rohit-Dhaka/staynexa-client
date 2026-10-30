@@ -86,7 +86,7 @@ function StatusBadge({ status }) {
     waiting_for_parts: "border-orange-200 bg-orange-50 text-orange-700",
     out_of_order: "border-red-200 bg-red-50 text-red-700",
     critical: "border-red-200 bg-red-50 text-red-700",
-    reported: "border-blue-200 bg-black text-blue-700",
+    reported: "border-blue-200 bg-blue-50 text-blue-700",
     assigned: "border-violet-200 bg-violet-50 text-violet-700",
     retired: "border-slate-200 bg-slate-100 text-slate-600",
     cancelled: "border-slate-200 bg-slate-100 text-slate-600",
@@ -95,9 +95,9 @@ function StatusBadge({ status }) {
   return (
     <span
       className={`inline-flex rounded border px-3 py-1.5 text-xs font-semibold ${
-        colors[normalized] ||
-        "border-slate-200 bg-slate-50 text-slate-600"
-      }`}
+ colors[normalized] ||
+ "border-slate-200 bg-slate-50 text-slate-600"
+ }`}
     >
       {formatLabel(status)}
     </span>
@@ -261,10 +261,10 @@ export default function MaintenanceDetails({
         aria-labelledby="maintenance-details-title"
         className="my-auto w-full max-w-5xl overflow-hidden rounded border border-slate-200 bg-white"
       >
-        {/* Header */}
+        
         <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-200 px-5 py-5 sm:px-7">
           <div className="flex min-w-0 items-center gap-3">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded bg-black text-blue-700">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded bg-blue-50 text-blue-700">
               <Package size={23} />
             </div>
 
@@ -288,11 +288,11 @@ export default function MaintenanceDetails({
               type="button"
               onClick={handleRefresh}
               disabled={loading}
-              className="inline-flex h-10 items-center gap-2 rounded border border-slate-200 px-3 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60"
+              className="inline-flex h-10 items-center gap-2 rounded border border-slate-200 px-3 text-sm font-medium text-slate-700 disabled:cursor-not-allowed disabled:opacity-60"
             >
               <RefreshCw
                 size={16}
-                className={loading ? "animate-spin" : ""}
+                className={loading ? "" : ""}
               />
               <span className="hidden sm:inline">Refresh</span>
             </button>
@@ -301,14 +301,14 @@ export default function MaintenanceDetails({
               type="button"
               onClick={onClose}
               aria-label="Close equipment details"
-              className="flex h-10 w-10 items-center justify-center rounded border border-slate-200 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-800"
+              className="flex h-10 w-10 items-center justify-center rounded border border-slate-200 text-slate-500"
             >
               <X size={19} />
             </button>
           </div>
         </div>
 
-        {/* Content */}
+   
         <div className="max-h-[75vh] overflow-y-auto px-5 py-6 sm:px-7">
           {error && (
             <div className="mb-5 flex items-start gap-3 rounded border border-red-200 bg-red-50 p-4 text-sm text-red-700">
@@ -319,12 +319,11 @@ export default function MaintenanceDetails({
 
           {loading && (
             <div className="mb-5 flex items-center gap-2 rounded border border-blue-200 bg-black p-3 text-sm text-blue-700">
-              <LoaderCircle size={17} className="animate-spin" />
+              <LoaderCircle size={17} className="" />
               Loading equipment information...
             </div>
           )}
 
-          {/* Equipment Overview */}
           <div className="mb-7 rounded border border-slate-200 bg-slate-50 p-5">
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div>
@@ -356,13 +355,13 @@ export default function MaintenanceDetails({
             </div>
           </div>
 
-          {/* Action Buttons */}
+          
           <div className="mb-8 flex flex-wrap gap-2">
             {onEdit && (
               <button
                 type="button"
                 onClick={() => onEdit(item)}
-                className="rounded border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50"
+                className="rounded border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-700"
               >
                 Edit Equipment
               </button>
@@ -372,7 +371,7 @@ export default function MaintenanceDetails({
               <button
                 type="button"
                 onClick={() => onReportIssue(item)}
-                className="inline-flex items-center gap-2 rounded bg-black px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-black"
+                className="inline-flex items-center gap-2 rounded bg-black px-4 py-2.5 text-sm font-semibold text-white"
               >
                 <AlertTriangle size={16} />
                 Report Issue
@@ -383,7 +382,7 @@ export default function MaintenanceDetails({
               <button
                 type="button"
                 onClick={() => onAssignTechnician(item)}
-                className="inline-flex items-center gap-2 rounded border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50"
+                className="inline-flex items-center gap-2 rounded border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-700"
               >
                 <UserRound size={16} />
                 Assign Technician
@@ -394,7 +393,7 @@ export default function MaintenanceDetails({
               <button
                 type="button"
                 onClick={() => onUpdateStatus(item)}
-                className="inline-flex items-center gap-2 rounded border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50"
+                className="inline-flex items-center gap-2 rounded border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-700"
               >
                 <RefreshCw size={16} />
                 Update Status
@@ -405,7 +404,7 @@ export default function MaintenanceDetails({
               <button
                 type="button"
                 onClick={() => onAddRepair(item)}
-                className="inline-flex items-center gap-2 rounded border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50"
+                className="inline-flex items-center gap-2 rounded border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-700"
               >
                 <Wrench size={16} />
                 Add Repair
@@ -416,7 +415,7 @@ export default function MaintenanceDetails({
               <button
                 type="button"
                 onClick={() => onComplete(item)}
-                className="inline-flex items-center gap-2 rounded border border-emerald-200 px-4 py-2.5 text-sm font-semibold text-emerald-700 transition-colors hover:bg-emerald-50"
+                className="inline-flex items-center gap-2 rounded border border-emerald-200 px-4 py-2.5 text-sm font-semibold text-emerald-700"
               >
                 <CheckCircle2 size={16} />
                 Complete Maintenance
@@ -424,7 +423,7 @@ export default function MaintenanceDetails({
             )}
           </div>
 
-          {/* Equipment Information */}
+     
           <section className="mb-8">
             <SectionTitle icon={Package} title="Equipment Information" />
 
@@ -501,7 +500,7 @@ export default function MaintenanceDetails({
             )}
           </section>
 
-          {/* Technician Information */}
+          
           <section className="mb-8">
             <SectionTitle icon={UserRound} title="Assigned Technicians" />
 
@@ -563,7 +562,7 @@ export default function MaintenanceDetails({
             )}
           </section>
 
-          {/* Warranty Information */}
+         
           <section className="mb-8">
             <SectionTitle icon={ShieldCheck} title="Warranty Information" />
 
@@ -583,10 +582,10 @@ export default function MaintenanceDetails({
 
                 <span
                   className={`rounded border px-3 py-1.5 text-xs font-semibold ${
-                    warrantyActive
-                      ? "border-emerald-200 bg-emerald-50 text-emerald-700"
-                      : "border-slate-200 bg-slate-50 text-slate-600"
-                  }`}
+ warrantyActive
+ ? "border-emerald-200 bg-emerald-50 text-emerald-700"
+ : "border-slate-200 bg-slate-50 text-slate-600"
+ }`}
                 >
                   {warrantyActive ? "Warranty Active" : "Warranty Expired or Unavailable"}
                 </span>
@@ -619,7 +618,7 @@ export default function MaintenanceDetails({
             </div>
           </section>
 
-          {/* Repair Summary */}
+      
           <section className="mb-8">
             <SectionTitle icon={Wrench} title="Repair Summary" />
 
@@ -719,7 +718,7 @@ export default function MaintenanceDetails({
             )}
           </section>
 
-          {/* Maintenance History */}
+          
           <section>
             <SectionTitle icon={History} title="Maintenance History" />
 
@@ -730,7 +729,7 @@ export default function MaintenanceDetails({
                     key={record._id || record.id || index}
                     className="flex gap-3 rounded border border-slate-200 p-4"
                   >
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-black text-blue-700">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue-50 text-blue-700">
                       {record.status === "completed" ? (
                         <CheckCircle2 size={19} />
                       ) : (
@@ -789,7 +788,7 @@ export default function MaintenanceDetails({
           </section>
         </div>
 
-        {/* Footer */}
+  
         <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 bg-white px-5 py-4 sm:px-7">
           <p className="text-xs text-slate-500">
             Last Updated: {formatDate(item.updatedAt)}
@@ -798,7 +797,7 @@ export default function MaintenanceDetails({
           <button
             type="button"
             onClick={onClose}
-            className="rounded border border-slate-200 px-5 py-2.5 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50"
+            className="rounded border border-slate-200 px-5 py-2.5 text-sm font-semibold text-slate-700"
           >
             Close
           </button>

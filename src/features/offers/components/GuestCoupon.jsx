@@ -166,7 +166,7 @@ export default function GuestCoupon({
           offers.map((offer) => (
             <div
               key={offer._id}
-              className="flex items-start justify-between gap-3 rounded border border-dashed border-blue-200 bg-black/50 p-3"
+              className="flex items-start justify-between gap-3 rounded border border-dashed border-blue-200 bg-gray-50 p-3"
             >
               <div className="min-w-0">
                 <p className="font-semibold text-slate-900">{offer.name}</p>

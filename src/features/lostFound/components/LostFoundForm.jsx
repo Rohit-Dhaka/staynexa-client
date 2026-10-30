@@ -18,9 +18,7 @@ import {
 
 import lostFoundService from "../services/lostFoundService";
 
-// =====================================================
-// CONSTANTS
-// =====================================================
+
 
 const CATEGORIES = [
   { value: "phone", label: "Phone" },
@@ -81,9 +79,7 @@ const INITIAL_FOUND_FORM = {
   retentionDays: 90,
 };
 
-// =====================================================
-// HELPERS
-// =====================================================
+
 
 function toLocalDateTimeValue(date = new Date()) {
   const offset = date.getTimezoneOffset() * 60_000;
@@ -114,9 +110,6 @@ function validatePhone(phone) {
   return /^[+\d\s()-]{7,20}$/.test(phone.trim());
 }
 
-// =====================================================
-// REUSABLE FORM INPUTS
-// =====================================================
 
 function TextInput({
   label,
@@ -202,9 +195,6 @@ function TextAreaInput({
   );
 }
 
-// =====================================================
-// SECTION HEADER
-// =====================================================
 
 function FormSection({ title, description, children }) {
   return (
@@ -228,9 +218,6 @@ function FormSection({ title, description, children }) {
   );
 }
 
-// =====================================================
-// PHOTO URL INPUT
-// =====================================================
 
 function PhotoUrlInput({ photos, onChange }) {
   const [photoUrl, setPhotoUrl] = useState("");
@@ -326,9 +313,6 @@ function PhotoUrlInput({ photos, onChange }) {
   );
 }
 
-// =====================================================
-// MAIN LOST & FOUND FORM
-// =====================================================
 
 export default function LostFoundForm({
   mode = "lost",
@@ -446,8 +430,7 @@ export default function LostFoundForm({
       return;
     }
 
-    // Use the parent handler when provided. Guest lost reports and staff
-    // found-item registrations also have safe service fallbacks.
+
     const submitHandler =
       onSubmit ??
       (isFound
@@ -524,13 +507,11 @@ export default function LostFoundForm({
     }
   };
 
-  // ===================================================
-  // RENDER
-  // ===================================================
+
 
   return (
     <form onSubmit={handleSubmit} className="space-y-7">
-      {/* FORM HEADER */}
+   
 
       <div className="flex items-start gap-3 rounded border border-slate-200 bg-slate-50 p-4">
         <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded border border-slate-200 bg-white text-slate-700">
@@ -554,7 +535,7 @@ export default function LostFoundForm({
         </div>
       </div>
 
-      {/* ITEM DETAILS */}
+   
 
       <FormSection
         title="Item Details"
@@ -614,7 +595,7 @@ export default function LostFoundForm({
         </div>
       </FormSection>
 
-      {/* LOCATION DETAILS */}
+      
 
       <FormSection
         title="Location and Time"
@@ -678,7 +659,7 @@ export default function LostFoundForm({
         </div>
       </FormSection>
 
-      {/* GUEST CONTACT DETAILS */}
+  
 
       {!isFound && (
         <>
@@ -739,7 +720,7 @@ export default function LostFoundForm({
         </>
       )}
 
-      {/* FOUND ITEM STORAGE */}
+      
 
       {isFound && (
         <FormSection
@@ -803,7 +784,7 @@ export default function LostFoundForm({
         </FormSection>
       )}
 
-      {/* PHOTOS */}
+    
 
       <FormSection
         title="Item Photos"
@@ -817,7 +798,7 @@ export default function LostFoundForm({
         </div>
       </FormSection>
 
-      {/* SUBMISSION ERROR */}
+   
 
       {submitError && (
         <div
@@ -835,7 +816,7 @@ export default function LostFoundForm({
         </div>
       )}
 
-      {/* ACTION BUTTONS */}
+   
 
       <div className="flex flex-col-reverse gap-3 border-t border-slate-200 pt-5 sm:flex-row sm:justify-end">
         {onCancel && (

@@ -2,7 +2,7 @@ import api from "../../../api/axiosInstance";
 
 const unwrap = (res) => res.data.data;
 
-/* ------------------------------ Room types ------------------------------ */
+
 
 export const getRoomTypes = (params) =>
   api.get("/rooms/types", { params }).then(unwrap);
@@ -21,7 +21,7 @@ export const updateRoomType = (id, data) =>
 export const deleteRoomType = (id) =>
   api.delete(`/rooms/types/${id}`).then(unwrap);
 
-/* --------------------------------- Rooms --------------------------------- */
+
 
 export const getRooms = (params) => api.get("/rooms", { params }).then(unwrap);
 
@@ -39,7 +39,7 @@ export const updateRoomStatus = (id, status) =>
 
 export const deleteRoom = (id) => api.delete(`/rooms/${id}`).then(unwrap);
 
-/* ---------------- Aliases used by RoomForm / RoomTypeForm ---------------- */
+
 
 export const getRoomById = getRoom;
 export const getRoomTypeById = getRoomType;

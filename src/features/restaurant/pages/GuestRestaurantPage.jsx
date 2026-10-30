@@ -24,8 +24,12 @@ const getList = (result, keys = []) => {
   return [];
 };
 
-const getId = (value) =>
-  typeof value === "object" ? value?._id || value?.id || "" : value || "";
+const getId = (value) => {
+  if (value && typeof value === "object") {
+    return value._id || value.id || value.menuItem?._id || value.menuItem?.id || "";
+  }
+  return value || "";
+};
 
 const getItemName = (item) => item?.title || item?.name || "Menu item";
 
@@ -269,15 +273,19 @@ useEffect(() => {
   );
 
   const addToCart = (item) => {
-    const id = getId(item);
-    if (!id) return;
+    const id = String(getId(item) || "");
+
+    if (!id) {
+      setError("This menu item is missing its ID and cannot be added. Please refresh the menu.");
+      return;
+    }
 
     setCart((current) => {
-      const existing = current.find((entry) => entry.menuItem === id);
+      const existing = current.find((entry) => String(entry.menuItem) === id);
 
       if (existing) {
         return current.map((entry) =>
-          entry.menuItem === id
+          String(entry.menuItem) === id
             ? { ...entry, quantity: entry.quantity + 1 }
             : entry,
         );
@@ -288,21 +296,21 @@ useEffect(() => {
         {
           menuItem: id,
           name: getItemName(item),
-          price: Number(item.discountPrice ?? item.price) || 0,
+          price: Number(item.discountPrice ?? item.price ?? item.basePrice) || 0,
           quantity: 1,
         },
       ];
     });
 
     setError("");
-    setSuccess("");
+    setSuccess(`${getItemName(item)} added to your cart.`);
   };
 
   const changeQuantity = (id, amount) => {
     setCart((current) =>
       current
         .map((item) =>
-          item.menuItem === id
+          String(item.menuItem) === String(id)
             ? { ...item, quantity: item.quantity + amount }
             : item,
         )
@@ -366,7 +374,7 @@ useEffect(() => {
 
       await loadOrders();
       setActiveTab("orders");
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      window.scrollTo({ top: 0, behavior: "auto" });
     } catch (err) {
       setError(
         err?.response?.data?.message ||
@@ -380,39 +388,39 @@ useEffect(() => {
   const scrollToCart = () => {
     document
       .getElementById("guest-cart")
-      ?.scrollIntoView({ behavior: "smooth", block: "start" });
+      ?.scrollIntoView({ behavior: "auto", block: "start" });
   };
 
   const categoryButtonClass = (selected) =>
-    `shrink-0 rounded-full border px-3 py-1 text-xs font-medium transition ${
+    `shrink-0 rounded-full border px-3 py-1 text-xs font-medium  ${
       selected
         ? "border-gray-900 bg-gray-900 text-white"
-        : "border-gray-200 bg-white text-gray-600 hover:bg-gray-100"
+        : "border-gray-200 bg-white text-gray-600 "
     }`;
 
   const tabClass = (tab) =>
-    `rounded px-3 py-1.5 text-xs font-semibold transition ${
+    `rounded px-3 py-1.5 text-xs font-semibold  ${
       activeTab === tab
         ? "bg-gray-900 text-white"
-        : "text-gray-600 hover:bg-gray-100"
+        : "text-gray-600 "
     }`;
 
   return (
-    <div className="min-h-screen pb-16 text-gray-900 lg:pb-0">
+    <div className="min-h-screen pb-24 text-gray-900 lg:pb-6">
       
-      <header className="rounded border border-gray-200 bg-white px-3 py-2.5">
-        <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
+      <header className="rounded border border-gray-200 bg-white p-4 sm:p-5">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div className="min-w-0">
-            <p className="text-[10px] font-medium uppercase tracking-wide text-gray-500">
+            <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
               StayNexa Restaurant
             </p>
-            <h1 className="text-base font-semibold leading-tight">
+            <h1 className="text-xl font-bold leading-tight sm:text-2xl">
               Food and Drinks
             </h1>
           </div>
 
           
-          <div className="flex min-w-0 flex-1 flex-wrap items-center gap-1.5 text-xs">
+          <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2 text-sm">
             {loadingBookings ? (
               <span className="text-gray-500">Loading room...</span>
             ) : bookings.length === 0 ? (
@@ -423,7 +431,7 @@ useEffect(() => {
                 <button
                   type="button"
                   onClick={loadBookings}
-                  className="rounded border border-gray-200 px-2 py-1 font-medium hover:bg-gray-100"
+                  className="rounded border border-gray-200 px-2 py-1 font-medium "
                 >
                   Refresh
                 </button>
@@ -474,7 +482,7 @@ useEffect(() => {
           </div>
 
           
-          <div className="flex items-center gap-1 rounded border border-gray-200 p-0.5">
+          <div className="flex w-fit items-center gap-1 rounded border border-gray-200 p-1">
             <button
               type="button"
               onClick={() => setActiveTab("menu")}
@@ -516,12 +524,12 @@ useEffect(() => {
 
       
       {activeTab === "menu" && (
-        <div className="mt-3 grid grid-cols-1 items-start gap-3 lg:grid-cols-[minmax(0,1fr)_320px]">
+        <div className="mt-5 grid grid-cols-1 items-start gap-5 xl:grid-cols-[minmax(0,1fr)_360px]">
           
           <section className="min-w-0 space-y-3">
-            <div className="rounded border border-gray-200 bg-white p-2.5">
-              <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-                <div className="sm:w-56 sm:shrink-0">
+            <div className="rounded border border-gray-200 bg-white p-4">
+              <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
+                <div className="lg:w-64 lg:shrink-0">
                   <label htmlFor="guest-menu-search" className="sr-only">
                     Search menu
                   </label>
@@ -531,7 +539,7 @@ useEffect(() => {
                     value={search}
                     onChange={(event) => setSearch(event.target.value)}
                     placeholder="Search food and drinks..."
-                    className="w-full rounded border border-gray-200 px-2.5 py-1.5 text-xs outline-none focus:border-gray-500"
+                    className="w-full rounded border border-gray-200 px-3 py-2.5 text-sm outline-none focus:border-gray-500"
                   />
                 </div>
 
@@ -566,7 +574,7 @@ useEffect(() => {
                 </div>
               </div>
 
-              <div className="mt-1.5 flex items-center gap-3 text-[10px] text-gray-500">
+              <div className="mt-3 flex items-center gap-3 text-xs text-gray-500">
                 <span className="inline-flex items-center gap-1">
                   <span className="h-2 w-2 rounded-full bg-green-500" /> Veg
                 </span>
@@ -589,10 +597,10 @@ useEffect(() => {
                 </p>
               </div>
             ) : (
-              <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 xl:grid-cols-4">
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 2xl:grid-cols-4">
                 {visibleItems.map((item) => {
                   const id = getId(item);
-                  const cartItem = cart.find((entry) => entry.menuItem === id);
+                  const cartItem = cart.find((entry) => String(entry.menuItem) === String(id));
                   const image = getItemImage(item);
                   const dietaryType = String(
                     item.dietaryType || "",
@@ -611,10 +619,10 @@ useEffect(() => {
                             src={image}
                             alt={getItemName(item)}
                             loading="lazy"
-                            className="h-24 w-full object-cover"
+                            className="h-32 w-full object-cover sm:h-40"
                           />
                         ) : (
-                          <div className="flex h-24 items-center justify-center bg-gray-100 text-[10px] text-gray-400">
+                          <div className="flex h-32 items-center justify-center bg-gray-50 text-xs text-gray-400 sm:h-40">
                             No image
                           </div>
                         )}
@@ -634,23 +642,28 @@ useEffect(() => {
                         )}
                       </div>
 
-                      <div className="flex flex-1 flex-col gap-1.5 p-2">
+                      <div className="flex flex-1 flex-col gap-3 p-3 sm:p-4">
                         <div className="flex items-start justify-between gap-1.5">
-                          <h2 className="line-clamp-2 text-xs font-semibold leading-4">
+                          <h2 className="line-clamp-2 text-sm font-semibold leading-5">
                             {getItemName(item)}
                           </h2>
-                          <span className="shrink-0 text-xs font-semibold">
-                            {formatCurrency(item.discountPrice ?? item.price)}
+                          <span className="shrink-0 text-sm font-bold">
+                            {formatCurrency(item.discountPrice ?? item.price ?? item.basePrice)}
                           </span>
                         </div>
+                        {item.description && (
+                          <p className="line-clamp-2 text-xs leading-5 text-gray-500">
+                            {item.description}
+                          </p>
+                        )}
 
                         <button
                           type="button"
                           onClick={() => addToCart(item)}
-                          disabled={!selectedBooking}
-                          className="mt-auto w-full rounded bg-gray-900 px-2 py-1.5 text-[11px] font-medium text-white hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-50"
+                          disabled={!getId(item)}
+                          className="mt-auto w-full rounded bg-gray-900 px-3 py-2.5 text-sm font-semibold text-white  disabled:cursor-not-allowed disabled:opacity-50"
                         >
-                          {cartItem ? "Add More" : "Add to Cart"}
+                          {!getId(item) ? "Unavailable" : cartItem ? "Add More" : "Add to Cart"}
                         </button>
                       </div>
                     </article>
@@ -663,11 +676,16 @@ useEffect(() => {
           
           <aside
             id="guest-cart"
-            className="rounded border border-gray-200 bg-white p-3 lg:sticky lg:top-[88px]"
+            className="rounded border border-gray-200 bg-white p-4 sm:p-5 xl:sticky xl:top-5"
           >
-            <div className="mb-2 flex items-center justify-between gap-2">
+            {!selectedBooking && !loadingBookings && (
+              <div className="mb-4 rounded border border-gray-300 px-3 py-3 text-sm text-gray-700">
+                You can add items to your cart now. An active checked-in room booking is required before you can place the order.
+              </div>
+            )}
+            <div className="mb-3 flex items-center justify-between gap-2">
               <div className="min-w-0">
-                <h2 className="text-sm font-semibold">Your Order</h2>
+                <h2 className="text-lg font-bold">Your Order</h2>
                 <p className="truncate text-[11px] text-gray-500">
                   Room service ·{" "}
                   {selectedBooking
@@ -685,11 +703,11 @@ useEffect(() => {
                 Cart is empty. Add items from the menu.
               </p>
             ) : (
-              <div className="max-h-[38vh] divide-y divide-gray-100 overflow-y-auto pr-1">
+              <div className="max-h-[45vh] divide-y divide-gray-100 overflow-y-auto pr-1">
                 {cart.map((item) => (
                   <div
                     key={item.menuItem}
-                    className="flex items-center gap-2 py-1.5 first:pt-0 last:pb-0"
+                    className="flex items-center gap-2 py-3 first:pt-0 last:pb-0"
                   >
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-xs font-medium">
@@ -705,7 +723,7 @@ useEffect(() => {
                         type="button"
                         aria-label={`Decrease quantity of ${item.name}`}
                         onClick={() => changeQuantity(item.menuItem, -1)}
-                        className="flex h-6 w-6 items-center justify-center rounded border border-gray-200 text-xs hover:bg-gray-100"
+                        className="flex h-8 w-8 items-center justify-center rounded border border-gray-200 text-xs "
                       >
                         −
                       </button>
@@ -716,7 +734,7 @@ useEffect(() => {
                         type="button"
                         aria-label={`Increase quantity of ${item.name}`}
                         onClick={() => changeQuantity(item.menuItem, 1)}
-                        className="flex h-6 w-6 items-center justify-center rounded border border-gray-200 text-xs hover:bg-gray-100"
+                        className="flex h-8 w-8 items-center justify-center rounded border border-gray-200 text-xs "
                       >
                         +
                       </button>
@@ -752,7 +770,7 @@ useEffect(() => {
                     placeholder="Enter your full name"
                     maxLength={100}
                     required
-                    className="w-full rounded border border-gray-200 px-2.5 py-1.5 text-xs outline-none focus:border-gray-500"
+                    className="w-full rounded border border-gray-200 px-3 py-2.5 text-sm outline-none focus:border-gray-500"
                   />
                 </div>
               )}
@@ -772,14 +790,14 @@ useEffect(() => {
                   placeholder="Any special instructions..."
                   rows={1}
                   maxLength={500}
-                  className="w-full resize-none rounded border border-gray-200 px-2.5 py-1.5 text-xs outline-none focus:border-gray-500"
+                  className="w-full resize-none rounded border border-gray-200 px-3 py-2.5 text-sm outline-none focus:border-gray-500"
                 />
               </div>
 
               <div className="flex items-center justify-between gap-3">
                 <div className="min-w-0">
                   <p className="text-[10px] text-gray-500">Estimated Subtotal</p>
-                  <p className="text-base font-semibold">
+                  <p className="text-xl font-bold">
                     {formatCurrency(subtotal)}
                   </p>
                 </div>
@@ -793,7 +811,7 @@ useEffect(() => {
                     !customerName ||
                     cart.length === 0
                   }
-                  className="shrink-0 rounded bg-gray-900 px-4 py-2 text-xs font-medium text-white hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="shrink-0 rounded bg-gray-900 px-4 py-2.5 text-sm font-semibold text-white  disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   {submitting ? "Placing..." : "Place Order"}
                 </button>
@@ -825,7 +843,7 @@ useEffect(() => {
               type="button"
               onClick={loadOrders}
               disabled={loadingOrders}
-              className="shrink-0 rounded border border-gray-200 px-2.5 py-1 text-xs font-medium text-gray-700 hover:bg-gray-100 disabled:opacity-50"
+              className="shrink-0 rounded border border-gray-200 px-2.5 py-1 text-xs font-medium text-gray-700  disabled:opacity-50"
             >
               {loadingOrders ? "Refreshing..." : "Refresh"}
             </button>
@@ -840,7 +858,7 @@ useEffect(() => {
               No restaurant orders yet.
             </p>
           ) : (
-            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 xl:grid-cols-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 2xl:grid-cols-3">
               {orders.map((order) => {
                 const orderId = getId(order);
                 const isQrOpen = openQrOrderId === orderId;
@@ -929,7 +947,7 @@ useEffect(() => {
                             setOpenQrOrderId(isQrOpen ? "" : orderId)
                           }
                           aria-expanded={isQrOpen}
-                          className="rounded border border-gray-200 px-2.5 py-1.5 text-[11px] font-medium text-gray-700 transition hover:bg-gray-100"
+                          className="rounded border border-gray-200 px-2.5 py-1.5 text-[11px] font-medium text-gray-700  "
                         >
                           {isQrOpen ? "Hide" : "Pay Now"}
                         </button>

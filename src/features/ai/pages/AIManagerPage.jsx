@@ -1,4 +1,3 @@
-
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Activity,
@@ -43,10 +42,6 @@ import {
   getAIManagerAlerts,
   getDepartmentInsights,
 } from "../services/ai-manager.service";
-
-/* -------------------------------------------------------
-   Helpers
-------------------------------------------------------- */
 
 const formatNumber = (value) => {
   if (value === null || value === undefined) {
@@ -121,32 +116,19 @@ const getStatusLabel = (status) => {
     .replace(/\b\w/g, (letter) => letter.toUpperCase());
 };
 
-/* -------------------------------------------------------
-   Reusable UI Components
-------------------------------------------------------- */
-
-function SectionHeading({
-  icon: Icon,
-  title,
-  description,
-  action,
-}) {
+function SectionHeading({ icon: Icon, title, description, action }) {
   return (
-    <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
-      <div className="flex items-start gap-3">
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded border border-slate-200 bg-white text-indigo-600">
+    <div className="mb-3 flex min-w-0 flex-col gap-3 sm:mb-4 sm:flex-row sm:items-start sm:justify-between">
+      <div className="flex min-w-0 items-start gap-2.5 sm:gap-3">
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded border border-slate-200 bg-white text-indigo-600 sm:h-10 sm:w-10">
           <Icon size={19} />
         </div>
 
         <div>
-          <h2 className="text-base font-semibold text-slate-900">
-            {title}
-          </h2>
+          <h2 className="text-sm font-semibold text-slate-900 sm:text-base">{title}</h2>
 
           {description && (
-            <p className="mt-1 text-sm text-slate-500">
-              {description}
-            </p>
+            <p className="mt-1 text-xs leading-5 text-slate-500 sm:text-sm">{description}</p>
           )}
         </div>
       </div>
@@ -173,20 +155,18 @@ function MetricCard({
   };
 
   return (
-    <article className="rounded border border-slate-200 bg-white p-5 transition-colors hover:border-slate-300">
+    <article className="min-w-0 rounded border border-slate-200 bg-white p-3 transition-colors duration-200  sm:p-4 lg:p-5">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <p className="text-sm font-medium text-slate-500">
-            {title}
-          </p>
+          <p className="text-xs font-medium text-slate-500 sm:text-sm">{title}</p>
 
-          <p className="mt-3 break-words text-2xl font-semibold tracking-tight text-slate-900">
+          <p className="mt-2 break-words text-xl font-semibold tracking-tight text-slate-900 sm:mt-3 sm:text-2xl">
             {value}
           </p>
         </div>
 
         <div
-          className={`flex h-11 w-11 shrink-0 items-center justify-center rounded ${
+          className={`flex h-9 w-9 shrink-0 items-center justify-center rounded sm:h-11 sm:w-11 ${
             accentClasses[accent] || accentClasses.indigo
           }`}
         >
@@ -195,30 +175,22 @@ function MetricCard({
       </div>
 
       {description && (
-        <p className="mt-3 text-xs leading-5 text-slate-500">
-          {description}
-        </p>
+        <p className="mt-2 text-[11px] leading-4 text-slate-500 sm:mt-3 sm:text-xs sm:leading-5">{description}</p>
       )}
     </article>
   );
 }
 
-function EmptyState({
-  icon: Icon = Activity,
-  title,
-  description,
-}) {
+function EmptyState({ icon: Icon = Activity, title, description }) {
   return (
-    <div className="flex min-h-36 flex-col items-center justify-center rounded border border-dashed border-slate-300 px-5 py-8 text-center">
-      <div className="flex h-11 w-11 items-center justify-center rounded bg-slate-100 text-slate-500">
+    <div className="flex min-h-32 min-w-0 flex-col items-center justify-center rounded border border-dashed border-slate-300 px-3 py-6 text-center sm:min-h-36 sm:px-5 sm:py-8">
+      <div className="flex h-10 w-10 items-center justify-center rounded bg-slate-100 text-slate-500 sm:h-11 sm:w-11">
         <Icon size={21} />
       </div>
 
-      <h3 className="mt-3 text-sm font-semibold text-slate-800">
-        {title}
-      </h3>
+      <h3 className="mt-3 text-xs font-semibold text-slate-800 sm:text-sm">{title}</h3>
 
-      <p className="mt-1 max-w-md text-sm leading-6 text-slate-500">
+      <p className="mt-1 max-w-md text-xs leading-5 text-slate-500 sm:text-sm sm:leading-6">
         {description}
       </p>
     </div>
@@ -227,17 +199,14 @@ function EmptyState({
 
 function LoadingState() {
   return (
-    <div className="flex min-h-52 flex-col items-center justify-center rounded border border-slate-200 bg-white">
-      <RefreshCw
-        size={25}
-        className="animate-spin text-indigo-600"
-      />
+    <div className="flex min-h-44 flex-col items-center justify-center rounded border border-slate-200 bg-white px-3 py-6 sm:min-h-52">
+      <RefreshCw size={25} className="animate-spin text-indigo-600" />
 
       <p className="mt-3 text-sm font-medium text-slate-700">
         Loading hotel intelligence...
       </p>
 
-      <p className="mt-1 text-xs text-slate-500">
+      <p className="mt-1 text-[11px] leading-4 text-slate-500 sm:text-xs sm:leading-5">
         Retrieving available hotel information.
       </p>
     </div>
@@ -251,30 +220,25 @@ function ErrorBanner({ message, onRetry }) {
 
   return (
     <div
-      className="flex flex-col gap-3 rounded border border-red-200 bg-red-50 p-4 sm:flex-row sm:items-center sm:justify-between"
+      className="flex min-w-0 flex-col gap-3 rounded border border-red-200 bg-red-50 p-3 sm:flex-row sm:items-center sm:justify-between sm:p-4"
       role="alert"
     >
-      <div className="flex items-start gap-3">
-        <AlertCircle
-          size={19}
-          className="mt-0.5 shrink-0 text-red-600"
-        />
+      <div className="flex min-w-0 items-start gap-2.5 sm:gap-3">
+        <AlertCircle size={19} className="mt-0.5 shrink-0 text-red-600" />
 
         <div>
           <p className="text-sm font-semibold text-red-800">
             Unable to load some hotel information
           </p>
 
-          <p className="mt-1 break-words text-sm text-red-700">
-            {message}
-          </p>
+          <p className="mt-1 break-words text-sm text-red-700">{message}</p>
         </div>
       </div>
 
       <button
         type="button"
         onClick={onRetry}
-        className="inline-flex shrink-0 items-center justify-center gap-2 rounded border border-red-200 bg-white px-3 py-2 text-sm font-medium text-red-700 transition-colors hover:bg-red-100"
+        className="inline-flex min-h-9 shrink-0 items-center justify-center gap-2 rounded border border-red-200 bg-white px-3 py-2 text-xs font-medium text-red-700 transition-colors  sm:text-sm"
       >
         <RefreshCw size={15} />
         Retry
@@ -283,16 +247,11 @@ function ErrorBanner({ message, onRetry }) {
   );
 }
 
-/* -------------------------------------------------------
-   Main Page
-------------------------------------------------------- */
-
 export default function AIManagerPage() {
   const [overview, setOverview] = useState(null);
   const [dailyReport, setDailyReport] = useState(null);
   const [alerts, setAlerts] = useState(null);
-  const [departmentInsights, setDepartmentInsights] =
-    useState(null);
+  const [departmentInsights, setDepartmentInsights] = useState(null);
   const [serviceStatus, setServiceStatus] = useState(null);
 
   const [loading, setLoading] = useState(true);
@@ -300,8 +259,7 @@ export default function AIManagerPage() {
   const [error, setError] = useState("");
   const [lastUpdated, setLastUpdated] = useState(null);
 
-  const [selectedDate, setSelectedDate] =
-    useState(getCurrentDate);
+  const [selectedDate, setSelectedDate] = useState(getCurrentDate);
 
   const loadDashboard = useCallback(
     async ({ showLoader = true } = {}) => {
@@ -367,7 +325,7 @@ export default function AIManagerPage() {
 
       if (failureCount > 0) {
         setError(
-          `${failureCount} request(s) failed. Check the backend API and authentication, then retry.`
+          `${failureCount} request(s) failed. Check the backend API and authentication, then retry.`,
         );
       }
 
@@ -375,7 +333,7 @@ export default function AIManagerPage() {
       setLoading(false);
       setRefreshing(false);
     },
-    [selectedDate]
+    [selectedDate],
   );
 
   useEffect(() => {
@@ -427,28 +385,21 @@ export default function AIManagerPage() {
     },
     {
       title: "Housekeeping Tasks",
-      value: formatNumber(
-        getMetric(overview, "pendingHousekeepingTasks")
-      ),
+      value: formatNumber(getMetric(overview, "pendingHousekeepingTasks")),
       description: "Pending housekeeping tasks",
       icon: ClipboardList,
       accent: "rose",
     },
     {
       title: "Maintenance Tasks",
-      value: formatNumber(
-        getMetric(overview, "pendingMaintenanceTasks")
-      ),
+      value: formatNumber(getMetric(overview, "pendingMaintenanceTasks")),
       description: "Pending maintenance issues",
       icon: Wrench,
       accent: "amber",
     },
   ];
 
-  const occupancyRate = getMetric(
-    overview,
-    "occupancyRate"
-  );
+  const occupancyRate = getMetric(overview, "occupancyRate");
 
   const validOccupancy =
     occupancyRate !== null &&
@@ -463,9 +414,7 @@ export default function AIManagerPage() {
     ? dailyReport.risks
     : [];
 
-  const recommendations = Array.isArray(
-    dailyReport?.recommendations
-  )
+  const recommendations = Array.isArray(dailyReport?.recommendations)
     ? dailyReport.recommendations
     : [];
 
@@ -565,52 +514,45 @@ export default function AIManagerPage() {
   };
 
   return (
-    <main className="min-h-screen ">
-      <div className="mx-auto max-w-7xl space-y-7">
-        {/* Page Header */}
-        <header className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
-          <div className="flex items-start gap-4">
-            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded border border-indigo-100 bg-indigo-50 text-indigo-600">
+    <main className="min-h-screen w-full min-w-0 ">
+      <div className="mx-auto w-full max-w-7xl min-w-0 space-y-5 sm:space-y-6 lg:space-y-7">
+        <header className="flex min-w-0 flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex min-w-0 items-start gap-3 sm:gap-4">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded border border-indigo-100 bg-indigo-50 text-indigo-600 sm:h-12 sm:w-12 lg:h-14 lg:w-14">
               <Sparkles size={27} />
             </div>
 
             <div>
               <div className="flex flex-wrap items-center gap-2">
-                <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+                <h1 className="text-xl font-bold tracking-tight text-slate-900 sm:text-2xl lg:text-3xl">
                   Dashboard
                 </h1>
 
-                <span className="rounded-full border border-indigo-200 bg-indigo-50 px-2.5 py-1 text-xs font-semibold text-indigo-700">
+                <span className="rounded-full border border-indigo-200 bg-indigo-50 px-2 py-1 text-[10px] font-semibold text-indigo-700 sm:px-2.5 sm:text-xs">
                   Intelligence Center
                 </span>
               </div>
 
-              <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500">
-                Monitor hotel operations, review daily insights,
-                identify operational risks, and ask your AI
-                assistant for guidance.
+              <p className="mt-1.5 max-w-2xl text-xs leading-5 text-slate-500 sm:mt-2 sm:text-sm sm:leading-6">
+                Monitor hotel operations, review daily insights, identify
+                operational risks, and ask your AI assistant for guidance.
               </p>
 
-              <p className="mt-2 text-xs font-medium text-slate-500">
+              <p className="mt-2 text-[11px] font-medium text-slate-500 sm:text-xs">
                 {formatDate(selectedDate)}
               </p>
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-3">
-            <div className="flex items-center gap-2 rounded border border-slate-200 bg-white px-3 py-2">
-              <CalendarClock
-                size={17}
-                className="text-slate-500"
-              />
+          <div className="flex w-full flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:gap-3 lg:w-auto">
+            <div className="flex min-w-0 items-center gap-2 rounded border border-slate-200 bg-white px-3 py-2 sm:w-auto">
+              <CalendarClock size={17} className="text-slate-500" />
 
               <input
                 type="date"
                 value={selectedDate}
-                onChange={(event) =>
-                  setSelectedDate(event.target.value)
-                }
-                className="min-w-0 rounded border-0 bg-transparent text-sm text-slate-700 outline-none focus:ring-0"
+                onChange={(event) => setSelectedDate(event.target.value)}
+                className="min-w-0 flex-1 rounded border-0 bg-transparent text-xs text-slate-700 outline-none focus:ring-0 sm:flex-none sm:text-sm"
                 aria-label="Select report date"
               />
             </div>
@@ -619,7 +561,7 @@ export default function AIManagerPage() {
               type="button"
               onClick={() => loadDashboard({ showLoader: false })}
               disabled={refreshing || loading}
-              className="inline-flex items-center justify-center gap-2 rounded border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-60"
+              className="inline-flex min-h-10 w-full items-center justify-center gap-2 rounded border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 transition-colors  disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto sm:px-4 sm:py-2.5 sm:text-sm"
             >
               <RefreshCw
                 size={16}
@@ -631,48 +573,40 @@ export default function AIManagerPage() {
           </div>
         </header>
 
-        {/* Error Banner */}
         {error && (
-          <ErrorBanner
-            message={error}
-            onRetry={() => loadDashboard()}
-          />
+          <ErrorBanner message={error} onRetry={() => loadDashboard()} />
         )}
 
-        {/* Service Status */}
-        <section className="flex flex-col gap-3 rounded border border-slate-200 bg-white p-4 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-start gap-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded bg-slate-100 text-slate-600">
+        <section className="flex min-w-0 flex-col gap-3 rounded border border-slate-200 bg-white p-3 sm:flex-row sm:items-center sm:justify-between sm:p-4">
+          <div className="flex min-w-0 items-start gap-2.5 sm:gap-3">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded bg-slate-100 text-slate-600 sm:h-10 sm:w-10">
               <Activity size={19} />
             </div>
 
             <div>
-              <h2 className="text-sm font-semibold text-slate-900">
+              <h2 className="text-xs font-semibold text-slate-900 sm:text-sm">
                 AI Manager Service
               </h2>
 
-              <p className="mt-1 text-xs text-slate-500">
+              <p className="mt-1 text-[11px] leading-4 text-slate-500 sm:text-xs sm:leading-5">
                 {serviceStatus?.message ||
                   "Checking service availability and integrations."}
               </p>
             </div>
           </div>
 
-          <span className="inline-flex w-fit items-center gap-2 rounded-full border border-amber-200 bg-amber-50 px-3 py-1.5 text-xs font-semibold text-amber-700">
+          <span className="inline-flex w-fit max-w-full items-center gap-2 rounded-full border border-amber-200 bg-amber-50 px-2.5 py-1.5 text-[11px] font-semibold text-amber-700 sm:px-3 sm:text-xs">
             <span className="h-2 w-2 rounded-full bg-amber-500" />
 
             {getStatusLabel(
-              serviceStatus?.status ||
-                overview?.status ||
-                "checking"
+              serviceStatus?.status || overview?.status || "checking",
             )}
           </span>
         </section>
 
-        {/* Integration Notice */}
         {integrationPending && (
-          <section className="rounded border border-amber-200 bg-amber-50 p-4 sm:p-5">
-            <div className="flex items-start gap-3">
+          <section className="rounded border border-amber-200 bg-amber-50 p-3 sm:p-4 lg:p-5">
+            <div className="flex min-w-0 items-start gap-2.5 sm:gap-3">
               <AlertCircle
                 size={20}
                 className="mt-0.5 shrink-0 text-amber-700"
@@ -684,17 +618,15 @@ export default function AIManagerPage() {
                 </h2>
 
                 <p className="mt-1 text-sm leading-6 text-amber-800">
-                  The AI Manager backend currently returns
-                  integration status placeholders. Connect the
-                  hotel database models and AI service to display
-                  real operational metrics and recommendations.
+                  The AI Manager backend currently returns integration status
+                  placeholders. Connect the hotel database models and AI service
+                  to display real operational metrics and recommendations.
                 </p>
               </div>
             </div>
           </section>
         )}
 
-        {/* Overview Metrics */}
         <section>
           <SectionHeading
             icon={TrendingUp}
@@ -705,18 +637,14 @@ export default function AIManagerPage() {
           {loading ? (
             <LoadingState />
           ) : (
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            <div className="grid grid-cols-2 gap-2.5 sm:gap-3 lg:grid-cols-3 xl:grid-cols-4">
               {metrics.map((metric) => (
-                <MetricCard
-                  key={metric.title}
-                  {...metric}
-                />
+                <MetricCard key={metric.title} {...metric} />
               ))}
             </div>
           )}
         </section>
 
-        {/* Operational Charts */}
         <section>
           <SectionHeading
             icon={TrendingUp}
@@ -727,14 +655,18 @@ export default function AIManagerPage() {
           {loading ? (
             <LoadingState />
           ) : (
-            <div className="grid grid-cols-1 gap-5 xl:grid-cols-3">
-              <article className="min-w-0 rounded border border-slate-200 bg-white p-5">
-                <div className="mb-2">
-                  <h3 className="text-sm font-semibold text-slate-900">Room Distribution</h3>
-                  <p className="mt-1 text-xs text-slate-500">Occupied and available room counts.</p>
+            <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3 sm:gap-4 lg:gap-5">
+              <article className="min-w-0 rounded border border-slate-200 bg-white p-3 transition-colors duration-200  sm:p-4 lg:p-5">
+                <div className="mb-2 min-w-0">
+                  <h3 className="text-xs font-semibold text-slate-900 sm:text-sm">
+                    Room Distribution
+                  </h3>
+                  <p className="mt-1 text-[11px] leading-4 text-slate-500 sm:text-xs sm:leading-5">
+                    Occupied and available room counts.
+                  </p>
                 </div>
                 {roomChartData.length ? (
-                  <div className="h-64 w-full">
+                  <div className="h-56 w-full min-w-0 sm:h-60 lg:h-64">
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
                         <Pie
@@ -750,12 +682,17 @@ export default function AIManagerPage() {
                           {roomChartData.map((entry, index) => (
                             <Cell
                               key={entry.name}
-                              fill={["#4f46e5", "#10b981", "#94a3b8"][index % 3]}
+                              fill={
+                                ["#4f46e5", "#10b981", "#94a3b8"][index % 3]
+                              }
                             />
                           ))}
                         </Pie>
                         <Tooltip
-                          formatter={(value, name) => [formatNumber(value), name]}
+                          formatter={(value, name) => [
+                            formatNumber(value),
+                            name,
+                          ]}
                           contentStyle={chartTooltipStyle}
                         />
                         <Legend verticalAlign="bottom" height={30} />
@@ -771,23 +708,50 @@ export default function AIManagerPage() {
                 )}
               </article>
 
-              <article className="min-w-0 rounded border border-slate-200 bg-white p-5">
-                <div className="mb-2">
-                  <h3 className="text-sm font-semibold text-slate-900">Guest Movement</h3>
-                  <p className="mt-1 text-xs text-slate-500">Today's expected arrivals compared with departures.</p>
+              <article className="min-w-0 rounded border border-slate-200 bg-white p-3 transition-colors duration-200  sm:p-4 lg:p-5">
+                <div className="mb-2 min-w-0">
+                  <h3 className="text-xs font-semibold text-slate-900 sm:text-sm">
+                    Guest Movement
+                  </h3>
+                  <p className="mt-1 text-[11px] leading-4 text-slate-500 sm:text-xs sm:leading-5">
+                    Today's expected arrivals compared with departures.
+                  </p>
                 </div>
                 {movementChartData.length ? (
-                  <div className="h-64 w-full">
+                  <div className="h-56 w-full min-w-0 sm:h-60 lg:h-64">
                     <ResponsiveContainer width="100%" height="100%">
-                      <BarChart data={movementChartData} margin={{ top: 12, right: 8, left: -18, bottom: 4 }}>
-                        <CartesianGrid stroke="#e2e8f0" strokeDasharray="3 3" vertical={false} />
-                        <XAxis dataKey="activity" tick={{ fill: "#64748b", fontSize: 12 }} axisLine={false} tickLine={false} />
-                        <YAxis allowDecimals={false} tick={{ fill: "#64748b", fontSize: 12 }} axisLine={false} tickLine={false} />
+                      <BarChart
+                        data={movementChartData}
+                        margin={{ top: 12, right: 8, left: -18, bottom: 4 }}
+                      >
+                        <CartesianGrid
+                          stroke="#e2e8f0"
+                          strokeDasharray="3 3"
+                          vertical={false}
+                        />
+                        <XAxis
+                          dataKey="activity"
+                          tick={{ fill: "#64748b", fontSize: 12 }}
+                          axisLine={false}
+                          tickLine={false}
+                        />
+                        <YAxis
+                          allowDecimals={false}
+                          tick={{ fill: "#64748b", fontSize: 12 }}
+                          axisLine={false}
+                          tickLine={false}
+                        />
                         <Tooltip
                           formatter={(value) => [formatNumber(value), "Guests"]}
                           contentStyle={chartTooltipStyle}
                         />
-                        <Bar dataKey="guests" name="Guests" fill="#4f46e5" radius={[6, 6, 0, 0]} maxBarSize={54} />
+                        <Bar
+                          dataKey="guests"
+                          name="Guests"
+                          fill="#4f46e5"
+                          radius={[6, 6, 0, 0]}
+                          maxBarSize={54}
+                        />
                       </BarChart>
                     </ResponsiveContainer>
                   </div>
@@ -800,23 +764,54 @@ export default function AIManagerPage() {
                 )}
               </article>
 
-              <article className="min-w-0 rounded border border-slate-200 bg-white p-5">
-                <div className="mb-2">
-                  <h3 className="text-sm font-semibold text-slate-900">Pending Workload</h3>
-                  <p className="mt-1 text-xs text-slate-500">Outstanding housekeeping and maintenance tasks.</p>
+              <article className="min-w-0 rounded border border-slate-200 bg-white p-3 transition-colors duration-200  sm:p-4 lg:p-5">
+                <div className="mb-2 min-w-0">
+                  <h3 className="text-xs font-semibold text-slate-900 sm:text-sm">
+                    Pending Workload
+                  </h3>
+                  <p className="mt-1 text-[11px] leading-4 text-slate-500 sm:text-xs sm:leading-5">
+                    Outstanding housekeeping and maintenance tasks.
+                  </p>
                 </div>
                 {workloadChartData.length ? (
-                  <div className="h-64 w-full">
+                  <div className="h-56 w-full min-w-0 sm:h-60 lg:h-64">
                     <ResponsiveContainer width="100%" height="100%">
-                      <BarChart data={workloadChartData} layout="vertical" margin={{ top: 8, right: 12, left: 6, bottom: 4 }}>
-                        <CartesianGrid stroke="#e2e8f0" strokeDasharray="3 3" horizontal={false} />
-                        <XAxis type="number" allowDecimals={false} tick={{ fill: "#64748b", fontSize: 12 }} axisLine={false} tickLine={false} />
-                        <YAxis type="category" dataKey="department" width={104} tick={{ fill: "#64748b", fontSize: 11 }} axisLine={false} tickLine={false} />
+                      <BarChart
+                        data={workloadChartData}
+                        layout="vertical"
+                        margin={{ top: 8, right: 12, left: 6, bottom: 4 }}
+                      >
+                        <CartesianGrid
+                          stroke="#e2e8f0"
+                          strokeDasharray="3 3"
+                          horizontal={false}
+                        />
+                        <XAxis
+                          type="number"
+                          allowDecimals={false}
+                          tick={{ fill: "#64748b", fontSize: 12 }}
+                          axisLine={false}
+                          tickLine={false}
+                        />
+                        <YAxis
+                          type="category"
+                          dataKey="department"
+                          width={104}
+                          tick={{ fill: "#64748b", fontSize: 11 }}
+                          axisLine={false}
+                          tickLine={false}
+                        />
                         <Tooltip
                           formatter={(value) => [formatNumber(value), "Tasks"]}
                           contentStyle={chartTooltipStyle}
                         />
-                        <Bar dataKey="tasks" name="Pending tasks" fill="#0d9488" radius={[0, 6, 6, 0]} maxBarSize={32} />
+                        <Bar
+                          dataKey="tasks"
+                          name="Pending tasks"
+                          fill="#0d9488"
+                          radius={[0, 6, 6, 0]}
+                          maxBarSize={32}
+                        />
                       </BarChart>
                     </ResponsiveContainer>
                   </div>
@@ -832,9 +827,8 @@ export default function AIManagerPage() {
           )}
         </section>
 
-        {/* Occupancy */}
-        <section className="grid grid-cols-1 gap-5 lg:grid-cols-2">
-          <article className="rounded border border-slate-200 bg-white p-5 sm:p-6">
+        <section className="grid min-w-0 grid-cols-1 gap-3 md:grid-cols-2 sm:gap-4 lg:gap-5">
+          <article className="min-w-0 rounded border border-slate-200 bg-white p-3 sm:p-4 lg:p-6">
             <SectionHeading
               icon={BedDouble}
               title="Room Occupancy"
@@ -843,45 +837,36 @@ export default function AIManagerPage() {
 
             {loading ? (
               <div className="flex min-h-24 items-center justify-center">
-                <RefreshCw
-                  size={20}
-                  className="animate-spin text-indigo-600"
-                />
+                <RefreshCw size={20} className="animate-spin text-indigo-600" />
               </div>
             ) : validOccupancy ? (
               <>
                 <div className="flex items-end justify-between gap-4">
                   <div>
-                    <p className="text-4xl font-bold tracking-tight text-slate-900">
+                    <p className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
                       {formatNumber(occupancyRate)}%
                     </p>
 
-                    <p className="mt-2 text-sm text-slate-500">
+                    <p className="mt-1.5 text-xs text-slate-500 sm:mt-2 sm:text-sm">
                       Occupancy rate
                     </p>
                   </div>
 
-                  <p className="text-sm text-slate-500">
-                    {formatNumber(
-                      getMetric(overview, "occupiedRooms")
-                    )}{" "}
-                    of{" "}
-                    {formatNumber(
-                      getMetric(overview, "totalRooms")
-                    )}{" "}
-                    rooms
+                  <p className="text-xs text-slate-500 sm:text-sm">
+                    {formatNumber(getMetric(overview, "occupiedRooms"))} of{" "}
+                    {formatNumber(getMetric(overview, "totalRooms"))} rooms
                   </p>
                 </div>
 
                 <div
-                  className="mt-5 h-3 overflow-hidden rounded-full bg-slate-100"
+                  className="mt-4 h-2.5 overflow-hidden rounded-full bg-slate-100 sm:mt-5 sm:h-3"
                   role="progressbar"
                   aria-label="Room occupancy rate"
                   aria-valuemin={0}
                   aria-valuemax={100}
                   aria-valuenow={Math.min(
                     100,
-                    Math.max(0, Number(occupancyRate))
+                    Math.max(0, Number(occupancyRate)),
                   )}
                 >
                   <div
@@ -889,7 +874,7 @@ export default function AIManagerPage() {
                     style={{
                       width: `${Math.min(
                         100,
-                        Math.max(0, Number(occupancyRate))
+                        Math.max(0, Number(occupancyRate)),
                       )}%`,
                     }}
                   />
@@ -904,7 +889,7 @@ export default function AIManagerPage() {
             )}
           </article>
 
-          <article className="rounded border border-slate-200 bg-white p-5 sm:p-6">
+          <article className="min-w-0 rounded border border-slate-200 bg-white p-3 sm:p-4 lg:p-6">
             <SectionHeading
               icon={CalendarCheck}
               title="Daily Operations"
@@ -913,13 +898,10 @@ export default function AIManagerPage() {
 
             {loading ? (
               <div className="flex min-h-24 items-center justify-center">
-                <RefreshCw
-                  size={20}
-                  className="animate-spin text-indigo-600"
-                />
+                <RefreshCw size={20} className="animate-spin text-indigo-600" />
               </div>
             ) : (
-              <div className="space-y-4">
+              <div className="space-y-3 sm:space-y-4">
                 {[
                   {
                     label: "Guest arrivals",
@@ -935,19 +917,13 @@ export default function AIManagerPage() {
                   },
                   {
                     label: "Pending tasks",
-                    value: getMetric(
-                      overview,
-                      "pendingHousekeepingTasks"
-                    ),
+                    value: getMetric(overview, "pendingHousekeepingTasks"),
                     icon: ClipboardList,
                     color: "text-amber-600",
                   },
                   {
                     label: "Outstanding payments",
-                    value: getMetric(
-                      overview,
-                      "outstandingPayments"
-                    ),
+                    value: getMetric(overview, "outstandingPayments"),
                     icon: Wallet,
                     color: "text-rose-600",
                   },
@@ -957,22 +933,18 @@ export default function AIManagerPage() {
                   return (
                     <div
                       key={item.label}
-                      className="flex items-center justify-between gap-4"
+                      className="flex min-w-0 items-center justify-between gap-3 sm:gap-4"
                     >
-                      <div className="flex min-w-0 items-center gap-3">
-                        <Icon
-                          size={18}
-                          className={item.color}
-                        />
+                      <div className="flex min-w-0 items-center gap-2.5 sm:gap-3">
+                        <Icon size={18} className={item.color} />
 
-                        <span className="text-sm text-slate-600">
+                        <span className="min-w-0 break-words text-xs text-slate-600 sm:text-sm">
                           {item.label}
                         </span>
                       </div>
 
-                      <span className="shrink-0 text-sm font-semibold text-slate-900">
-                        {item.value === null ||
-                        item.value === undefined
+                      <span className="shrink-0 text-xs font-semibold text-slate-900 sm:text-sm">
+                        {item.value === null || item.value === undefined
                           ? "—"
                           : formatNumber(item.value)}
                       </span>
@@ -984,7 +956,6 @@ export default function AIManagerPage() {
           </article>
         </section>
 
-        {/* Daily Intelligence Report */}
         <section>
           <SectionHeading
             icon={Sparkles}
@@ -998,10 +969,10 @@ export default function AIManagerPage() {
             reportHighlights.length > 0 ||
             reportRisks.length > 0 ||
             recommendations.length > 0 ? (
-            <div className="space-y-5">
+            <div className="space-y-3 sm:space-y-5">
               {dailyReport?.summary && (
-                <div className="rounded border border-indigo-200 bg-indigo-50 p-5">
-                  <div className="flex items-start gap-3">
+                <div className="rounded border border-indigo-200 bg-indigo-50 p-3 sm:p-4 lg:p-5">
+                  <div className="flex min-w-0 items-start gap-2.5 sm:gap-3">
                     <Sparkles
                       size={20}
                       className="mt-0.5 shrink-0 text-indigo-600"
@@ -1012,7 +983,7 @@ export default function AIManagerPage() {
                         Executive Summary
                       </h3>
 
-                      <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-indigo-900">
+                      <p className="mt-2 whitespace-pre-wrap break-words text-xs leading-5 text-indigo-900 sm:text-sm sm:leading-6">
                         {dailyReport.summary}
                       </p>
                     </div>
@@ -1020,7 +991,7 @@ export default function AIManagerPage() {
                 </div>
               )}
 
-              <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
+              <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3 sm:gap-4 lg:gap-5">
                 <ReportList
                   title="Key Highlights"
                   items={reportHighlights}
@@ -1055,44 +1026,6 @@ export default function AIManagerPage() {
           )}
         </section>
 
-        {/* Operational Alerts */}
-        <section>
-          <SectionHeading
-            icon={AlertCircle}
-            title="Operational Alerts"
-            description="Issues that may require management attention."
-          />
-
-          {loading ? (
-            <LoadingState />
-          ) : alertItems.length > 0 ? (
-            <div className=" grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-2">
-              {alertItems.map((alert, index) => (
-                <AlertCard
-                  key={
-                    alert.id ||
-                    alert._id ||
-                    `${alert.title}-${index}`
-                  }
-                  alert={alert}
-                />
-              ))}
-            </div>
-          ) : (
-            <EmptyState
-              icon={CheckCircle2}
-              title="No operational alerts available"
-              description={
-                alerts?.status === "integration_pending"
-                  ? "Connect housekeeping, maintenance, and booking data to detect real operational issues."
-                  : "There are currently no alerts to display."
-              }
-            />
-          )}
-          
-        </section>
-
-        {/* Department Insights */}
         <section>
           <SectionHeading
             icon={Users}
@@ -1103,16 +1036,14 @@ export default function AIManagerPage() {
           {loading ? (
             <LoadingState />
           ) : departmentData ? (
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {Object.entries(departmentData).map(
-                ([department, data]) => (
-                  <DepartmentCard
-                    key={department}
-                    department={department}
-                    data={data}
-                  />
-                )
-              )}
+            <div className="grid grid-cols-1 gap-3 min-[480px]:grid-cols-2 xl:grid-cols-4 sm:gap-4">
+              {Object.entries(departmentData).map(([department, data]) => (
+                <DepartmentCard
+                  key={department}
+                  department={department}
+                  data={data}
+                />
+              ))}
             </div>
           ) : (
             <EmptyState
@@ -1123,7 +1054,6 @@ export default function AIManagerPage() {
           )}
         </section>
 
-        {/* AI Chat */}
         <section id="ai-manager-chat">
           <SectionHeading
             icon={MessageCircleIcon}
@@ -1133,24 +1063,12 @@ export default function AIManagerPage() {
 
           <AIManagerChat />
         </section>
-
-     
       </div>
     </main>
   );
 }
 
-/* -------------------------------------------------------
-   Report List
-------------------------------------------------------- */
-
-function ReportList({
-  title,
-  items,
-  icon: Icon,
-  tone,
-  emptyMessage,
-}) {
+function ReportList({ title, items, icon: Icon, tone, emptyMessage }) {
   const toneClasses = {
     emerald: "bg-emerald-50 text-emerald-700",
     rose: "bg-rose-50 text-rose-700",
@@ -1158,8 +1076,8 @@ function ReportList({
   };
 
   return (
-    <article className="rounded border border-slate-200 bg-white p-5">
-      <div className="flex items-center gap-2">
+    <article className="min-w-0 rounded border border-slate-200 bg-white p-3 transition-colors duration-200  sm:p-4 lg:p-5">
+      <div className="flex min-w-0 items-center gap-2">
         <div
           className={`flex h-9 w-9 items-center justify-center rounded ${
             toneClasses[tone] || toneClasses.indigo
@@ -1168,13 +1086,11 @@ function ReportList({
           <Icon size={18} />
         </div>
 
-        <h3 className="text-sm font-semibold text-slate-900">
-          {title}
-        </h3>
+        <h3 className="text-xs font-semibold text-slate-900 sm:text-sm">{title}</h3>
       </div>
 
       {items.length > 0 ? (
-        <ul className="mt-4 space-y-3">
+        <ul className="mt-3 space-y-2.5 sm:mt-4 sm:space-y-3">
           {items.map((item, index) => {
             const text =
               typeof item === "string"
@@ -1187,32 +1103,24 @@ function ReportList({
             return (
               <li
                 key={`${title}-${index}`}
-                className="flex items-start gap-2 text-sm leading-6 text-slate-600"
+                className="flex min-w-0 items-start gap-2 text-xs leading-5 text-slate-600 sm:text-sm sm:leading-6"
               >
                 <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-current" />
 
-                <span className="break-words">{text}</span>
+                <span className="min-w-0 break-words">{text}</span>
               </li>
             );
           })}
         </ul>
       ) : (
-        <p className="mt-4 text-sm leading-6 text-slate-500">
-          {emptyMessage}
-        </p>
+        <p className="mt-3 text-xs leading-5 text-slate-500 sm:mt-4 sm:text-sm sm:leading-6">{emptyMessage}</p>
       )}
     </article>
   );
 }
 
-/* -------------------------------------------------------
-   Operational Alert Card
-------------------------------------------------------- */
-
 function AlertCard({ alert }) {
-  const severity = String(
-    alert?.severity || "low"
-  ).toLowerCase();
+  const severity = String(alert?.severity || "low").toLowerCase();
 
   const severityClasses = {
     critical: "border-red-200 bg-red-50 text-red-800",
@@ -1221,47 +1129,42 @@ function AlertCard({ alert }) {
     low: "border-blue-200 bg-blue-50 text-blue-800",
   };
 
-  const severityClass =
-    severityClasses[severity] || severityClasses.low;
+  const severityClass = severityClasses[severity] || severityClasses.low;
 
   return (
     <div className="">
-        <article className="  gap-3 rounded border border-slate-200 bg-white p-4  sm:items-start sm:justify-between">
-          <div className="flex min-w-0 items-start gap-3">
-            <div
-              className={`flex h-9 w-9 shrink-0 items-center justify-center rounded border ${severityClass}`}
-            >
-              <AlertCircle size={18} />
-            </div>
-            <div className="min-w-0">
-              <h3 className="break-words text-sm font-semibold text-slate-900">
-                {alert?.title || "Operational alert"}
-              </h3>
-              <p className="mt-1 break-words text-sm leading-6 text-slate-600">
-                {alert?.message ||
-                  alert?.description ||
-                  "Additional information is unavailable."}
-              </p>
-              {alert?.department && (
-                <p className="mt-2 text-xs text-slate-500">
-                  Department: {alert.department}
-                </p>
-              )}
-            </div>
-          </div>
-          <span
-            className={`inline-flex w-fit shrink-0 rounded-full border px-2.5 py-1 text-xs font-semibold capitalize ${severityClass}`}
+      <article className="flex min-w-0 flex-col gap-3 rounded border border-slate-200 bg-white p-3 sm:flex-row sm:items-start sm:justify-between sm:p-4">
+        <div className="flex min-w-0 items-start gap-3">
+          <div
+            className={`flex h-9 w-9 shrink-0 items-center justify-center rounded border ${severityClass}`}
           >
-            {severity}
-          </span>
-        </article>
+            <AlertCircle size={18} />
+          </div>
+          <div className="min-w-0">
+            <h3 className="break-words text-xs font-semibold text-slate-900 sm:text-sm">
+              {alert?.title || "Operational alert"}
+            </h3>
+            <p className="mt-1 break-words text-xs leading-5 text-slate-600 sm:text-sm sm:leading-6">
+              {alert?.message ||
+                alert?.description ||
+                "Additional information is unavailable."}
+            </p>
+            {alert?.department && (
+              <p className="mt-2 text-xs text-slate-500">
+                Department: {alert.department}
+              </p>
+            )}
+          </div>
+        </div>
+        <span
+          className={`inline-flex w-fit shrink-0 rounded-full border px-2.5 py-1 text-xs font-semibold capitalize ${severityClass}`}
+        >
+          {severity}
+        </span>
+      </article>
     </div>
   );
 }
-
-/* -------------------------------------------------------
-   Department Card
-------------------------------------------------------- */
 
 function DepartmentCard({ department, data }) {
   const departmentLabels = {
@@ -1276,11 +1179,9 @@ function DepartmentCard({ department, data }) {
   };
 
   const label =
-    departmentLabels[department] ||
-    department.replace(/([A-Z])/g, " $1");
+    departmentLabels[department] || department.replace(/([A-Z])/g, " $1");
 
-  const isConnected =
-    data !== null && data !== undefined;
+  const isConnected = data !== null && data !== undefined;
 
   const status =
     typeof data === "object" && data !== null
@@ -1290,9 +1191,9 @@ function DepartmentCard({ department, data }) {
         : "Not connected";
 
   return (
-    <article className="rounded border border-slate-200 bg-white p-5">
+    <article className="min-w-0 rounded border border-slate-200 bg-white p-3 transition-colors duration-200  sm:p-4 lg:p-5">
       <div className="flex items-start justify-between gap-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded bg-slate-100 text-slate-600">
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded bg-slate-100 text-slate-600 sm:h-10 sm:w-10">
           <Building2 size={19} />
         </div>
 
@@ -1307,11 +1208,9 @@ function DepartmentCard({ department, data }) {
         </span>
       </div>
 
-      <h3 className="mt-4 text-sm font-semibold text-slate-900">
-        {label}
-      </h3>
+      <h3 className="mt-3 text-xs font-semibold text-slate-900 sm:mt-4 sm:text-sm">{label}</h3>
 
-      <p className="mt-1 text-xs leading-5 text-slate-500">
+      <p className="mt-1 text-[11px] leading-4 text-slate-500 sm:text-xs sm:leading-5">
         {isConnected
           ? "Department information is available."
           : "Connect this department to view its insights."}
@@ -1319,10 +1218,6 @@ function DepartmentCard({ department, data }) {
     </article>
   );
 }
-
-/* -------------------------------------------------------
-   Chat section icon adapter
-------------------------------------------------------- */
 
 function MessageCircleIcon(props) {
   return <Activity {...props} />;

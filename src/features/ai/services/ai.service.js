@@ -3,9 +3,6 @@ import api from "../../../api/axiosInstance";
 
 const MAX_MESSAGE_LENGTH = 5000;
 
-/**
- * Convert API errors into readable messages.
- */
 const getErrorMessage = (error) => {
   const status = error?.response?.status;
   const serverMessage = error?.response?.data?.message;
@@ -53,18 +50,7 @@ const getErrorMessage = (error) => {
   return error?.message || "Unable to connect to the AI assistant.";
 };
 
-/**
- * Send a message to the Hotel AI Assistant.
- *
- * Expected backend response:
- * {
- *   success: true,
- *   message: "AI response generated successfully.",
- *   data: {
- *     reply: "AI response text"
- *   }
- * }
- */
+
 export const sendAIMessage = async (message) => {
   if (typeof message !== "string" || !message.trim()) {
     throw new Error("Please enter a message.");
@@ -85,7 +71,7 @@ export const sendAIMessage = async (message) => {
 
     const responseBody = response?.data;
 
-    // Validate the API response.
+    
     if (responseBody?.success === false) {
       throw new Error(
         responseBody.message || "The AI service could not process your request."
@@ -111,7 +97,7 @@ export const sendAIMessage = async (message) => {
       url: error?.config?.url,
     });
 
-    // Preserve validation errors generated above.
+    
     if (
       error instanceof Error &&
       !error.response &&

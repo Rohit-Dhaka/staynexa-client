@@ -1,8 +1,6 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
-  ArrowLeft,
-  CalendarDays,
   CheckCircle2,
   Clock3,
   FileClock,
@@ -19,7 +17,7 @@ import {
   IndianRupee,
   MapPin,
 } from "lucide-react";
-import { useSearchParams  ,useNavigate} from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 
 import maintenanceService from "../services/maintenanceService";
 
@@ -53,13 +51,13 @@ const PRIORITY_STYLES = {
 };
 
 const inputClass =
-  "w-full rounded border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-700 outline-none transition-colors placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100";
+  "w-full rounded border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-700 outline-none placeholder:text-slate-400 focus:border-blue-500";
 
 function formatLabel(value) {
   if (!value) return "Not specified";
 
   return String(value)
-    .replaceAll("_", " ")
+    .replaceAll("_", "")
     .replace(/\b\w/g, (character) => character.toUpperCase());
 }
 
@@ -137,8 +135,6 @@ function normalizeHistory(response) {
 
   if (normalized.length) return normalized;
 
-  // The single-equipment endpoint returns an object with currentIssue and
-  // repairHistory, so convert both into rows the table can render.
   const payload =
     response?.data?.data ??
     response?.data ??
@@ -193,10 +189,7 @@ function StatusBadge({ status }) {
 
   return (
     <span
-      className={`inline-flex whitespace-nowrap rounded border px-2.5 py-1.5 text-xs font-semibold ${
-        STATUS_STYLES[normalized] ||
-        "border-slate-200 bg-slate-50 text-slate-600"
-      }`}
+      className={`inline-flex whitespace-nowrap rounded border px-2.5 py-1.5 text-xs font-semibold ${ STATUS_STYLES[normalized] || "border-slate-200 bg-slate-50 text-slate-600" }`}
     >
       {formatLabel(normalized)}
     </span>
@@ -208,9 +201,7 @@ function PriorityBadge({ priority }) {
 
   return (
     <span
-      className={`inline-flex whitespace-nowrap rounded border px-2.5 py-1.5 text-xs font-semibold ${
-        PRIORITY_STYLES[normalized] || PRIORITY_STYLES.medium
-      }`}
+      className={`inline-flex whitespace-nowrap rounded border px-2.5 py-1.5 text-xs font-semibold ${ PRIORITY_STYLES[normalized] || PRIORITY_STYLES.medium }`}
     >
       {formatLabel(normalized)}
     </span>
@@ -259,7 +250,7 @@ function EmptyState({ equipmentId, onReset }) {
       <button
         type="button"
         onClick={onReset}
-        className="mt-4 rounded border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50"
+        className="mt-4 rounded border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-700"
       >
         Reset Filters
       </button>
@@ -273,7 +264,7 @@ function LoadingState() {
       {Array.from({ length: 5 }).map((_, index) => (
         <div
           key={index}
-          className="h-16 animate-pulse rounded bg-slate-100"
+          className="h-16 rounded bg-slate-100"
         />
       ))}
     </div>
@@ -281,7 +272,6 @@ function LoadingState() {
 }
 
 export default function MaintenanceHistory() {
-  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
   const equipmentId = searchParams.get("equipmentId") || "";
@@ -318,15 +308,13 @@ export default function MaintenanceHistory() {
             null
         );
       } else {
-        // Prefer the dedicated all-equipment history endpoint when available.
-        // Keep the older equipment-by-equipment approach as a compatibility fallback.
+       
         if (typeof maintenanceService.getAllMaintenanceHistory === "function") {
           const result = await maintenanceService.getAllMaintenanceHistory();
           setHistory(normalizeHistory(result));
           setEquipment(null);
         } else {
-          // The backend validator caps limit at 100. Fetch equipment in valid pages
-          // instead of requesting limit=1000 (which causes a 400 response).
+         
           const equipmentList = [];
         const pageSize = 100;
         const maxPages = 100;
@@ -356,8 +344,7 @@ export default function MaintenanceHistory() {
         historyResults.forEach((result, index) => {
           const item = equipmentWithIds[index];
 
-          // A reported issue is stored on the equipment document as the
-          // current issue; it is not necessarily part of repairHistory yet.
+        
           const currentStatus = String(
             item.maintenanceStatus || item.currentIssue?.status || ""
           ).toLowerCase();
@@ -408,7 +395,7 @@ export default function MaintenanceHistory() {
           });
         });
 
-        // Newest reported/repaired items first.
+        
         combinedHistory.sort((a, b) => {
           const dateA = new Date(
             a.reportedAt || a.createdAt || a.startedAt || 0
@@ -550,7 +537,7 @@ export default function MaintenanceHistory() {
   return (
     <main className="min-h-screen">
       <div className="mx-auto max-w-[1600px]">
-        {/* Page Header */}
+        
         <header className="mb-7">
        
 
@@ -592,18 +579,18 @@ export default function MaintenanceHistory() {
               type="button"
               onClick={loadHistory}
               disabled={loading}
-              className="inline-flex items-center justify-center gap-2 self-start rounded border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50 disabled:opacity-50"
+              className="inline-flex items-center justify-center gap-2 self-start rounded border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 disabled:opacity-50"
             >
               <RefreshCw
                 size={16}
-                className={loading ? "animate-spin" : ""}
+                className={loading ? "" : ""}
               />
               Refresh History
             </button>
           </div>
         </header>
 
-        {/* Summary Cards */}
+        
         <section className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
           <SummaryCard
             title="Total Records"
@@ -638,7 +625,7 @@ export default function MaintenanceHistory() {
           />
         </section>
 
-        {/* History Records */}
+        
         <section className="overflow-hidden rounded border border-slate-200 bg-white">
           <div className="border-b border-slate-200 p-5 sm:p-6">
             <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
@@ -655,7 +642,7 @@ export default function MaintenanceHistory() {
               <button
                 type="button"
                 onClick={resetFilters}
-                className="inline-flex items-center justify-center gap-2 rounded border border-slate-200 px-3.5 py-2.5 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50"
+                className="inline-flex items-center justify-center gap-2 rounded border border-slate-200 px-3.5 py-2.5 text-sm font-medium text-slate-700"
               >
                 <Filter size={15} />
                 Reset Filters
@@ -725,7 +712,7 @@ export default function MaintenanceHistory() {
               <button
                 type="button"
                 onClick={loadHistory}
-                className="mt-4 rounded border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+                className="mt-4 rounded border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-700"
               >
                 Try Again
               </button>
@@ -805,7 +792,7 @@ export default function MaintenanceHistory() {
                       return (
                         <tr
                           key={id}
-                          className="transition-colors hover:bg-slate-50"
+                          className=""
                         >
                           <td className="max-w-[260px] px-5 py-4">
                             <div className="flex items-start gap-3">
@@ -893,25 +880,25 @@ export default function MaintenanceHistory() {
                 </table>
               </div>
 
-              {/* Pagination */}
+              
               <div className="flex flex-col gap-3 border-t border-slate-200 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
                 <p className="text-xs text-slate-500">
-                  Showing{" "}
+                  Showing{""}
                   <span className="font-semibold text-slate-700">
                     {(currentPage - 1) * PAGE_SIZE + 1}
                   </span>
-                  {" "}to{" "}
+                  {""}to{""}
                   <span className="font-semibold text-slate-700">
                     {Math.min(
                       currentPage * PAGE_SIZE,
                       filteredHistory.length
                     )}
                   </span>
-                  {" "}of{" "}
+                  {""}of{""}
                   <span className="font-semibold text-slate-700">
                     {filteredHistory.length}
                   </span>
-                  {" "}records
+                  {""}records
                 </p>
 
                 <div className="flex items-center gap-2">
@@ -922,7 +909,7 @@ export default function MaintenanceHistory() {
                     }
                     disabled={currentPage <= 1}
                     aria-label="Previous page"
-                    className="flex h-9 w-9 items-center justify-center rounded border border-slate-200 text-slate-600 transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
+                    className="flex h-9 w-9 items-center justify-center rounded border border-slate-200 text-slate-600 disabled:cursor-not-allowed disabled:opacity-40"
                   >
                     <ChevronLeft size={17} />
                   </button>
@@ -940,7 +927,7 @@ export default function MaintenanceHistory() {
                     }
                     disabled={currentPage >= totalPages}
                     aria-label="Next page"
-                    className="flex h-9 w-9 items-center justify-center rounded border border-slate-200 text-slate-600 transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
+                    className="flex h-9 w-9 items-center justify-center rounded border border-slate-200 text-slate-600 disabled:cursor-not-allowed disabled:opacity-40"
                   >
                     <ChevronRight size={17} />
                   </button>

@@ -49,7 +49,7 @@ const ExportButtons = ({ title, fileName, columns, rows = [], getRows }) => {
         onClick={() => handleExport("pdf")}
         disabled={busy !== null}
         title="Download PDF"
-        className={`${btn} border-red-200 bg-red-50 text-red-700 hover:bg-red-100`}
+        className={`${btn} border-red-200 bg-red-50 text-red-700`}
       >
         {busy === "pdf" ? (
           <Loader2 size={16} className="animate-spin" />
@@ -65,7 +65,7 @@ const ExportButtons = ({ title, fileName, columns, rows = [], getRows }) => {
         onClick={() => handleExport("excel")}
         disabled={busy !== null}
         title="Download Excel"
-        className={`${btn} border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100`}
+        className={`${btn} border-emerald-200 bg-emerald-50 text-emerald-700 `}
       >
         {busy === "excel" ? (
           <Loader2 size={16} className="animate-spin" />

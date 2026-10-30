@@ -14,20 +14,9 @@ import {
   ATTENDANCE_META,
   MONTH_NAMES,
   formatUnits,
-  
   getErrorMessage,
   toDayKey,
 } from "../../../utils/attendanceUi";
-
-const LEGEND = [
-  "present",
-  "half_day",
-  "absent",
-  "paid_leave",
-  "unpaid_leave",
-  "weekly_off",
-  "holiday",
-];
 
 const WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
@@ -47,6 +36,7 @@ const MonthlySheet = () => {
   const [error, setError] = useState("");
   const [editing, setEditing] = useState(null);
   const [reload, setReload] = useState(0);
+  const [selectedStaffId, setSelectedStaffId] = useState("all");
 
   useEffect(() => {
     let cancelled = false;
@@ -109,23 +99,15 @@ const MonthlySheet = () => {
   const getMonthGrid = () => {
     const first = new Date(ym.year, ym.month - 1, 1);
     const daysInMonth = new Date(ym.year, ym.month, 0).getDate();
-    
     const offset = (first.getDay() + 6) % 7;
     const cells = [];
 
-    for (let index = 0; index < offset; index += 1) {
-      cells.push(null);
-    }
+    for (let index = 0; index < offset; index += 1) cells.push(null);
 
     for (let day = 1; day <= daysInMonth; day += 1) {
       const date = new Date(ym.year, ym.month - 1, day);
       const dateKey = `${ym.year}-${String(ym.month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
-      cells.push({
-        day,
-        date,
-        dateKey,
-        weekday: date.getDay(),
-      });
+      cells.push({ day, date, dateKey, weekday: date.getDay() });
     }
 
     while (cells.length % 7 !== 0) cells.push(null);
@@ -152,7 +134,6 @@ const MonthlySheet = () => {
   );
 
   const staffRows = data?.rows ?? [];
-  const [selectedStaffId, setSelectedStaffId] = useState("all");
   const visibleRows =
     selectedStaffId === "all"
       ? staffRows
@@ -177,10 +158,18 @@ const MonthlySheet = () => {
     });
   };
 
+  const summaryItems = [
+    { label: "Present", value: totals.present, style: "bg-emerald-50 text-emerald-700 border-emerald-100" },
+    { label: "Half day", value: totals.halfDay, style: "bg-amber-50 text-amber-700 border-amber-100" },
+    { label: "Absent", value: totals.absent, style: "bg-rose-50 text-rose-700 border-rose-100" },
+    { label: "Paid leave", value: totals.paidLeave, style: "bg-sky-50 text-sky-700 border-sky-100" },
+    { label: "Unpaid leave", value: totals.unpaidLeave, style: "bg-orange-50 text-orange-700 border-orange-100" },
+  ];
+
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div>
+    <div className="min-w-0 space-y-5 sm:space-y-6">
+      <div className="flex min-w-0 flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
+        <div className="min-w-0">
           <div className="mb-2 inline-flex items-center gap-2 rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-indigo-700">
             <CalendarDays size={14} />
             Attendance calendar
@@ -188,71 +177,65 @@ const MonthlySheet = () => {
           <h2 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
             Monthly Attendance
           </h2>
-          <p className="mt-1 max-w-2xl text-sm leading-6 text-slate-500">
+          <p className="mt-1 max-w-xl text-sm leading-6 text-slate-500">
             {isManager
               ? "View attendance in a calendar layout. Select a staff member to focus on their month; click an eligible day to edit it."
               : "Your monthly attendance calendar and day-by-day status."}
           </p>
         </div>
 
-        <div className="flex  items-center gap-2 bg-white p-2 rounded">
-         
+        <div className="flex min-w-0 items-center max-lg:flex-wrap  gap-2 rounded border border-slate-200 bg-white p-1 ">
           <button
             type="button"
             onClick={() => shift(-1)}
             aria-label="Previous month"
-            className="rounded border border-slate-200 bg-white p-2.5 text-slate-600  transition hover:border-indigo-200 "
+            className="inline-flex min-h-10 items-center justify-center rounded border border-slate-200 bg-white p-2.5 text-slate-600"
           >
             <ChevronLeft size={18} />
           </button>
-          <div className="min-w-[160px] text-center">
-            <p className="text-lg font-bold text-slate-900">
+          <div className="col-span-2 min-w-0 text-center sm:col-span-1 sm:min-w-[145px]">
+            <p className="text-base font-bold text-slate-900 sm:text-lg">
               {MONTH_NAMES[ym.month - 1]} {ym.year}
-            </p>
-            <p className="text-xs text-slate-500">
-              {allDays.length || new Date(ym.year, ym.month, 0).getDate()} days
-            </p>
+            </p>         
           </div>
-          
           <button
             type="button"
             onClick={() => shift(1)}
             aria-label="Next month"
-            className="rounded border border-slate-200 bg-white p-2.5 text-slate-600  transition hover:border-indigo-200  hover:text-indigo-700"
+            className="inline-flex min-h-10 items-center justify-center rounded border border-slate-200 bg-white p-2.5 text-slate-600"
           >
             <ChevronRight size={18} />
           </button>
           <button
             type="button"
             onClick={goToToday}
-            className="rounded border border-indigo-200 bg-blue-100 px-3 py-2.5 text-sm font-semibold text-indigo-700 transition "
+            className="min-h-10 rounded border border-indigo-200 bg-blue-100 px-3 py-2.5 text-sm font-semibold text-indigo-700"
           >
             Today
           </button>
-           {isManager && (
-            <div className="flex items-center ">
-              <select
-                id="staff-filter"
-                value={selectedStaffId}
-                onChange={(event) => setSelectedStaffId(event.target.value)}
-                className="w-full min-w-[10px] rounded border border-slate-300 bg-white px-3 py-2 text-sm outline-none focus:border-indigo-500"
-              >
-                <option value="all">All staff</option>
-                {staffRows.map((row) => (
-                  <option key={row.user._id} value={row.user._id}>
-                    {row.user.name}
-                  </option>
-                ))}
-              </select>
-            </div>
+          {isManager && (
+            <select
+              id="staff-filter"
+              value={selectedStaffId}
+              onChange={(event) => setSelectedStaffId(event.target.value)}
+              aria-label="Filter attendance by staff"
+              className="col-span-2 min-h-10 w-full min-w-0 rounded border border-slate-300 bg-white px-3 py-2 text-sm outline-none focus:border-indigo-500 sm:col-span-1 sm:min-w-[150px]"
+            >
+              <option value="all">All staff</option>
+              {staffRows.map((row) => (
+                <option key={row.user._id} value={row.user._id}>
+                  {row.user.name}
+                </option>
+              ))}
+            </select>
           )}
           <button
             type="button"
             onClick={refresh}
             disabled={loading || refreshing}
-            className="inline-flex items-center gap-2 rounded border border-slate-200 bg-white px-3 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50 disabled:opacity-50"
+            className="col-span-2 inline-flex min-h-10 items-center justify-center gap-2 rounded border border-slate-200 bg-white px-3 py-2.5 text-sm font-medium text-slate-700 disabled:opacity-50 sm:col-span-1"
           >
-            <RefreshCw size={15} className={refreshing ? "animate-spin" : ""} />
+            <RefreshCw size={15} className={refreshing ? "" : ""} />
             Refresh
           </button>
         </div>
@@ -265,154 +248,96 @@ const MonthlySheet = () => {
       )}
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-        {[
-          {
-            label: "Present",
-            value: totals.present,
-            style: "bg-emerald-50 text-emerald-700 ring-emerald-100",
-          },
-          {
-            label: "Half day",
-            value: totals.halfDay,
-            style: "bg-amber-50 text-amber-700 ring-amber-100",
-          },
-          {
-            label: "Absent",
-            value: totals.absent,
-            style: "bg-rose-50 text-rose-700 ring-rose-100",
-          },
-          {
-            label: "Paid leave",
-            value: totals.paidLeave,
-            style: "bg-sky-50 text-sky-700 ring-sky-100",
-          },
-          {
-            label: "Unpaid leave",
-            value: totals.unpaidLeave,
-            style: "bg-orange-50 text-orange-700 ring-orange-100",
-          },
-        ].map((item) => (
+        {summaryItems.map((item) => (
           <div
             key={item.label}
-            className={`rounded p-4 flex gap-2 ring-1 ${item.style}`}
+            className={`flex min-w-0 flex-col gap-1 rounded border p-3 sm:flex-row sm:items-center sm:justify-between sm:p-4 ${item.style}`}
           >
-            <p className=" font-medium ">{item.label}</p>
-            <p className=" font-bold ">
-              {formatUnits(item.value)}
-            </p>
-            
+            <p className="text-xs font-medium sm:text-sm">{item.label}</p>
+            <p className="text-xl font-bold sm:text-lg">{formatUnits(item.value)}</p>
           </div>
         ))}
       </div>
 
-   
-
       {error && (
-        <div
-          role="alert"
-          className="rounded border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700"
-        >
+        <div role="alert" className="rounded border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
           {error}
         </div>
       )}
 
       {loading && (
         <div className="flex justify-center rounded border border-slate-200 bg-white py-16 text-slate-400">
-          <Loader2 className="animate-spin" />
+          <Loader2 />
         </div>
       )}
 
       {data && !loading && (
-        <div className="grid grid-cols-1 gap-5 ">
-          <div className="overflow-hidden rounded border border-slate-200 bg-white ">
-            <div className="grid grid-cols-7 border-b border-slate-200 bg-slate-50">
-              {WEEKDAYS.map((weekday) => (
-                <div
-                  key={weekday}
-                  className="px-1 py-3 text-center text-xs font-semibold uppercase tracking-wide text-slate-500"
-                >
-                  {weekday}
-                </div>
-              ))}
-            </div>
+        <div className="min-w-0">
+          <div className="overflow-x-auto rounded border border-slate-200 bg-white">
+            <div className="min-w-[700px]">
+              <div className="grid grid-cols-7 border-b border-slate-200 bg-slate-50">
+                {WEEKDAYS.map((weekday) => (
+                  <div key={weekday} className="px-1 py-3 text-center text-xs font-semibold uppercase tracking-wide text-slate-500 sm:px-2">
+                    {weekday}
+                  </div>
+                ))}
+              </div>
 
-            <div className="grid grid-cols-7">
-              {monthGrid.map((calendarDay, index) => {
-                if (!calendarDay) {
+              <div className="grid grid-cols-7">
+                {monthGrid.map((calendarDay, index) => {
+                  if (!calendarDay) {
+                    return (
+                      <div
+                        key={`empty-${index}`}
+                        className="min-h-[110px] border-b border-r border-slate-100 bg-slate-50/50 sm:min-h-[132px]"
+                      />
+                    );
+                  }
+
+                  const isToday = calendarDay.dateKey === todayKey;
+                  const isFuture = calendarDay.dateKey > todayKey;
+                  const isWeeklyOff = weeklyOffSet.has(calendarDay.weekday);
+                  const holidayName = holidayByDate.get(calendarDay.dateKey);
+                  const dayCells = visibleRows
+                    .map((row) => ({ row, cell: findCell(row, calendarDay.dateKey) }))
+                    .filter(({ cell }) => Boolean(cell));
+                  const isWeekend = calendarDay.weekday === 0 || calendarDay.weekday === 6;
+
                   return (
                     <div
-                      key={`empty-${index}`}
-                      className="min-h-[110px] border-b border-r border-slate-100 bg-slate-50/50 sm:min-h-[132px]"
-                    />
-                  );
-                }
-
-                const isToday = calendarDay.dateKey === todayKey;
-                const isFuture = calendarDay.dateKey > todayKey;
-                const isWeeklyOff = weeklyOffSet.has(calendarDay.weekday);
-                const holidayName = holidayByDate.get(calendarDay.dateKey);
-                const dayCells = visibleRows
-                  .map((row) => ({
-                    row,
-                    cell: findCell(row, calendarDay.dateKey),
-                  }))
-                  .filter(({ cell }) => Boolean(cell));
-                const isWeekend =
-                  calendarDay.weekday === 0 || calendarDay.weekday === 6;
-
-                return (
-                  <div
-                    key={calendarDay.dateKey}
-                    className={`min-h-[110px] border-b border-r border-slate-100 p-1.5 sm:min-h-[132px] sm:p-2 ${
-                      isToday
-                        ? "bg-black/60"
-                        : isWeekend || isWeeklyOff
-                          ? "bg-slate-50/70"
-                          : "bg-white"
-                    }`}
-                  >
-                    <div className="mb-2 flex items-start justify-between gap-1">
-                      <span
-                        className={`flex h-7 w-7 items-center justify-center rounded-full text-xs font-semibold ${
-                          isToday
-                            ? "bg-black text-white"
-                            : isFuture
-                              ? "text-slate-400"
-                              : "text-slate-700"
-                        }`}
-                      >
-                        {calendarDay.day}
-                      </span>
-                      {holidayName && (
+                      key={calendarDay.dateKey}
+                      className={`min-h-[110px] border-b border-r border-slate-100 p-1.5 sm:min-h-[132px] sm:p-2 ${
+                        isToday ? "bg-indigo-50" : isWeekend || isWeeklyOff ? "bg-slate-50" : "bg-white"
+                      }`}
+                    >
+                      <div className="mb-2 flex items-start justify-between gap-1">
                         <span
-                          title={holidayName}
-                          className="max-w-[70%] truncate rounded bg-violet-100 px-1.5 py-1 text-[9px] font-semibold text-violet-700"
+                          className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-semibold ${
+                            isToday ? "bg-indigo-700 text-white" : isFuture ? "text-slate-400" : "text-slate-700"
+                          }`}
                         >
-                          Holiday
+                          {calendarDay.day}
                         </span>
-                      )}
-                      {!holidayName && isWeeklyOff && (
-                        <span className="rounded bg-slate-200 px-1.5 py-1 text-[9px] font-semibold text-slate-600">
-                          Off
-                        </span>
-                      )}
-                    </div>
+                        {holidayName && (
+                          <span title={holidayName} className="max-w-[70%] truncate rounded bg-violet-100 px-1.5 py-1 text-[9px] font-semibold text-violet-700">
+                            Holiday
+                          </span>
+                        )}
+                        {!holidayName && isWeeklyOff && (
+                          <span className="rounded bg-slate-200 px-1.5 py-1 text-[9px] font-semibold text-slate-600">
+                            Off
+                          </span>
+                        )}
+                      </div>
 
-                    <div className="space-y-1">
-                      {dayCells.length === 0 ? (
-                        <span className="block truncate px-1 text-[10px] text-slate-300">
-                          No record
-                        </span>
-                      ) : (
-                        dayCells
-                          .slice(0, selectedStaffId === "all" ? 3 : 5)
-                          .map(({ row, cell }) => {
+                      <div className="space-y-1">
+                        {dayCells.length === 0 ? (
+                          <span className="block truncate px-1 text-[10px] text-slate-300">No record</span>
+                        ) : (
+                          dayCells.slice(0, selectedStaffId === "all" ? 3 : 5).map(({ row, cell }) => {
                             const meta = getCellStatus(cell);
                             const editable = canEditCell(cell);
-                            const label =
-                              selectedStaffId === "all"
-                                ? row.user.name
-                                : (meta?.label ?? "Not marked");
+                            const label = selectedStaffId === "all" ? row.user.name : (meta?.label ?? "Not marked");
 
                             return (
                               <button
@@ -421,50 +346,35 @@ const MonthlySheet = () => {
                                 disabled={!editable}
                                 onClick={() => openCell(row, calendarDay)}
                                 title={`${row.user.name}: ${cell.note || meta?.label || "Not marked"}${editable ? " — click to edit" : ""}`}
-                                className={`flex w-full items-center gap-1 truncate rounded px-1.5 py-1 text-left text-[10px] font-semibold transition sm:text-[11px] ${
-                                  meta
-                                    ? meta.chip
-                                    : "bg-slate-100 text-slate-500"
-                                } ${
-                                  editable
-                                    ? "cursor-pointer hover:brightness-95"
-                                    : "cursor-default"
-                                } ${cell.isLate ? "ring-1 ring-amber-500" : ""}`}
+                                className={`flex w-full min-w-0 items-center gap-1 truncate rounded px-1.5 py-1 text-left text-[10px] font-semibold sm:text-[11px] ${
+                                  meta ? meta.chip : "bg-slate-100 text-slate-500"
+                                } ${editable ? "cursor-pointer" : "cursor-default"} ${cell.isLate ? "ring-1 ring-amber-500" : ""}`}
                               >
-                                <span className="shrink-0">
-                                  {meta?.code ?? "—"}
-                                </span>
-                                <span className="truncate font-medium">
-                                  {label}
-                                </span>
+                                <span className="shrink-0">{meta?.code ?? "—"}</span>
+                                <span className="truncate font-medium">{label}</span>
                               </button>
                             );
                           })
-                      )}
-                      {selectedStaffId === "all" && dayCells.length > 3 && (
-                        <p className="px-1 text-[9px] text-slate-400">
-                          +{dayCells.length - 3} more
-                        </p>
-                      )}
+                        )}
+                        {selectedStaffId === "all" && dayCells.length > 3 && (
+                          <p className="px-1 text-[9px] text-slate-400">+{dayCells.length - 3} more</p>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
+              </div>
             </div>
           </div>
-
+          <p className="mt-2 text-xs text-slate-500 sm:hidden">
+            Swipe horizontally to view the full calendar.
+          </p>
         </div>
       )}
 
       {data?.holidays?.length > 0 && (
-        <p className="text-xs text-slate-500">
-          Holidays:{" "}
-          {data.holidays
-            .map(
-              (holiday) =>
-                `${Number(holiday.date.split("-")[2])} ${holiday.name}`,
-            )
-            .join(", ")}
+        <p className="break-words text-xs leading-5 text-slate-500">
+          Holidays: {data.holidays.map((holiday) => `${Number(holiday.date.split("-")[2])} ${holiday.name}`).join(", ")}
         </p>
       )}
 

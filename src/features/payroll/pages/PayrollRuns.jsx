@@ -26,9 +26,9 @@ import {
 } from "../payroll.utils";
 
 const StatCard = ({ label, value, tone = "text-slate-900" }) => (
-  <div className="rounded border border-slate-200 bg-white p-4">
+  <div className="min-w-0 rounded border border-slate-200 bg-white p-3 sm:p-4">
     <p className="text-xs text-slate-500">{label}</p>
-    <p className={`mt-1 text-xl font-bold ${tone}`}>{value}</p>
+    <p className={`mt-1 break-words text-lg font-bold sm:text-xl ${tone}`}>{value}</p>
   </div>
 );
 
@@ -121,15 +121,15 @@ const PayrollRuns = () => {
   ];
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <h1 className="text-xl font-bold text-slate-900">Payroll</h1>
-          <p className="mt-1 text-sm text-slate-500">
+    <div className="min-w-0 space-y-4 sm:space-y-6">
+      <div className="flex min-w-0 flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div className="min-w-0">
+          <h1 className="text-xl font-bold text-slate-900 sm:text-2xl">Payroll</h1>
+          <p className="mt-1 max-w-2xl text-sm text-slate-500">
             Generate payslips from attendance, review them, approve, then mark salaries as paid.
           </p>
         </div>
-        <div>
+        <div className="w-full sm:w-auto sm:min-w-48">
           <label htmlFor="period" className="mb-1.5 block text-xs font-medium text-slate-700">
             Month
           </label>
@@ -138,13 +138,13 @@ const PayrollRuns = () => {
             type="month"
             value={period}
             onChange={(e) => e.target.value && setPeriod(e.target.value)}
-            className={inputClass}
+            className={`${inputClass} w-full`}
           />
         </div>
       </div>
 
       {summary && (
-        <div className="grid grid-cols-2 gap-3 lg:grid-cols-5">
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
           <StatCard label="Draft payslips" value={by?.draft ?? 0} tone="text-amber-600" />
           <StatCard label="Approved" value={by?.approved ?? 0} tone="text-sky-600" />
           <StatCard label="Paid" value={by?.paid ?? 0} tone="text-emerald-600" />
@@ -154,139 +154,248 @@ const PayrollRuns = () => {
       )}
 
       {summary?.missingStructure?.length > 0 && (
-        <div className="rounded bg-amber-50 px-4 py-3 text-sm text-amber-800">
-          <p className="font-medium">
+        <div className="rounded border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+          <p className="font-medium break-words">
             No salary is set for: {summary.missingStructure.map((m) => m.name).join(", ")}
           </p>
-          <Link to="/payroll/structures" className="mt-1 inline-block font-semibold underline">
+          <Link to="/payroll/structures" className="mt-2 inline-block font-semibold underline">
             Set salaries
           </Link>
         </div>
       )}
 
-      <div className="rounded border border-slate-200 bg-white p-5">
-        <h2 className="text-sm font-semibold text-slate-900">Run payroll for {periodLabel(period)}</h2>
-        <div className="mt-4 flex flex-wrap items-center gap-3">
-          <button type="button" onClick={handleGenerate} disabled={Boolean(busy)} className={primaryButton}>
-            {busy === "generate" ? <Loader2 size={16} className="animate-spin" /> : <Play size={16} />}
+      <section className="min-w-0 rounded border border-slate-200 bg-white p-4 sm:p-5">
+        <h2 className="text-sm font-semibold text-slate-900">
+          Run payroll for {periodLabel(period)}
+        </h2>
+        <div className="mt-4 grid grid-cols-1 gap-2 sm:flex sm:flex-wrap sm:items-center sm:gap-3">
+          <button
+            type="button"
+            onClick={handleGenerate}
+            disabled={Boolean(busy)}
+            className={`${primaryButton} w-full justify-center sm:w-auto`}
+          >
+            {busy === "generate" ? <Loader2 size={16} /> : <Play size={16} />}
             {payslips.length ? "Regenerate drafts" : "Generate payroll"}
           </button>
-          <button type="button" onClick={handleApprove} disabled={Boolean(busy) || !by?.draft} className={outlineButton}>
-            {busy === "approve" ? <Loader2 size={16} className="animate-spin" /> : <CheckCircle2 size={16} />}
+          <button
+            type="button"
+            onClick={handleApprove}
+            disabled={Boolean(busy) || !by?.draft}
+            className={`${outlineButton} w-full justify-center sm:w-auto`}
+          >
+            {busy === "approve" ? <Loader2 size={16} /> : <CheckCircle2 size={16} />}
             Approve all drafts
           </button>
-          <button type="button" onClick={() => setPayModal(true)} disabled={Boolean(busy) || !by?.approved} className={outlineButton}>
+          <button
+            type="button"
+            onClick={() => setPayModal(true)}
+            disabled={Boolean(busy) || !by?.approved}
+            className={`${outlineButton} w-full justify-center sm:w-auto`}
+          >
             <Banknote size={16} />
             Mark approved as paid
           </button>
         </div>
-        <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-sm text-slate-600">
+
+        <div className="mt-4 flex flex-col gap-3 text-sm text-slate-600">
           {summary?.isOngoing && (
-            <label className="flex items-center gap-2">
-              <input type="checkbox" checked={allowOngoing} onChange={(e) => setAllowOngoing(e.target.checked)} />
-              Generate a preview for this running month
+            <label className="flex items-start gap-2">
+              <input
+                type="checkbox"
+                checked={allowOngoing}
+                onChange={(e) => setAllowOngoing(e.target.checked)}
+                className="mt-0.5"
+              />
+              <span>Generate a preview for this running month</span>
             </label>
           )}
-          <label className="flex items-center gap-2">
-            <input type="checkbox" checked={lockAttendance} onChange={(e) => setLockAttendance(e.target.checked)} />
-            Also lock this month's attendance when approving
+          <label className="flex items-start gap-2">
+            <input
+              type="checkbox"
+              checked={lockAttendance}
+              onChange={(e) => setLockAttendance(e.target.checked)}
+              className="mt-0.5"
+            />
+            <span>Also lock this month's attendance when approving</span>
           </label>
         </div>
-        <p className="mt-3 text-xs text-slate-500">
-          Regenerating a draft refreshes the calculated lines but keeps any bonus or deduction added by hand. Approved
-          and paid payslips are never changed.
+        <p className="mt-3 text-xs leading-5 text-slate-500">
+          Regenerating a draft refreshes the calculated lines but keeps any bonus or deduction added by hand.
+          Approved and paid payslips are never changed.
         </p>
-      </div>
+      </section>
 
       {result && (
-        <div className="rounded border border-slate-200 bg-white p-5 text-sm">
+        <section className="min-w-0 rounded border border-slate-200 bg-white p-4 text-sm sm:p-5">
           {result?.type === "generate" && (
             <div className="space-y-3">
-              <p>Created: {result.created ?? 0} | Updated: {result.updated ?? 0}</p>
+              <p className="break-words">
+                Created: {result.created ?? 0} | Updated: {result.updated ?? 0}
+              </p>
               {(result.skipped ?? []).length > 0 && (
-                <div>
+                <div className="space-y-1">
                   <h3 className="font-semibold">Skipped employees</h3>
                   {result.skipped.map((item, index) => (
-                    <p key={`${item.name}-${index}`}>{item.name}: {item.reason}</p>
+                    <p className="break-words" key={`${item.name}-${index}`}>
+                      {item.name}: {item.reason}
+                    </p>
                   ))}
                 </div>
               )}
               {(result.failed ?? []).length > 0 && (
-                <div>
+                <div className="space-y-1">
                   <h3 className="font-semibold">Generation errors</h3>
                   {result.failed.map((item, index) => (
-                    <p key={`${item.name}-${index}`}>{item.name}: {item.reason}</p>
+                    <p className="break-words" key={`${item.name}-${index}`}>
+                      {item.name}: {item.reason}
+                    </p>
                   ))}
                 </div>
               )}
               {(result.warnings ?? []).length > 0 && (
-                <div>
+                <div className="space-y-1">
                   <h3 className="font-semibold">Warnings</h3>
-                  {result.warnings.map((warning, index) => <p key={index}>{warning}</p>)}
+                  {result.warnings.map((warning, index) => (
+                    <p className="break-words" key={index}>{warning}</p>
+                  ))}
                 </div>
               )}
             </div>
           )}
-        </div>
+          {result?.type === "approve" && (
+            <p>Approved: {result.approved ?? 0} payslip(s).</p>
+          )}
+        </section>
       )}
 
-      <div className="overflow-hidden rounded border border-slate-200 bg-white">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 px-4 py-3">
-          <div>
+      <section className="min-w-0 overflow-hidden rounded border border-slate-200 bg-white">
+        <div className="flex min-w-0 flex-col gap-3 border-b border-slate-100 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="min-w-0">
             <h2 className="text-sm font-semibold text-slate-900">Payslips</h2>
-            <p className="text-xs text-slate-500">{periodLabel(period)} · {payslips.length} loaded record(s)</p>
+            <p className="mt-1 text-xs text-slate-500">
+              {periodLabel(period)} · {payslips.length} loaded record(s)
+            </p>
           </div>
-          <ExportButtons
-            title={`Payroll - ${periodLabel(period)}`}
-            fileName={`payroll-${period}`}
-            columns={exportColumns}
-            rows={payslips}
-          />
+          <div className="w-full sm:w-auto">
+            <ExportButtons
+              title={`Payroll - ${periodLabel(period)}`}
+              fileName={`payroll-${period}`}
+              columns={exportColumns}
+              rows={payslips}
+            />
+          </div>
         </div>
 
         {loading ? (
-          <div className="flex justify-center py-16 text-slate-400"><Loader2 className="animate-spin" /></div>
+          <div className="flex justify-center py-16 text-slate-400">
+            <Loader2 size={22} />
+          </div>
         ) : payslips.length === 0 ? (
-          <p className="px-4 py-16 text-center text-sm text-slate-500">
+          <p className="px-4 py-12 text-center text-sm text-slate-500 sm:py-16">
             No payslips for {periodLabel(period)} yet. Click Generate payroll.
           </p>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[860px] text-left text-sm">
-              <thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
-                <tr>
-                  <th className="px-4 py-3 font-medium">Staff</th>
-                  <th className="px-4 py-3 font-medium">Payable days</th>
-                  <th className="px-4 py-3 text-right font-medium">Gross</th>
-                  <th className="px-4 py-3 text-right font-medium">Deductions</th>
-                  <th className="px-4 py-3 text-right font-medium">Net pay</th>
-                  <th className="px-4 py-3 font-medium">Status</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                {payslips.map((p) => (
-                  <tr key={p._id} onClick={() => navigate(`/payroll/${p._id}`)} className="cursor-pointer hover:bg-slate-50/60">
-                    <td className="px-4 py-3">
-                      <p className="font-medium text-slate-900">{p.user?.name}</p>
-                      <p className="text-xs capitalize text-slate-500">{p.user?.role}</p>
-                    </td>
-                    <td className="px-4 py-3">
-                      {p.attendance?.payableDays ?? 0} / {p.attendance?.calendarDays ?? 0}
+          <>
+            <div className="space-y-3 p-3 sm:hidden">
+              {payslips.map((p) => (
+                <button
+                  type="button"
+                  key={p._id}
+                  onClick={() => navigate(`/payroll/${p._id}`)}
+                  className="block w-full rounded border border-slate-200 p-3 text-left"
+                >
+                  <div className="flex min-w-0 items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="break-words text-sm font-semibold text-slate-900">
+                        {p.user?.name || "Unnamed staff"}
+                      </p>
+                      <p className="mt-0.5 text-xs capitalize text-slate-500">
+                        {p.user?.role || "-"}
+                      </p>
+                    </div>
+                    <div className="shrink-0">
+                      <Badge meta={PAYSLIP_STATUS_META[p.status]} value={p.status} />
+                    </div>
+                  </div>
+                  <div className="mt-3 grid grid-cols-2 gap-3 border-t border-slate-100 pt-3 text-sm">
+                    <div>
+                      <p className="text-xs text-slate-500">Payable days</p>
+                      <p className="mt-1 font-medium text-slate-800">
+                        {p.attendance?.payableDays ?? 0} / {p.attendance?.calendarDays ?? 0}
+                      </p>
                       {(p.attendance?.notMarked ?? 0) > 0 && (
-                        <p className="text-xs text-amber-600">{p.attendance.notMarked} unmarked day(s)</p>
+                        <p className="mt-1 text-xs text-amber-600">
+                          {p.attendance.notMarked} unmarked day(s)
+                        </p>
                       )}
-                    </td>
-                    <td className="px-4 py-3 text-right">{formatINR(p.grossEarnings)}</td>
-                    <td className="px-4 py-3 text-right">{formatINR(p.totalDeductions)}</td>
-                    <td className="px-4 py-3 text-right font-semibold text-slate-900">{formatINR(p.netPay)}</td>
-                    <td className="px-4 py-3"><Badge meta={PAYSLIP_STATUS_META[p.status]} value={p.status} /></td>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-xs text-slate-500">Net pay</p>
+                      <p className="mt-1 break-words font-semibold text-slate-900">
+                        {formatINR(p.netPay)}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-slate-500">Gross earnings</p>
+                      <p className="mt-1 break-words text-slate-800">{formatINR(p.grossEarnings)}</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-xs text-slate-500">Deductions</p>
+                      <p className="mt-1 break-words text-slate-800">{formatINR(p.totalDeductions)}</p>
+                    </div>
+                  </div>
+                </button>
+              ))}
+            </div>
+
+            <div className="hidden overflow-x-auto sm:block">
+              <table className="w-full min-w-[760px] text-left text-sm">
+                <thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
+                  <tr>
+                    <th className="px-4 py-3 font-medium">Staff</th>
+                    <th className="px-4 py-3 font-medium">Payable days</th>
+                    <th className="px-4 py-3 text-right font-medium">Gross</th>
+                    <th className="px-4 py-3 text-right font-medium">Deductions</th>
+                    <th className="px-4 py-3 text-right font-medium">Net pay</th>
+                    <th className="px-4 py-3 font-medium">Status</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {payslips.map((p) => (
+                    <tr
+                      key={p._id}
+                      onClick={() => navigate(`/payroll/${p._id}`)}
+                      className="cursor-pointer"
+                    >
+                      <td className="px-4 py-3">
+                        <p className="font-medium text-slate-900">{p.user?.name || "-"}</p>
+                        <p className="text-xs capitalize text-slate-500">{p.user?.role || "-"}</p>
+                      </td>
+                      <td className="px-4 py-3">
+                        {p.attendance?.payableDays ?? 0} / {p.attendance?.calendarDays ?? 0}
+                        {(p.attendance?.notMarked ?? 0) > 0 && (
+                          <p className="text-xs text-amber-600">
+                            {p.attendance.notMarked} unmarked day(s)
+                          </p>
+                        )}
+                      </td>
+                      <td className="px-4 py-3 text-right">{formatINR(p.grossEarnings)}</td>
+                      <td className="px-4 py-3 text-right">{formatINR(p.totalDeductions)}</td>
+                      <td className="px-4 py-3 text-right font-semibold text-slate-900">
+                        {formatINR(p.netPay)}
+                      </td>
+                      <td className="px-4 py-3">
+                        <Badge meta={PAYSLIP_STATUS_META[p.status]} value={p.status} />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
         )}
-      </div>
+      </section>
 
       <Modal
         open={payModal}
@@ -295,16 +404,36 @@ const PayrollRuns = () => {
         subtitle={`${by?.approved || 0} approved payslip(s), ${periodLabel(period)}`}
         onClose={() => setPayModal(false)}
         busy={busy === "pay"}
-        footer={<ModalActions onCancel={() => setPayModal(false)} onConfirm={handlePay} confirmText="Mark as Paid" busy={busy === "pay"} />}
+        footer={
+          <ModalActions
+            onCancel={() => setPayModal(false)}
+            onConfirm={handlePay}
+            confirmText="Mark as Paid"
+            busy={busy === "pay"}
+          />
+        }
       >
         <div className="space-y-4">
           <Field label="Paid by" htmlFor="payMethod">
-            <select id="payMethod" value={payForm.method} onChange={(e) => setPayForm({ ...payForm, method: e.target.value })} className={inputClass}>
-              {PAYMENT_METHOD_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
+            <select
+              id="payMethod"
+              value={payForm.method}
+              onChange={(e) => setPayForm({ ...payForm, method: e.target.value })}
+              className={inputClass}
+            >
+              {PAYMENT_METHOD_OPTIONS.map((o) => (
+                <option key={o.value} value={o.value}>{o.label}</option>
+              ))}
             </select>
           </Field>
           <Field label="Reference" htmlFor="payRef" hint="Bulk transfer batch number or any note">
-            <input id="payRef" value={payForm.reference} onChange={(e) => setPayForm({ ...payForm, reference: e.target.value })} maxLength={100} className={inputClass} />
+            <input
+              id="payRef"
+              value={payForm.reference}
+              onChange={(e) => setPayForm({ ...payForm, reference: e.target.value })}
+              maxLength={100}
+              className={inputClass}
+            />
           </Field>
         </div>
       </Modal>

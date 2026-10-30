@@ -1,12 +1,10 @@
-
-
-
-
-
-
 import { useEffect, useState } from "react";
 
+
+
 import { Link, useNavigate, useParams } from "react-router-dom";
+
+
 
 import {
 
@@ -28,11 +26,19 @@ import {
 
 } from "lucide-react";
 
+
+
 import toast from "react-hot-toast";
+
+
 
 import { ROLES } from "../../../constants/roles";
 
+
+
 import { FormSkeleton } from "../../../components/common/Skeleton";
+
+
 
 import {
 
@@ -43,6 +49,8 @@ import {
   updateStaff,
 
 } from "../services/staff.service";
+
+
 
 import {
 
@@ -68,13 +76,15 @@ const BACK_PATH = "/staff";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+
+
 const PHONE_REGEX = /^[0-9+\-\s()]{7,20}$/;
 
 
 
 const inputClass =
 
-  "w-full rounded border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 disabled:opacity-60";
+  "w-full rounded border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 outline-none placeholder:text-slate-400 focus:border-indigo-500 disabled:opacity-60";
 
 
 
@@ -82,17 +92,23 @@ const labelClass = "mb-1.5 block text-xs font-medium text-slate-700";
 
 
 
-
-
 const toDateInput = (value) => {
 
   if (!value) return "";
 
+
+
   const date = new Date(value);
+
+
 
   if (Number.isNaN(date.getTime())) return "";
 
+
+
   const offset = date.getTimezoneOffset() * 60000;
+
+
 
   return new Date(date.getTime() - offset).toISOString().slice(0, 10);
 
@@ -104,39 +120,75 @@ const emptyForm = () => ({
 
   name: "",
 
+
+
   email: "",
+
+
 
   password: "",
 
+
+
   role: ROLES.STAFF,
+
+
 
   phone: "",
 
+
+
   department: "",
+
+
 
   designation: "",
 
+
+
   gender: "",
+
+
 
   dateOfBirth: "",
 
+
+
   joiningDate: toDateInput(new Date()),
+
+
 
   line1: "",
 
+
+
   city: "",
+
+
 
   state: "",
 
+
+
   pincode: "",
+
+
 
   emName: "",
 
+
+
   emPhone: "",
+
+
 
   emRelation: "",
 
+
+
   idType: "",
+
+
 
   idNumber: "",
 
@@ -148,39 +200,75 @@ const toForm = (staff) => ({
 
   name: staff.name || "",
 
+
+
   email: staff.email || "",
+
+
 
   password: "",
 
+
+
   role: staff.role || ROLES.STAFF,
+
+
 
   phone: staff.phone || "",
 
+
+
   department: staff.department || "",
+
+
 
   designation: staff.designation || "",
 
+
+
   gender: staff.gender || "",
+
+
 
   dateOfBirth: toDateInput(staff.dateOfBirth),
 
+
+
   joiningDate: toDateInput(staff.joiningDate),
+
+
 
   line1: staff.address?.line1 || "",
 
+
+
   city: staff.address?.city || "",
+
+
 
   state: staff.address?.state || "",
 
+
+
   pincode: staff.address?.pincode || "",
+
+
 
   emName: staff.emergencyContact?.name || "",
 
+
+
   emPhone: staff.emergencyContact?.phone || "",
+
+
 
   emRelation: staff.emergencyContact?.relation || "",
 
+
+
   idType: staff.idProof?.type || "",
+
+
 
   idNumber: staff.idProof?.number || "",
 
@@ -189,38 +277,70 @@ const toForm = (staff) => ({
 
 
 const buildPayload = (form, isEdit) => {
+
   const payload = {
+
     name: form.name.trim(),
+
     email: form.email.trim().toLowerCase(),
+
     role: form.role,
+
     phone: form.phone.trim(),
+
     department: form.department,
+
     designation: form.designation.trim(),
+
     gender: form.gender,
+
     dateOfBirth: form.dateOfBirth || null,
+
     joiningDate: form.joiningDate || null,
+
     address: {
+
       line1: form.line1.trim(),
+
       city: form.city.trim(),
+
       state: form.state.trim(),
+
       pincode: form.pincode.trim(),
+
     },
+
     emergencyContact: {
+
       name: form.emName.trim(),
+
       phone: form.emPhone.trim(),
+
       relation: form.emRelation.trim(),
+
     },
+
     idProof:
+
       form.idType && form.idNumber.trim()
+
         ? { type: form.idType, number: form.idNumber.trim() }
+
         : null,
+
   };
 
-  
+
+
   if (!isEdit) payload.password = form.password;
 
+
+
   return payload;
+
 };
+
+
 
 const SectionCard = ({ title, description, children }) => (
 
@@ -230,6 +350,8 @@ const SectionCard = ({ title, description, children }) => (
 
       <h2 className="text-sm font-semibold text-slate-900">{title}</h2>
 
+
+
       {description && (
 
         <p className="mt-1 text-xs leading-5 text-slate-500">{description}</p>
@@ -237,6 +359,8 @@ const SectionCard = ({ title, description, children }) => (
       )}
 
     </div>
+
+
 
     {children}
 
@@ -256,7 +380,11 @@ const Field = ({ id, label, required, children, hint }) => (
 
     </label>
 
+
+
     {children}
+
+
 
     {hint && <p className="mt-1.5 text-xs text-slate-500">{hint}</p>}
 
@@ -270,7 +398,11 @@ const StaffForm = () => {
 
   const { id } = useParams();
 
+
+
   const navigate = useNavigate();
+
+
 
   const isEdit = Boolean(id);
 
@@ -278,13 +410,23 @@ const StaffForm = () => {
 
   const [form, setForm] = useState(emptyForm);
 
+
+
   const [loading, setLoading] = useState(isEdit);
+
+
 
   const [submitting, setSubmitting] = useState(false);
 
+
+
   const [showPassword, setShowPassword] = useState(false);
 
-  const [created, setCreated] = useState(null); 
+
+
+  const [created, setCreated] = useState(null);
+
+
 
   const [copied, setCopied] = useState(false);
 
@@ -306,29 +448,45 @@ const StaffForm = () => {
 
         if (!active) return;
 
+
+
         const staff = data?.staff ?? data?.data?.staff ?? data?.data ?? data;
 
-          if (!staff?._id) {
-            throw new Error("Staff details were not found in the API response");
-          }
 
-          setForm(toForm(staff));
+
+        if (!staff?._id) {
+
+          throw new Error("Staff details were not found in the API response");
+
+        }
+
+
+
+        setForm(toForm(staff));
 
       })
+
+
 
       .catch((error) => {
 
         if (!active) return;
 
+
+
         toast.error(
 
-          error.response?.data?.message || "Could not load staff details"
+          error.response?.data?.message || "Could not load staff details",
 
         );
+
+
 
         navigate(BACK_PATH, { replace: true });
 
       })
+
+
 
       .finally(() => {
 
@@ -352,6 +510,8 @@ const StaffForm = () => {
 
     const { name, value } = event.target;
 
+
+
     setForm((previous) => ({ ...previous, [name]: value }));
 
   };
@@ -361,6 +521,8 @@ const StaffForm = () => {
   const handleGenerate = () => {
 
     setForm((previous) => ({ ...previous, password: generatePassword() }));
+
+
 
     setShowPassword(true);
 
@@ -372,19 +534,27 @@ const StaffForm = () => {
 
     if (form.name.trim().length < 2) return "Enter the staff member's name";
 
+
+
     if (!EMAIL_REGEX.test(form.email.trim())) {
 
       return "Enter a valid email address";
 
     }
 
+
+
     if (!isEdit) {
 
       const passwordError = getPasswordError(form.password);
 
+
+
       if (passwordError) return passwordError;
 
     }
+
+
 
     if (form.phone.trim() && !PHONE_REGEX.test(form.phone.trim())) {
 
@@ -392,11 +562,15 @@ const StaffForm = () => {
 
     }
 
+
+
     if (form.emPhone.trim() && !PHONE_REGEX.test(form.emPhone.trim())) {
 
       return "Enter a valid emergency contact phone number";
 
     }
+
+
 
     if (form.dateOfBirth && new Date(form.dateOfBirth) > new Date()) {
 
@@ -404,11 +578,15 @@ const StaffForm = () => {
 
     }
 
+
+
     if (Boolean(form.idType) !== Boolean(form.idNumber.trim())) {
 
       return "Select the ID type and enter the ID number together";
 
     }
+
+
 
     return "";
 
@@ -420,15 +598,21 @@ const StaffForm = () => {
 
     event.preventDefault();
 
+
+
     if (submitting) return;
 
 
 
     const error = validate();
 
+
+
     if (error) {
 
       toast.error(error);
+
+
 
       return;
 
@@ -450,7 +634,11 @@ const StaffForm = () => {
 
         await updateStaff(id, payload);
 
+
+
         toast.success("Staff member updated successfully");
+
+
 
         navigate(BACK_PATH);
 
@@ -458,19 +646,27 @@ const StaffForm = () => {
 
         await createStaff(payload);
 
+
+
         toast.success("Staff account created successfully");
 
-        
+
 
         setCreated({
 
           name: payload.name,
 
+
+
           email: payload.email,
+
+
 
           password: form.password,
 
         });
+
+
 
         setSubmitting(false);
 
@@ -479,6 +675,8 @@ const StaffForm = () => {
     } catch (err) {
 
       toast.error(err.response?.data?.message || "Something went wrong");
+
+
 
       setSubmitting(false);
 
@@ -492,17 +690,25 @@ const StaffForm = () => {
 
     if (!created) return;
 
+
+
     try {
 
       await navigator.clipboard.writeText(
 
-        `Email: ${created.email}\nPassword: ${created.password}`
+        `Email: ${created.email}\nPassword: ${created.password}`,
 
       );
 
+
+
       setCopied(true);
 
+
+
       toast.success("Login details copied");
+
+
 
       setTimeout(() => setCopied(false), 2000);
 
@@ -520,7 +726,11 @@ const StaffForm = () => {
 
     setForm(emptyForm());
 
+
+
     setCreated(null);
+
+
 
     setShowPassword(false);
 
@@ -528,15 +738,11 @@ const StaffForm = () => {
 
 
 
-  /* --------------------------- Success screen --------------------------- */
-
-
-
   if (created) {
 
     return (
 
-      <div className=" space-y-6 w-full max-w-none ">
+      <div className="w-full space-y-6">
 
         <div className="rounded border border-slate-200 bg-white p-6 text-center sm:p-8">
 
@@ -554,6 +760,8 @@ const StaffForm = () => {
 
           </h1>
 
+
+
           <p className="mt-1 text-sm text-slate-500">
 
             Share these login details with {created.name}. The password is not
@@ -570,6 +778,8 @@ const StaffForm = () => {
 
               <dt className="text-slate-500">Email</dt>
 
+
+
               <dd className="break-all font-medium text-slate-900">
 
                 {created.email}
@@ -578,9 +788,13 @@ const StaffForm = () => {
 
             </div>
 
+
+
             <div className="flex flex-col gap-1 sm:flex-row sm:justify-between">
 
               <dt className="text-slate-500">Temporary password</dt>
+
+
 
               <dd className="break-all font-mono font-medium text-slate-900">
 
@@ -612,7 +826,7 @@ const StaffForm = () => {
 
               onClick={handleCopyCredentials}
 
-              className="inline-flex items-center justify-center gap-2 rounded border border-slate-300 px-5 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+              className="inline-flex items-center justify-center gap-2 rounded border border-slate-300 px-5 py-2.5 text-sm font-medium text-slate-700"
 
             >
 
@@ -630,13 +844,15 @@ const StaffForm = () => {
 
             </button>
 
+
+
             <button
 
               type="button"
 
               onClick={addAnother}
 
-              className="rounded border border-slate-300 px-5 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+              className="rounded border border-slate-300 px-5 py-2.5 text-sm font-medium text-slate-700"
 
             >
 
@@ -644,13 +860,15 @@ const StaffForm = () => {
 
             </button>
 
+
+
             <button
 
               type="button"
 
               onClick={() => navigate(BACK_PATH)}
 
-              className="rounded bg-[#1a1a1a] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-700"
+              className="rounded bg-[#1a1a1a] px-5 py-2.5 text-sm font-semibold text-white"
 
             >
 
@@ -670,13 +888,9 @@ const StaffForm = () => {
 
 
 
-  /* -------------------------------- Form -------------------------------- */
-
-
-
   return (
 
-    <div className=" space-y-6 w-full max-w-none ">
+    <div className="w-full space-y-6">
 
       <div>
 
@@ -684,7 +898,7 @@ const StaffForm = () => {
 
           to={BACK_PATH}
 
-          className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 transition hover:text-slate-900"
+          className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-500"
 
         >
 
@@ -694,11 +908,15 @@ const StaffForm = () => {
 
         </Link>
 
+
+
         <h1 className="mt-3 text-xl font-bold text-slate-900">
 
           {isEdit ? "Edit Staff Member" : "Add Staff Member"}
 
         </h1>
+
+
 
         <p className="mt-1 text-sm text-slate-500">
 
@@ -725,8 +943,6 @@ const StaffForm = () => {
       ) : (
 
         <form onSubmit={handleSubmit} className="space-y-5">
-
-         
 
           <SectionCard
 
@@ -842,12 +1058,11 @@ const StaffForm = () => {
 
                     >
 
-                     
-                       Password{" "}
-
-                      <span className="text-rose-500">*</span>
+                      Password <span className="text-rose-500">*</span>
 
                     </label>
+
+
 
                     <button
 
@@ -857,7 +1072,7 @@ const StaffForm = () => {
 
                       disabled={submitting}
 
-                      className="inline-flex items-center gap-1 text-xs font-semibold text-indigo-600 transition hover:text-indigo-800 disabled:opacity-50"
+                      className="inline-flex items-center gap-1 text-xs font-semibold text-indigo-600 disabled:opacity-50"
 
                     >
 
@@ -897,6 +1112,8 @@ const StaffForm = () => {
 
                     />
 
+
+
                     <button
 
                       type="button"
@@ -909,7 +1126,7 @@ const StaffForm = () => {
 
                       }
 
-                      className="absolute right-1.5 top-1/2 -translate-y-1/2 rounded p-1.5 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
+                      className="absolute right-1.5 top-1/2 -translate-y-1/2 rounded p-1.5 text-slate-400"
 
                     >
 
@@ -938,8 +1155,6 @@ const StaffForm = () => {
           </SectionCard>
 
 
-
-          
 
           <SectionCard
 
@@ -970,6 +1185,8 @@ const StaffForm = () => {
                 >
 
                   <option value="">Select department</option>
+
+
 
                   {DEPARTMENT_OPTIONS.map((option) => (
 
@@ -1041,8 +1258,6 @@ const StaffForm = () => {
 
 
 
-      
-
           <SectionCard
 
             title="Personal Details"
@@ -1100,6 +1315,8 @@ const StaffForm = () => {
                 >
 
                   <option value="">Select gender</option>
+
+
 
                   {GENDER_OPTIONS.map((option) => (
 
@@ -1244,7 +1461,8 @@ const StaffForm = () => {
                 />
 
               </Field>
-                <Field id="idType" label="ID Proof Type">
+
+              <Field id="idType" label="ID Proof Type">
 
                 <select
 
@@ -1263,6 +1481,8 @@ const StaffForm = () => {
                 >
 
                   <option value="">Select ID type</option>
+
+
 
                   {ID_TYPE_OPTIONS.map((option) => (
 
@@ -1313,8 +1533,6 @@ const StaffForm = () => {
           </SectionCard>
 
 
-
-        
 
           <SectionCard
 
@@ -1400,17 +1618,11 @@ const StaffForm = () => {
 
               </Field>
 
-
-
-            
-
             </div>
 
           </SectionCard>
 
 
-
-       
 
           <div className="flex flex-col-reverse gap-3 rounded border border-slate-200 bg-white p-4 sm:flex-row sm:items-center sm:justify-between">
 
@@ -1432,7 +1644,7 @@ const StaffForm = () => {
 
                 disabled={submitting}
 
-                className="rounded border border-slate-300 px-5 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50 disabled:opacity-60"
+                className="rounded border border-slate-300 px-5 py-2.5 text-sm font-medium text-slate-700 disabled:opacity-60"
 
               >
 
@@ -1440,17 +1652,21 @@ const StaffForm = () => {
 
               </button>
 
+
+
               <button
 
                 type="submit"
 
                 disabled={submitting}
 
-                className="flex items-center justify-center gap-2 rounded bg-[#1a1a1a] px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-70"
+                className="flex items-center justify-center gap-2 rounded bg-[#1a1a1a] px-6 py-2.5 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-70"
 
               >
 
-                {submitting && <Loader2 size={16} className="animate-spin" />}
+                {submitting && <Loader2 size={16} className="" />}
+
+
 
                 {isEdit ? "Update Staff" : "Create Staff"}
 

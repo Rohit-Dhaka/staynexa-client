@@ -276,7 +276,7 @@ const BanquetBookingForm = () => {
       <div>
         <Link
           to={backPath}
-          className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 transition hover:text-slate-900"
+          className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 transition "
         >
           <ArrowLeft size={16} />
           Back
@@ -347,7 +347,7 @@ const BanquetBookingForm = () => {
                         selected
                           ? "border-indigo-500 bg-black ring-2 ring-indigo-100"
                           : item.available
-                            ? "border-slate-200 bg-white hover:border-slate-300"
+                            ? "border-slate-200 bg-white "
                             : "cursor-not-allowed border-slate-200 bg-slate-50 opacity-70"
                       }`}
                     >
@@ -503,7 +503,7 @@ const BanquetBookingForm = () => {
                       type="button"
                       onClick={() => setCatering((l) => l.filter((_, i) => i !== index))}
                       aria-label="Remove package"
-                      className="rounded p-2 text-slate-400 transition hover:bg-rose-50 hover:text-rose-600 sm:col-span-1 sm:mb-0.5"
+                      className="rounded p-2 text-slate-400 transition   sm:col-span-1 sm:mb-0.5"
                     >
                       <Trash2 size={16} />
                     </button>
@@ -570,7 +570,7 @@ const BanquetBookingForm = () => {
                     type="button"
                     onClick={() => setExtras((l) => l.filter((_, i) => i !== index))}
                     aria-label="Remove service"
-                    className="rounded p-2 text-slate-400 transition hover:bg-rose-50 hover:text-rose-600 sm:col-span-1 sm:mb-0.5"
+                    className="rounded p-2 text-slate-400 transition  sm:col-span-1 sm:mb-0.5"
                   >
                     <Trash2 size={16} />
                   </button>

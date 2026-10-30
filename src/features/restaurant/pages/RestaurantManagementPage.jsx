@@ -47,14 +47,14 @@ export default function RestaurantManagementLayout() {
   const location = useLocation();
 
   return (
-    <div className="min-h-screen">
-      <div className="mx-auto max-w-7xl space-y-6">
-        <header className="flex  items-center justify-between">
-          <div className="">
-              <h1 className="text-2xl font-semibold tracking-tight text-gray-900">
+    <div className="min-h-screen min-w-0">
+      <div className="mx-auto w-full max-w-7xl min-w-0 space-y-4 lg:space-y-5">
+        <header className="flex min-w-0 flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="min-w-0">
+              <h1 className="text-lg font-semibold tracking-tight text-gray-900 sm:text-xl">
                 Restaurant Management
               </h1>
-              <p className="mt-1 text-sm text-gray-500">
+              <p className="mt-1 text-xs text-gray-500 sm:text-sm">
                 Manage menu items, categories, and restaurant tables.
               </p>
           </div>
@@ -62,17 +62,17 @@ export default function RestaurantManagementLayout() {
 
              <nav
           aria-label="Restaurant management sections"
-          className="flex flex-wrap gap-2 rounded border border-gray-200 bg-white p-2"
+          className="flex w-full min-w-0 flex-wrap gap-1 rounded border border-gray-200 bg-white p-1 sm:w-auto sm:gap-2 sm:p-1.5"
         >
           {navItems.map((item) => (
             <NavLink
               key={item.path}
               to={item.path}
               className={({ isActive }) =>
-                `rounded px-4 py-2.5 text-sm font-medium transition ${
+                `rounded px-3 py-2 text-xs font-medium sm:px-4 sm:py-2.5 sm:text-sm ${
                   isActive
                     ? "bg-gray-900 text-white"
-                    : "text-gray-600 hover:bg-gray-100"
+                    : "text-gray-600"
                 }`
               }
             >
@@ -233,11 +233,11 @@ export function MenuSection() {
   ).length;
 
   return (
-    <section className="space-y-6">
+    <section className="min-w-0 space-y-4 sm:space-y-5">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 className="text-xl font-semibold text-gray-900">Menu Items</h2>
-          <p className="mt-1 text-sm text-gray-500">
+          <h2 className="text-base font-semibold sm:text-lg text-gray-900">Menu Items</h2>
+          <p className="mt-1 text-xs text-gray-500 sm:text-sm">
             Create and manage your restaurant menu.
           </p>
         </div>
@@ -246,7 +246,7 @@ export function MenuSection() {
             type="button"
             onClick={() => loadData()}
             disabled={loading}
-            className="rounded border border-gray-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 hover: disabled:opacity-50"
+            className="rounded border border-gray-200 bg-white px-3 py-2 text-xs font-medium text-gray-700 disabled:opacity-50 sm:px-4 sm:py-2.5 sm:text-sm"
           >
             Refresh
           </button>
@@ -258,7 +258,7 @@ export function MenuSection() {
               setNotice("");
               setShowForm(true);
             }}
-            className="rounded bg-gray-900 px-4 py-2.5 text-sm font-medium text-white hover:bg-gray-800"
+            className="rounded bg-gray-900 px-3 py-2 text-xs sm:px-4 sm:py-2.5 sm:text-xs font-medium sm:text-sm text-white"
           >
             Add Menu Item
           </button>
@@ -275,7 +275,7 @@ export function MenuSection() {
         </p>
       )}
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+      <div className="grid grid-cols-1 gap-3 sm:gap-4 sm:grid-cols-3">
         {[
           { label: "Total Menu Items", value: items.length },
           { label: "Available Items", value: availableCount },
@@ -283,10 +283,10 @@ export function MenuSection() {
         ].map((stat) => (
           <div
             key={stat.label}
-            className="rounded border border-gray-200 bg-white p-4"
+            className="min-w-0 rounded border border-gray-200 bg-white p-3 sm:p-4"
           >
-            <p className="text-sm text-gray-500">{stat.label}</p>
-            <p className="mt-2 text-2xl font-semibold text-gray-900">
+            <p className="text-xs text-gray-500 sm:text-sm">{stat.label}</p>
+            <p className="mt-2 text-base font-semibold sm:text-lg sm:text-2xl text-gray-900">
               {stat.value}
             </p>
           </div>
@@ -312,13 +312,13 @@ export function MenuSection() {
           value={search}
           onChange={(event) => setSearch(event.target.value)}
           placeholder="Search by name or description..."
-          className="w-full rounded border border-gray-200 bg-white px-3 py-2.5 text-sm outline-none focus:border-gray-500"
+          className="w-full rounded border border-gray-200 bg-white px-3 py-2 text-xs sm:py-2.5 sm:text-sm outline-none focus:border-gray-500"
         />
         <select
           aria-label="Filter by category"
           value={categoryFilter}
           onChange={(event) => setCategoryFilter(event.target.value)}
-          className="w-full rounded border border-gray-200 bg-white px-3 py-2.5 text-sm"
+          className="w-full rounded border border-gray-200 bg-white px-3 py-2 text-xs sm:py-2.5 sm:text-sm"
         >
           <option value="all">All Categories</option>
           {categories.map((category) => (
@@ -334,7 +334,7 @@ export function MenuSection() {
           aria-label="Filter by availability"
           value={availabilityFilter}
           onChange={(event) => setAvailabilityFilter(event.target.value)}
-          className="w-full rounded border border-gray-200 bg-white px-3 py-2.5 text-sm"
+          className="w-full rounded border border-gray-200 bg-white px-3 py-2 text-xs sm:py-2.5 sm:text-sm"
         >
           <option value="all">All Items</option>
           <option value="available">Available</option>
@@ -342,7 +342,7 @@ export function MenuSection() {
         </select>
       </div>
 
-      <p className="text-sm text-gray-500">
+      <p className="text-xs text-gray-500 sm:text-sm">
         Showing {filteredItems.length} of {items.length} menu items
       </p>
 
@@ -358,7 +358,7 @@ export function MenuSection() {
           }
         />
       ) : (
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <div className="grid grid-cols-1 gap-3 sm:gap-3 sm:gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {filteredItems.map((item) => (
             <MenuItemCard
               key={item._id || item.id}
@@ -394,9 +394,7 @@ export function MenuSection() {
   );
 }
 
-/* =========================================================
-   CATEGORIES
-========================================================= */
+
 
 export function CategoriesSection() {
   const [categories, setCategories] = useState([]);
@@ -498,13 +496,13 @@ export function CategoriesSection() {
   };
 
   return (
-    <section className="space-y-6">
+    <section className="min-w-0 space-y-4 sm:space-y-5">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 className="text-xl font-semibold text-gray-900">
+          <h2 className="text-base font-semibold sm:text-lg text-gray-900">
             Menu Categories
           </h2>
-          <p className="mt-1 text-sm text-gray-500">
+          <p className="mt-1 text-xs text-gray-500 sm:text-sm">
             Create and manage menu categories.
           </p>
         </div>
@@ -517,7 +515,7 @@ export function CategoriesSection() {
             setNotice("");
             setShowForm(true);
           }}
-          className="rounded bg-gray-900 px-4 py-2.5 text-sm font-medium text-white hover:bg-gray-800"
+          className="rounded bg-gray-900 px-3 py-2 text-xs sm:px-4 sm:py-2.5 sm:text-xs font-medium sm:text-sm text-white"
         >
           Add Category
         </button>
@@ -534,15 +532,15 @@ export function CategoriesSection() {
       )}
 
       {showForm && (
-        <section className="rounded border border-gray-200 bg-white p-5">
-          <h3 className="mb-4 text-lg font-semibold text-gray-900">
+        <section className="min-w-0 rounded border border-gray-200 bg-white p-3 sm:p-4">
+          <h3 className="mb-4 text-base font-semibold sm:text-lg text-gray-900">
             {editingId ? "Edit Category" : "Create Category"}
           </h3>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label
                 htmlFor="category-name"
-                className="mb-1.5 block text-sm font-medium text-gray-700"
+                className="mb-1.5 block text-xs font-medium sm:text-xs text-gray-700 sm:text-sm"
               >
                 Category Name *
               </label>
@@ -553,14 +551,14 @@ export function CategoriesSection() {
                 placeholder="e.g. Food, Drinks, Desserts"
                 maxLength={100}
                 required
-                className="w-full rounded border border-gray-200 px-3 py-2.5 text-sm outline-none focus:border-gray-500"
+                className="w-full rounded border border-gray-200 px-3 py-2 text-xs sm:py-2.5 sm:text-sm outline-none focus:border-gray-500"
               />
             </div>
             <div className="flex flex-wrap gap-3">
               <button
                 type="submit"
                 disabled={saving}
-                className="rounded bg-gray-900 px-5 py-2.5 text-sm font-medium text-white disabled:opacity-50"
+                className="rounded bg-gray-900 px-4 py-2 sm:px-5 sm:py-2.5 text-xs font-medium sm:text-sm text-white disabled:opacity-50"
               >
                 {saving
                   ? "Saving..."
@@ -572,7 +570,7 @@ export function CategoriesSection() {
                 type="button"
                 onClick={closeForm}
                 disabled={saving}
-                className="rounded border border-gray-200 px-5 py-2.5 text-sm text-gray-700 disabled:opacity-50"
+                className="rounded border border-gray-200 px-4 py-2 sm:px-5 sm:py-2.5 text-xs text-gray-700 disabled:opacity-50 sm:text-sm"
               >
                 Cancel
               </button>
@@ -588,19 +586,19 @@ export function CategoriesSection() {
           value={search}
           onChange={(event) => setSearch(event.target.value)}
           placeholder="Search by category name..."
-          className="w-full rounded border border-gray-200 bg-white px-3 py-2.5 text-sm outline-none focus:border-gray-500"
+          className="w-full rounded border border-gray-200 bg-white px-3 py-2 text-xs sm:py-2.5 sm:text-sm outline-none focus:border-gray-500"
         />
         <button
           type="button"
           onClick={loadCategories}
           disabled={loading}
-          className="rounded border border-gray-200 bg-white px-4 py-2.5 text-sm text-gray-700 disabled:opacity-50"
+          className="rounded border border-gray-200 bg-white px-3 py-2 text-xs sm:px-4 sm:py-2.5 sm:text-xs text-gray-700 disabled:opacity-50 sm:text-sm"
         >
           {loading ? "Loading..." : "Refresh"}
         </button>
       </div>
 
-      <p className="text-sm text-gray-500">{filtered.length} categories</p>
+      <p className="text-xs text-gray-500 sm:text-sm">{filtered.length} categories</p>
 
       {loading ? (
         <LoadingState message="Loading categories..." />
@@ -614,23 +612,23 @@ export function CategoriesSection() {
           }
         />
       ) : (
-        <div className="overflow-x-auto rounded border border-gray-200 bg-white">
-          <table className="w-full min-w-[400px] text-left text-sm">
+        <div className="max-w-full overflow-x-auto rounded border border-gray-200 bg-white">
+          <table className="w-full min-w-[360px] text-left text-xs sm:min-w-[400px] sm:text-sm">
             <thead className="border-b border-gray-200  text-gray-600">
               <tr>
-                <th className="px-5 py-4 font-medium">Category Name</th>
-                <th className="px-5 py-4 text-right font-medium">Actions</th>
+                <th className="px-3 py-3 sm:px-4 sm:py-3 font-medium">Category Name</th>
+                <th className="px-3 py-3 sm:px-4 sm:py-3 text-right font-medium">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
               {filtered.map((category) => {
                 const id = category._id || category.id;
                 return (
-                  <tr key={id} className="hover:">
-                    <td className="px-5 py-4 font-medium text-gray-900">
+                  <tr key={id} className="">
+                    <td className="px-3 py-3 sm:px-4 sm:py-3 font-medium text-gray-900">
                       {category.name}
                     </td>
-                    <td className="px-5 py-4">
+                    <td className="px-3 py-3 sm:px-4 sm:py-3">
                       <div className="flex justify-end gap-2">
                         <button
                           type="button"
@@ -641,14 +639,14 @@ export function CategoriesSection() {
                             setNotice("");
                             setShowForm(true);
                           }}
-                          className="rounded border border-gray-200 px-3 py-2 text-xs font-medium text-gray-700 hover:"
+                          className="rounded border border-gray-200 px-3 py-2 text-xs font-medium text-gray-700"
                         >
                           Edit
                         </button>
                         <button
                           type="button"
                           onClick={() => setDeleteTarget(category)}
-                          className="rounded border border-red-200 px-3 py-2 text-xs font-medium text-red-700 hover:bg-red-50"
+                          className="rounded border border-red-200 px-3 py-2 text-xs font-medium text-red-700"
                         >
                           Delete
                         </button>
@@ -679,9 +677,6 @@ export function CategoriesSection() {
   );
 }
 
-/* =========================================================
-   TABLES
-========================================================= */
 
 const TABLE_STATUSES = ["available", "cleaning", "maintenance"];
 
@@ -903,13 +898,13 @@ export function TablesSection() {
   }, {});
 
   return (
-    <section className="space-y-6">
+    <section className="min-w-0 space-y-4 sm:space-y-5">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 className="text-xl font-semibold text-gray-900">
+          <h2 className="text-base font-semibold sm:text-lg text-gray-900">
             Table Management
           </h2>
-          <p className="mt-1 text-sm text-gray-500">
+          <p className="mt-1 text-xs text-gray-500 sm:text-sm">
             Manage seating capacity and table availability.
           </p>
         </div>
@@ -922,7 +917,7 @@ export function TablesSection() {
             setNotice("");
             setShowForm(true);
           }}
-          className="rounded bg-gray-900 px-4 py-2.5 text-sm font-medium text-white hover:bg-gray-800"
+          className="rounded bg-gray-900 px-3 py-2 text-xs sm:px-4 sm:py-2.5 sm:text-xs font-medium sm:text-sm text-white"
         >
           Add Table
         </button>
@@ -938,7 +933,7 @@ export function TablesSection() {
         </p>
       )}
 
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-4">
         {[
           { label: "Total Tables", value: tables.length },
           { label: "Available", value: statusCounts.available || 0 },
@@ -947,10 +942,10 @@ export function TablesSection() {
         ].map((stat) => (
           <div
             key={stat.label}
-            className="rounded border border-gray-200 bg-white p-4"
+            className="min-w-0 rounded border border-gray-200 bg-white p-3 sm:p-4"
           >
-            <p className="text-sm text-gray-500">{stat.label}</p>
-            <p className="mt-2 text-2xl font-semibold text-gray-900">
+            <p className="text-xs text-gray-500 sm:text-sm">{stat.label}</p>
+            <p className="mt-2 text-base font-semibold sm:text-lg sm:text-2xl text-gray-900">
               {stat.value}
             </p>
           </div>
@@ -958,15 +953,15 @@ export function TablesSection() {
       </div>
 
       {showForm && (
-        <section className="rounded border border-gray-200 bg-white p-5">
-          <h3 className="mb-4 text-lg font-semibold text-gray-900">
+        <section className="min-w-0 rounded border border-gray-200 bg-white p-3 sm:p-4">
+          <h3 className="mb-4 text-base font-semibold sm:text-lg text-gray-900">
             {editingId ? "Edit Table" : "Create Table"}
           </h3>
-          <form onSubmit={handleSubmit} className="grid gap-4 sm:grid-cols-2">
+          <form onSubmit={handleSubmit} className="grid gap-3 sm:gap-4 sm:grid-cols-2">
             <div>
               <label
                 htmlFor="table-number"
-                className="mb-1.5 block text-sm font-medium text-gray-700"
+                className="mb-1.5 block text-xs font-medium sm:text-xs text-gray-700 sm:text-sm"
               >
                 Table Number *
               </label>
@@ -978,13 +973,13 @@ export function TablesSection() {
                 maxLength={30}
                 required
                 placeholder="e.g. T-01"
-                className="w-full rounded border border-gray-200 px-3 py-2.5 text-sm"
+                className="w-full rounded border border-gray-200 px-3 py-2 text-xs sm:py-2.5 sm:text-sm"
               />
             </div>
             <div>
               <label
                 htmlFor="table-name"
-                className="mb-1.5 block text-sm font-medium text-gray-700"
+                className="mb-1.5 block text-xs font-medium sm:text-xs text-gray-700 sm:text-sm"
               >
                 Table Name
               </label>
@@ -995,13 +990,13 @@ export function TablesSection() {
                 onChange={handleFieldChange}
                 maxLength={100}
                 placeholder="e.g. Window Seating"
-                className="w-full rounded border border-gray-200 px-3 py-2.5 text-sm"
+                className="w-full rounded border border-gray-200 px-3 py-2 text-xs sm:py-2.5 sm:text-sm"
               />
             </div>
             <div>
               <label
                 htmlFor="table-capacity"
-                className="mb-1.5 block text-sm font-medium text-gray-700"
+                className="mb-1.5 block text-xs font-medium sm:text-xs text-gray-700 sm:text-sm"
               >
                 Seating Capacity *
               </label>
@@ -1014,13 +1009,13 @@ export function TablesSection() {
                 value={form.capacity}
                 onChange={handleFieldChange}
                 required
-                className="w-full rounded border border-gray-200 px-3 py-2.5 text-sm"
+                className="w-full rounded border border-gray-200 px-3 py-2 text-xs sm:py-2.5 sm:text-sm"
               />
             </div>
             <div>
               <label
                 htmlFor="table-location"
-                className="mb-1.5 block text-sm font-medium text-gray-700"
+                className="mb-1.5 block text-xs font-medium sm:text-xs text-gray-700 sm:text-sm"
               >
                 Section
               </label>
@@ -1031,7 +1026,7 @@ export function TablesSection() {
                 onChange={handleFieldChange}
                 maxLength={100}
                 placeholder="e.g. Indoor, Terrace"
-                className="w-full rounded border border-gray-200 px-3 py-2.5 text-sm"
+                className="w-full rounded border border-gray-200 px-3 py-2 text-xs sm:py-2.5 sm:text-sm"
               />
             </div>
             <label className="flex items-center gap-3 rounded border border-gray-200 p-3 sm:col-span-2">
@@ -1042,7 +1037,7 @@ export function TablesSection() {
                 onChange={handleFieldChange}
                 className="h-4 w-4 rounded accent-gray-900"
               />
-              <span className="text-sm font-medium text-gray-700">
+              <span className="text-xs font-medium sm:text-xs text-gray-700 sm:text-sm">
                 Active table
               </span>
             </label>
@@ -1050,7 +1045,7 @@ export function TablesSection() {
               <button
                 type="submit"
                 disabled={saving}
-                className="rounded bg-gray-900 px-5 py-2.5 text-sm font-medium text-white disabled:opacity-50"
+                className="rounded bg-gray-900 px-4 py-2 sm:px-5 sm:py-2.5 text-xs font-medium sm:text-sm text-white disabled:opacity-50"
               >
                 {saving
                   ? "Saving..."
@@ -1062,7 +1057,7 @@ export function TablesSection() {
                 type="button"
                 onClick={closeForm}
                 disabled={saving}
-                className="rounded border border-gray-200 px-5 py-2.5 text-sm text-gray-700 disabled:opacity-50"
+                className="rounded border border-gray-200 px-4 py-2 sm:px-5 sm:py-2.5 text-xs text-gray-700 disabled:opacity-50 sm:text-sm"
               >
                 Cancel
               </button>
@@ -1075,7 +1070,7 @@ export function TablesSection() {
         <div>
           <label
             htmlFor="table-search"
-            className="mb-2 block text-sm font-medium text-gray-700"
+            className="mb-2 block text-xs font-medium sm:text-xs text-gray-700 sm:text-sm"
           >
             Search Tables
           </label>
@@ -1084,13 +1079,13 @@ export function TablesSection() {
             value={search}
             onChange={(event) => setSearch(event.target.value)}
             placeholder="Search table number or section..."
-            className="w-full rounded border border-gray-200 bg-white px-3 py-2.5 text-sm"
+            className="w-full rounded border border-gray-200 bg-white px-3 py-2 text-xs sm:py-2.5 sm:text-sm"
           />
         </div>
         <div>
           <label
             htmlFor="table-status-filter"
-            className="mb-2 block text-sm font-medium text-gray-700"
+            className="mb-2 block text-xs font-medium sm:text-xs text-gray-700 sm:text-sm"
           >
             Filter by Status
           </label>
@@ -1098,7 +1093,7 @@ export function TablesSection() {
             id="table-status-filter"
             value={statusFilter}
             onChange={(event) => setStatusFilter(event.target.value)}
-            className="w-full rounded border border-gray-200 bg-white px-3 py-2.5 text-sm"
+            className="w-full rounded border border-gray-200 bg-white px-3 py-2 text-xs sm:py-2.5 sm:text-sm"
           >
             <option value="all">All Statuses</option>
             <option value="available">Available</option>
@@ -1111,12 +1106,12 @@ export function TablesSection() {
       </div>
 
       <div className="flex items-center justify-between gap-3">
-        <p className="text-sm text-gray-500">{filtered.length} tables found</p>
+        <p className="text-xs text-gray-500 sm:text-sm">{filtered.length} tables found</p>
         <button
           type="button"
           onClick={loadTables}
           disabled={loading}
-          className="rounded border border-gray-200 bg-white px-3 py-2 text-sm text-gray-700 disabled:opacity-50"
+          className="rounded border border-gray-200 bg-white px-3 py-2 text-xs text-gray-700 disabled:opacity-50 sm:text-sm"
         >
           {loading ? "Loading..." : "Refresh"}
         </button>
@@ -1130,7 +1125,7 @@ export function TablesSection() {
           description="Add a table or change your filters."
         />
       ) : (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        <div className="grid grid-cols-1 gap-3 sm:gap-4 sm:grid-cols-2 xl:grid-cols-3">
           {filtered.map((table) => {
             const id = table._id || table.id;
             const status = String(table.status || "available").toLowerCase();
@@ -1139,18 +1134,18 @@ export function TablesSection() {
             return (
               <article
                 key={id}
-                className="rounded border border-gray-200 bg-white p-5"
+                className="min-w-0 rounded border border-gray-200 bg-white p-3 sm:p-4"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
                       Table
                     </p>
-                    <h3 className="mt-1 text-xl font-semibold text-gray-900">
+                    <h3 className="mt-1 text-base font-semibold sm:text-lg text-gray-900">
                       {table.tableNumber || table.name || "Unnamed table"}
                     </h3>
                     {table.name && table.tableNumber && (
-                      <p className="mt-1 text-sm text-gray-500">{table.name}</p>
+                      <p className="mt-1 text-xs text-gray-500 sm:text-sm">{table.name}</p>
                     )}
                   </div>
                   <TableStatusBadge status={status} />
@@ -1191,7 +1186,7 @@ export function TablesSection() {
   onChange={(event) =>
     handleStatusChange(table, event.target.value)
   }
-  className="w-full rounded border border-gray-200 bg-white px-3 py-2.5 text-sm capitalize disabled: disabled:text-gray-400"
+  className="w-full rounded border border-gray-200 bg-white px-3 py-2 text-xs sm:py-2.5 sm:text-sm capitalize disabled:opacity-50 disabled:text-gray-400"
 >
   {!canChangeStatus && (
     <option value={status}>
@@ -1223,7 +1218,7 @@ export function TablesSection() {
                         setNotice("");
                         setShowForm(true);
                       }}
-                      className="flex-1 rounded border border-gray-200 px-3 py-2 text-sm font-medium text-gray-700 hover:"
+                      className="flex-1 rounded border border-gray-200 px-3 py-2 text-xs font-medium sm:text-xs text-gray-700 sm:text-sm"
                     >
                       Edit
                     </button>
@@ -1231,7 +1226,7 @@ export function TablesSection() {
                       type="button"
                       disabled={actionLoading === id || deleting}
                       onClick={() => setDeleteTarget(table)}
-                      className="flex-1 rounded border border-red-200 px-3 py-2 text-sm font-medium text-red-700 hover:bg-red-50 disabled:opacity-50"
+                      className="flex-1 rounded border border-red-200 px-3 py-2 text-xs font-medium text-red-700 disabled:opacity-50 sm:text-sm"
                     >
                       Delete
                     </button>

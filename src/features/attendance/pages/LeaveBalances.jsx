@@ -213,7 +213,7 @@ const LeaveBalances = () => {
             type="button"
             onClick={() => loadBalances({ silent: true })}
             disabled={loading || refreshing}
-            className="inline-flex items-center gap-2 rounded border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-50"
+            className="inline-flex items-center gap-2 rounded border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700  disabled:opacity-50"
           >
             <RefreshCw size={15} className={refreshing ? "animate-spin" : ""} />
             Refresh
@@ -267,7 +267,7 @@ const LeaveBalances = () => {
               {loading && (
                 <tr>
                   <td colSpan={6} className="px-4 py-14 text-center text-slate-500">
-                    <Loader2 size={22} className="mx-auto mb-2 animate-spin text-indigo-600" />
+                    <Loader2 size={22} className="mx-auto mb-2 animate-spin text-black" />
                     Loading leave balances…
                   </td>
                 </tr>
@@ -286,7 +286,7 @@ const LeaveBalances = () => {
 
               {!loading &&
                 rows.map((row) => (
-                  <tr key={row?.user?._id ?? row?.userId ?? row?._id} className="transition hover:bg-slate-50/70">
+                  <tr key={row?.user?._id ?? row?.userId ?? row?._id} className="transition">
                     <td className="px-4 py-3">
                       <p className="font-medium text-slate-900">
                         {row?.user?.name ?? row?.name ?? "Unknown staff"}
@@ -321,7 +321,7 @@ const LeaveBalances = () => {
                       <button
                         type="button"
                         onClick={() => openEdit(row)}
-                        className="inline-flex items-center gap-2 rounded border border-slate-200 px-3 py-2 text-xs font-medium text-slate-700 transition hover:border-indigo-200 hover:bg-black hover:text-indigo-700"
+                        className="inline-flex items-center gap-2 rounded border border-slate-200 px-3 py-2 text-xs font-medium text-slate-700 transition "
                         title="Edit leave balance"
                       >
                         <Pencil size={14} />

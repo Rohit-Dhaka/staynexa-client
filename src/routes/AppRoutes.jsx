@@ -26,7 +26,6 @@ import RoomForm from "../features/rooms/components/RoomFormModal";
 import RoomTypeForm from "../features/rooms/components/RoomTypeFormModal";
 import StaffForm from "../features/staff/pages/StaffForm";
 
-
 import NewBooking from "../features/bookings/pages/NewBooking";
 import BookingDetail from "../features/bookings/pages/BookingDetail";
 import BookingInvoice from "../features/bookings/pages/BookingInvoice";
@@ -81,7 +80,6 @@ import GuestServiceRequests from "../features/guests/pages/GuestServiceRequests.
 import GuestReviews from "../features/reviews/pages/GuestReviews.jsx";
 import RestaurantDashboard from "../features/restaurant/pages/RestaurantDashboard.jsx";
 
-
 import GuestRestaurantPage from "../features/restaurant/pages/GuestRestaurantPage.jsx";
 import RestaurantSettingsPage from "../features/restaurant/pages/RestaurantSettingsPage.jsx";
 import RestaurantOrdersPage from "../features/restaurant/pages/RestaurantOrdersPage";
@@ -93,8 +91,6 @@ import RestaurantManagementLayout, {
 } from "../features/restaurant/pages/RestaurantManagementPage";
 import GuestOrderTrackingPage from "../features/restaurant/pages/GuestOrderTrackingPage.jsx";
 import PaymentReceiptPage from "../features/restaurant/pages/PaymentReceiptPage.jsx";
-
-
 
 import AdminCabBookingsPage from "../features/cab/pages/AdminCabBookingsPage.jsx";
 import CabBookingPage from "../features/cab/pages/CabBookingPage.jsx";
@@ -108,7 +104,8 @@ import MaintenanceDashboard from "../features/mainteance/page/MaintenanceDashboa
 import AIManagerPage from "../features/ai/pages/AIManagerPage.jsx";
 import GuestLostFound from "../features/lostFound/pages/GuestLostFound.jsx";
 import AdminLostFound from "../features/lostFound/pages/AdminLostFound.jsx";
-
+import QuickCheckIn from "../features/bookings/pages/QuickCheckIn.jsx";
+import GstSettings from "../features/rooms/components/GstSettings.jsx";
 
 const SharedLayout = () => {
   const { user } = useAuth();
@@ -116,9 +113,7 @@ const SharedLayout = () => {
 };
 
 const AppRoutes = () => (
-    
   <Routes>
-    
     <Route path="/" element={<Navigate to="/login" replace />} />
 
     <Route element={<AuthLayout />}>
@@ -141,12 +136,18 @@ const AppRoutes = () => (
           <Route path="/rooms/:id/edit" element={<RoomForm />} />
           <Route path="/rooms/types/new" element={<RoomTypeForm />} />
           <Route path="/rooms/types/:id/edit" element={<RoomTypeForm />} />
+          <Route path="/settings/gst" element={<GstSettings />} />
+          
 
           <Route path="/bookings/new" element={<NewBooking />} />
           <Route path="/bookings/:id" element={<BookingDetail />} />
           <Route path="/bookings/:id/invoice" element={<BookingInvoice />} />
           <Route path="/calendar" element={<BookingCalendar />} />
           <Route path="/bookings" element={<Bookings />} />
+
+
+          <Route path="/quick-check-in" element={<QuickCheckIn />} />
+          
 
           <Route path="/payroll" element={<PayrollRuns />} />
           <Route path="/structures" element={<SalaryStructures />} />
@@ -166,61 +167,42 @@ const AppRoutes = () => (
           <Route path="/offers/new" element={<OfferForm />} />
           <Route path="/offers/:id/edit" element={<OfferForm />} />
 
-
-
           <Route path="/restaurant" element={<RestaurantDashboard />} />
 
-          <Route path="/restaurant/manage" element={<RestaurantManagementLayout />} >
+          <Route
+            path="/restaurant/manage"
+            element={<RestaurantManagementLayout />}
+          >
             <Route index element={<Navigate to="menu" replace />} />
             <Route path="menu" element={<MenuSection />} />
             <Route path="categories" element={<CategoriesSection />} />
             <Route path="tables" element={<TablesSection />} />
           </Route>
 
-          
           <Route path="/restaurant/orders" element={<RestaurantOrdersPage />} />
-          <Route path="/restaurant/orders/create" element={<RestaurantOrdersPage />} />
-          <Route path="/restaurant/receipt/:orderId" element={<PaymentReceiptPage />}/>
+          <Route
+            path="/restaurant/orders/create"
+            element={<RestaurantOrdersPage />}
+          />
+          <Route
+            path="/restaurant/receipt/:orderId"
+            element={<PaymentReceiptPage />}
+          />
 
+          <Route path="/admin/cab" element={<AdminCabDashboardPage />}>
+            <Route path="bookings" element={<AdminCabBookingsPage />} />
+            <Route path="dispatch" element={<AdminCabDispatchPage />} />
+            <Route path="vehicles" element={<AdminCabVehiclesPage />} />
+            <Route path="drivers" element={<AdminCabDriversPage />} />
+            <Route path="rates" element={<AdminCabRatesPage />} />
+          </Route>
 
-          {/* <Route path="/admin/cab-bookings" element={<AdminCabBookingsPage />} />
-          <Route path="/admin/cab-dashboard" element={<AdminCabDashboardPage />} />
-          <Route path="/admin/cab-vehicles" element={<AdminCabVehiclesPage />}/>
-          <Route path="/admin/cab-rates" element={<AdminCabRatesPage />} />
-          <Route path="/admin/cab-drivers" element={<AdminCabDriversPage />} />
-          <Route path="/admin/cab-dispatch" element={<AdminCabDispatchPage />} /> */}
+          <Route
+            path="/maintenance/dashboard"
+            element={<MaintenanceDashboard />}
+          />
+          <Route path="/maintenance/history" element={<MaintenanceHistory />} />
 
-          {/* <Route path="/admin/cab">
-  <Route index element={<AdminCabDashboardPage />} />
-  <Route path="bookings" element={<AdminCabBookingsPage />} />
-  <Route path="dispatch" element={<AdminCabDispatchPage />} />
-  <Route path="vehicles" element={<AdminCabVehiclesPage />} />
-  <Route path="drivers" element={<AdminCabDriversPage />} />
-  <Route path="rates" element={<AdminCabRatesPage />} />
-</Route> */}
-
-
-<Route path="/admin/cab" element={<AdminCabDashboardPage />}>
-  <Route path="bookings" element={<AdminCabBookingsPage />} />
-  <Route path="dispatch" element={<AdminCabDispatchPage />} />
-  <Route path="vehicles" element={<AdminCabVehiclesPage />} />
-  <Route path="drivers" element={<AdminCabDriversPage />} />
-  <Route path="rates" element={<AdminCabRatesPage />} />
-  
-</Route>
-
-
-
-
-
-        <Route path="/maintenance/dashboard" element={<MaintenanceDashboard />} />
-        <Route path="/maintenance/history" element={<MaintenanceHistory />} />
-
-
-
-          
-          
-          
           <Route
             path="/restaurant/settings"
             element={<RestaurantSettingsPage />}
@@ -228,7 +210,6 @@ const AppRoutes = () => (
 
           <Route path="/front-desk" element={<FrontDesk />} />
           <Route element={<RoleRoute allowedRoles={[ROLES.SUPER_ADMIN]} />}>
-            
             <Route path="/staff">
               <Route index element={<StaffList />} />
               <Route path="new" element={<StaffForm />} />
@@ -244,7 +225,10 @@ const AppRoutes = () => (
             <Route path="/attendance/monthly" element={<MonthlySheet />} />
             <Route path="/attendance/leaves" element={<Leaves />} />
             <Route path="/attendance/balances" element={<LeaveBalances />} />
-            <Route path="/attendance/settings" element={<AttendanceSettings />} />
+            <Route
+              path="/attendance/settings"
+              element={<AttendanceSettings />}
+            />
 
             <Route path="/banquet" element={<Banquet />} />
             <Route path="/banquet/new" element={<BanquetBookingForm />} />
@@ -261,14 +245,8 @@ const AppRoutes = () => (
             <Route path="/expenses/:id" element={<ExpenseDetails />} />
             <Route path="/expenses/:id/edit" element={<ExpenseEdit />} />
 
-
-
-
             <Route path="/ai-manager" element={<AIManagerPage />} />
             <Route path="/lostfound" element={<AdminLostFound />} />
-            
-
-
           </Route>
         </Route>
       </Route>
@@ -278,21 +256,30 @@ const AppRoutes = () => (
           <Route path="/guest" element={<GuestHome />} />
           <Route path="/guest/reservation" element={<GuestReservation />} />
           <Route path="/guest/restaurant" element={<GuestRestaurantPage />} />
-          <Route path="/guest/orders/track" element={<GuestOrderTrackingPage />}/>
-        
-          
+          <Route
+            path="/guest/orders/track"
+            element={<GuestOrderTrackingPage />}
+          />
+
           <Route path="/guest/banquet" element={<GuestBanquet />} />
           <Route path="/guest/bookings" element={<MyBookings />} />
-          <Route path="/guest/banquet/:hallId/book" element={<GuestBanquetBooking />} />
-          <Route path="/guest/banquet/my-reservations" element={<GuestBanquetReservations />} />
-          <Route path="/guest/banquet/reservations/:bookingId" element={<GuestBanquetReservationDetails />} />
+          <Route
+            path="/guest/banquet/:hallId/book"
+            element={<GuestBanquetBooking />}
+          />
+          <Route
+            path="/guest/banquet/my-reservations"
+            element={<GuestBanquetReservations />}
+          />
+          <Route
+            path="/guest/banquet/reservations/:bookingId"
+            element={<GuestBanquetReservationDetails />}
+          />
           <Route path="/guest/services" element={<GuestServiceRequests />} />
           <Route path="/guest/reviews" element={<GuestReviews />} />
 
-
           <Route path="/guest/cabs/new" element={<CabBookingPage />} />
           <Route path="/guest/lostfound" element={<GuestLostFound />} />
-          
         </Route>
       </Route>
       <Route path="/unauthorized" element={<Unauthorized />} />

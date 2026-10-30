@@ -133,8 +133,8 @@ const HallFormModal = ({ hall, onClose, onSaved }) => {
                 onClick={() => toggleStyle(option.value)}
                 className={`rounded-full border px-3 py-1.5 text-xs font-medium transition ${
                   form.setupStyles.includes(option.value)
-                    ? "border-indigo-500 bg-black text-indigo-700"
-                    : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
+                    ? "border-indigo-500 bg-black text-white"
+                    : "border-slate-200 bg-white text-slate-600 "
                 }`}
               >
                 {option.label}

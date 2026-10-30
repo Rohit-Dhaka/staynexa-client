@@ -47,7 +47,7 @@ const Modal = ({ open, title, subtitle, onClose, children, footer, size = "md", 
             type="button"
             onClick={onClose}
             disabled={busy}
-            className="rounded p-1.5 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700 disabled:opacity-50"
+            className="rounded p-1.5 text-slate-400 transition  disabled:opacity-50"
             aria-label="Close"
           >
             <X size={18} />

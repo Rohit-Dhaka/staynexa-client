@@ -28,9 +28,7 @@ import {
 
 import { getDashboardData } from "../services/dashboard.service";
 
-/* -------------------------------------------------------------------------- */
-/* Helpers                                                                     */
-/* -------------------------------------------------------------------------- */
+
 
 const money = (value) =>
   new Intl.NumberFormat("en-IN", {
@@ -139,9 +137,7 @@ const TONES = {
   slate: "bg-slate-100 text-slate-600",
 };
 
-/* -------------------------------------------------------------------------- */
-/* Reusable UI                                                                 */
-/* -------------------------------------------------------------------------- */
+
 
 function SectionTitle({ icon: Icon, title, description }) {
   return (
@@ -266,9 +262,7 @@ function ModuleChip({ name, module }) {
   );
 }
 
-/* -------------------------------------------------------------------------- */
-/* Recent lists                                                                */
-/* -------------------------------------------------------------------------- */
+
 
 function RecentBookings({ bookings }) {
   const items = readItems(bookings);
@@ -386,9 +380,7 @@ function RecentGuests({ guests }) {
   );
 }
 
-/* -------------------------------------------------------------------------- */
-/* Page                                                                        */
-/* -------------------------------------------------------------------------- */
+
 
 export default function SuperAdminDashboard() {
   const [dashboard, setDashboard] = useState(null);
@@ -465,7 +457,7 @@ export default function SuperAdminDashboard() {
   const guestRequests = d.guestRequests?.data;
   const reviews = d.reviews?.data;
 
-  /* ------------------------------ Rooms ------------------------------ */
+  
 
   const totalRooms = readValue(rooms, [
     "totalRooms", "total", "stats.totalRooms", "summary.totalRooms",
@@ -487,7 +479,7 @@ export default function SuperAdminDashboard() {
       ? Math.round((occupiedRooms / totalRooms) * 100)
       : null);
 
-  /* -------------------------- Front desk today -------------------------- */
+  
 
   const arrivals = readValue(frontDesk, [
     "counts.arrivals", "arrivals", "arrivalsToday", "summary.arrivals",
@@ -501,7 +493,7 @@ export default function SuperAdminDashboard() {
     "counts.inHouse", "inHouse", "inHouseGuests", "summary.inHouse",
   ]);
 
-  /* ------------------------------ Counts ------------------------------ */
+  
 
   const bookingsCount = readCount(d.bookings);
   const guestsCount = readCount(d.guests);
@@ -539,7 +531,7 @@ export default function SuperAdminDashboard() {
     "pending", "byStatus.pending", "counts.pending", "summary.pending",
   ]);
 
-  /* ------------------------------ Money ------------------------------- */
+  
 
   const revenueAmount = readValue(revenue, [
     "totalRevenue", "revenue", "total", "summary.totalRevenue", "collectedAmount",
@@ -563,7 +555,7 @@ export default function SuperAdminDashboard() {
       ? Math.round((collectedAmount / billedTotal) * 100)
       : null;
 
-  /* ----------------------------- Modules ------------------------------ */
+  
 
   const moduleEntries = Object.entries(d).filter(
     ([, value]) =>
@@ -580,7 +572,7 @@ export default function SuperAdminDashboard() {
     year: "numeric",
   });
 
-  /* ---------------------- Operations (extra modules) ---------------------- */
+  
 
   const operations = [
     {
@@ -652,7 +644,7 @@ export default function SuperAdminDashboard() {
       icon: Wallet,
       tone: "amber",
     },
-    // Shown only when the dashboard service returns these modules.
+    
     {
       title: "Cab Services",
       value: show(readCount(d.cab)),
@@ -679,7 +671,7 @@ export default function SuperAdminDashboard() {
     },
   ].filter((item) => item.visible !== false);
 
-  /* --------------------------- Needs attention --------------------------- */
+  
 
   const attention = [];
 
@@ -733,7 +725,7 @@ export default function SuperAdminDashboard() {
   return (
     <main className="min-h-screen">
       <div className="mx-auto max-w-[1600px] space-y-8">
-        {/* Header */}
+        
         <header className="flex flex-col justify-between gap-4 lg:flex-row lg:items-center">
           <div className="flex items-start gap-3">
             <div className="rounded bg-black p-3 text-white">
@@ -791,7 +783,7 @@ export default function SuperAdminDashboard() {
           </div>
         )}
 
-        {/* Key metrics */}
+        
         <section>
           <SectionTitle
             icon={Activity}
@@ -853,7 +845,7 @@ export default function SuperAdminDashboard() {
           </div>
         </section>
 
-        {/* Rooms + attention */}
+        
         <section className="grid gap-6 xl:grid-cols-[1.6fr_1fr]">
           <Panel
             title="Rooms & Front Desk"
@@ -965,7 +957,7 @@ export default function SuperAdminDashboard() {
           </Panel>
         </section>
 
-        {/* Financial */}
+        
         <section>
           <SectionTitle
             icon={DollarSign}
@@ -1042,7 +1034,7 @@ export default function SuperAdminDashboard() {
           </div>
         </section>
 
-        {/* Operations */}
+        
         <section>
           <SectionTitle
             icon={ClipboardList}
@@ -1057,13 +1049,13 @@ export default function SuperAdminDashboard() {
           </div>
         </section>
 
-        {/* Recent */}
+        
         <section className="grid gap-6 xl:grid-cols-[1.6fr_1fr]">
           <RecentBookings bookings={d.bookings} />
           <RecentGuests guests={d.guests} />
         </section>
 
-        {/* Module health */}
+        
         <Panel
           title="Module Health"
           subtitle={`${totalModules} connected dashboard modules`}

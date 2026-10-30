@@ -3,7 +3,7 @@ import api from "../../../api/axiosInstance";
 
 const unwrap = (promise) => promise.then((res) => res.data.data);
 
-// Constants
+
 export const VEHICLE_TYPES = [
   "hatchback",
   "sedan",
@@ -29,7 +29,7 @@ export const CAB_STATUSES = [
   "rejected",
 ];
 
-// Rates and fare estimates
+
 export const getCabRates = (all = false) =>
   unwrap(api.get("/cab/rates", { params: all ? { all: true } : {} }));
 
@@ -39,7 +39,7 @@ export const updateCabRate = (vehicleType, data) =>
 export const estimateCabFare = (params) =>
   unwrap(api.get("/cab/estimate", { params }));
 
-// Vehicles
+
 export const getCabVehicles = (params = {}) =>
   unwrap(api.get("/cab/vehicles", { params }));
 
@@ -55,7 +55,7 @@ export const updateCabVehicle = (id, data) =>
 export const deleteCabVehicle = (id) =>
   unwrap(api.delete(`/cab/vehicles/${id}`));
 
-// Drivers
+
 export const getCabDrivers = (params = {}) =>
   unwrap(api.get("/cab/drivers", { params }));
 
@@ -71,7 +71,7 @@ export const updateCabDriver = (id, data) =>
 export const deleteCabDriver = (id) =>
   unwrap(api.delete(`/cab/drivers/${id}`));
 
-// Cab bookings
+
 export const getCabBookings = (params = {}) =>
   unwrap(api.get("/cab/bookings", { params }));
 
@@ -87,7 +87,7 @@ export const cancelCabBooking = (id, reason = "") =>
 export const rateCabBooking = (id, data) =>
   unwrap(api.post(`/cab/bookings/${id}/rate`, data));
 
-// Dispatch
+
 export const getAvailableCabResources = (id) =>
   unwrap(api.get(`/cab/bookings/${id}/available`));
 

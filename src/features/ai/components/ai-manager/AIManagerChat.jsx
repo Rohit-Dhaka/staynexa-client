@@ -5,8 +5,7 @@ import {
   Send,
   User,
   Sparkles,
-  RotateCcw,
-  MessageCircle,
+  RotateCcw,  
   AlertCircle,
   LoaderCircle,
 } from "lucide-react";
@@ -173,10 +172,10 @@ export default function AIManagerChat() {
 
   return (
     <section className="flex h-full min-h-[620px] flex-col overflow-hidden rounded border border-slate-200 bg-white">
-      {/* Header */}
+      
       <header className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-200 px-5 py-4 sm:px-6">
         <div className="flex min-w-0 items-center gap-3">
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded bg-indigo-50 text-indigo-600">
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded bg-indigo-50 text-black">
             <Bot size={23} />
           </div>
 
@@ -195,7 +194,7 @@ export default function AIManagerChat() {
           type="button"
           onClick={handleClearChat}
           disabled={isLoading}
-          className="inline-flex items-center gap-2 rounded border border-slate-200 px-3 py-2 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
+          className="inline-flex items-center gap-2 rounded border border-slate-200 px-3 py-2 text-sm font-medium text-slate-600 transition-colors  disabled:cursor-not-allowed disabled:opacity-50"
           aria-label="Clear conversation"
         >
           <RotateCcw size={15} />
@@ -203,7 +202,6 @@ export default function AIManagerChat() {
         </button>
       </header>
 
-      {/* Conversation */}
       <div
         className="flex-1 space-y-5 overflow-y-auto px-4 py-5 sm:px-6"
         aria-live="polite"
@@ -218,28 +216,14 @@ export default function AIManagerChat() {
               className={`flex items-start gap-3 ${
                 isUser ? "flex-row-reverse" : "flex-row"
               }`}
-            >
-              <div
-                className={`flex h-9 w-9 shrink-0 items-center justify-center rounded ${
-                  isUser
-                    ? "bg-slate-100 text-slate-600"
-                    : "bg-indigo-50 text-indigo-600"
-                }`}
-              >
-                {isUser ? (
-                  <User size={18} />
-                ) : (
-                  <Bot size={18} />
-                )}
-              </div>
-
+            >             
               <div
                 className={`flex max-w-[85%] flex-col sm:max-w-[78%] ${
                   isUser ? "items-end" : "items-start"
                 }`}
               >
                 <div
-                  className={`rounded px-4 py-3 text-sm leading-6 ${
+                  className={`rounded-[30px] px-4 py-3 text-sm leading-6 ${
                     isUser
                       ? "rounded-tr-md bg-indigo-600 text-white"
                       : "rounded-tl-md border border-slate-200 bg-slate-50 text-slate-700"
@@ -258,7 +242,7 @@ export default function AIManagerChat() {
           );
         })}
 
-        {/* Loading indicator */}
+      
         {isLoading && (
           <div className="flex items-start gap-3">
             <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded bg-indigo-50 text-indigo-600">
@@ -281,7 +265,7 @@ export default function AIManagerChat() {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Suggested questions */}
+      
       {messages.length === 1 && (
         <div className="border-t border-slate-100 px-4 py-4 sm:px-6">
           <div className="mb-3 flex items-center gap-2 text-xs font-semibold text-slate-500">
@@ -296,7 +280,7 @@ export default function AIManagerChat() {
                 type="button"
                 onClick={() => handleSuggestionClick(question)}
                 disabled={isLoading}
-                className="rounded border border-slate-200 px-3 py-2 text-left text-xs leading-5 text-slate-600 transition-colors hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700 disabled:cursor-not-allowed disabled:opacity-50"
+                className="rounded border border-slate-200 px-3 py-2 text-left text-xs leading-5 text-slate-600 transition-colors  disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {question}
               </button>
@@ -305,7 +289,6 @@ export default function AIManagerChat() {
         </div>
       )}
 
-      {/* Error message */}
       {error && (
         <div
           className="mx-4 mb-3 flex items-start gap-2 rounded border border-red-200 bg-red-50 px-3 py-3 text-sm text-red-700 sm:mx-6"
@@ -323,7 +306,7 @@ export default function AIManagerChat() {
           <button
             type="button"
             onClick={() => setError("")}
-            className="shrink-0 rounded px-2 py-1 text-xs font-medium hover:bg-red-100"
+            className="shrink-0 rounded px-2 py-1 text-xs font-medium "
             aria-label="Dismiss error"
           >
             Dismiss
@@ -331,14 +314,14 @@ export default function AIManagerChat() {
         </div>
       )}
 
-      {/* Input */}
+      
       <form
         onSubmit={handleSubmit}
         className="border-t border-slate-200 bg-white p-4 sm:px-4 sm:py-3"
       >
   
 
-        <div className="flex items-end gap-2 rounded-full border border-slate-300 bg-white p-2 transition-colors focus-within:border-indigo-400">
+        <div className="flex items-end gap-2 rounded-full border border-slate-300 bg-white py-1 px-1 transition-colors focus-within:border-indigo-400">
           <textarea
             ref={inputRef}
             id="ai-manager-message"
@@ -355,13 +338,13 @@ export default function AIManagerChat() {
             rows={1}
             maxLength={2000}
             disabled={isLoading}
-            className="max-h-32 min-h-10 flex-1 resize-y rounded border-0 bg-transparent px-2 py-2.5 text-sm text-slate-800 outline-none placeholder:text-slate-400 focus:ring-0 disabled:cursor-not-allowed disabled:opacity-60"
+            className=" min-h-10 flex-1 resize-y rounded border-0 bg-transparent ps-3 pe-2 py-2.5 text-sm text-slate-800 outline-none placeholder:text-slate-400 focus:ring-0 disabled:cursor-not-allowed disabled:opacity-60"
           />
 
           <button
             type="submit"
             disabled={isLoading || !input.trim()}
-            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-indigo-600 text-white transition-colors hover:bg-indigo-700 disabled:cursor-not-allowed disabled:bg-slate-200 disabled:text-slate-400"
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-black text-white transition-colors  disabled:cursor-not-allowed disabled:bg-slate-200 disabled:text-slate-400"
             aria-label="Send message"
             title="Send message"
           >

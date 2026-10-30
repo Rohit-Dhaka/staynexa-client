@@ -51,14 +51,14 @@ const menuGroups = [
     items: [
       // { label: "Dashboard", path: "/dashboard", icon: LayoutDashboard, roles: ALL, },
       { label: "Dashboard", path: "/ai-manager", icon: LayoutDashboard, roles: ALL, },
-      // { label: "Ai Manager", path: "/ai-manager", icon: AirVent, roles: ALL, },
+      
     ],
   },
   {
     title: "Hotel Operations",
     items: [
       { label: "Bookings", path: "/bookings", icon: CalendarCheck, roles: ALL },
-      { label: "Calendar", path: "/calendar", icon: CalendarDays, roles: ALL },
+      
       {
         label: "Front Desk",
         path: "/front-desk",
@@ -90,13 +90,7 @@ const menuGroups = [
         path: "/banquet",
         icon: PartyPopper,
         roles: [SUPER_ADMIN, MANAGER, STAFF],
-      },
-      {
-        label: "Banquet Calendar",
-        path: "/banquet/calendar",
-        icon: CalendarDays,
-        roles: [SUPER_ADMIN, MANAGER, STAFF],
-      },
+      },  
       {
         label: "Banquet Halls",
         path: "/banquet/halls",
@@ -393,7 +387,7 @@ const Sidebar = ({ open, onClose, collapsed, onToggleCollapse }) => {
             ${
               isActive
                 ? "bg-white text-black"
-                : "text-neutral-400 hover:bg-white/10 hover:text-white"
+                : "text-neutral-400 "
             }
           `}
         >
@@ -401,7 +395,7 @@ const Sidebar = ({ open, onClose, collapsed, onToggleCollapse }) => {
             className={`flex h-7 w-7 shrink-0 items-center justify-center rounded transition ${
               isActive
                 ? "text-black"
-                : "text-neutral-500 group-hover:text-white"
+                : "text-neutral-500 "
             }`}
           >
             <Icon size={16} strokeWidth={isActive ? 2.2 : 1.8} />
@@ -472,7 +466,7 @@ const Sidebar = ({ open, onClose, collapsed, onToggleCollapse }) => {
               type="button"
               onClick={onClose}
               aria-label="Close sidebar"
-              className="rounded p-1.5 text-neutral-400 transition hover:bg-white/10 hover:text-white lg:hidden"
+              className="rounded p-1.5 text-neutral-400 transition  lg:hidden"
             >
               <X size={18} />
             </button>
@@ -490,7 +484,7 @@ const Sidebar = ({ open, onClose, collapsed, onToggleCollapse }) => {
             onClick={toggleCollapse}
             aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
             title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-            className={`flex h-8 items-center rounded border border-white/10 bg-white/5 text-neutral-400 transition hover:border-white/30 hover:bg-white/10 hover:text-white ${
+            className={`flex h-8 items-center rounded border border-white/10 bg-white/5 text-neutral-400 transition  ${
               isCollapsed
                 ? "w-9 justify-center"
                 : "w-full justify-between px-3"
@@ -564,7 +558,7 @@ const Sidebar = ({ open, onClose, collapsed, onToggleCollapse }) => {
                   type="button"
                   role="menuitem"
                   onClick={handleProfile}
-                  className="flex w-full items-center gap-2.5 rounded px-2.5 py-1.5 text-sm font-medium text-neutral-300 hover:bg-white/10 hover:text-white"
+                  className="flex w-full items-center gap-2.5 rounded px-2.5 py-1.5 text-sm font-medium text-neutral-300 "
                 >
                   <UserCircle2 size={16} />
                   My Profile
@@ -574,7 +568,7 @@ const Sidebar = ({ open, onClose, collapsed, onToggleCollapse }) => {
                   role="menuitem"
                   onClick={handleLogout}
                   disabled={loggingOut}
-                  className="flex w-full items-center gap-2.5 rounded px-2.5 py-1.5 text-sm font-medium text-neutral-300 hover:bg-white hover:text-black disabled:opacity-50"
+                  className="flex w-full items-center gap-2.5 rounded px-2.5 py-1.5 text-sm font-medium text-neutral-300  disabled:opacity-50"
                 >
                   <LogOut size={16} />
                   {loggingOut ? "Logging out..." : "Logout"}
@@ -589,9 +583,9 @@ const Sidebar = ({ open, onClose, collapsed, onToggleCollapse }) => {
             aria-haspopup="menu"
             aria-expanded={menuOpen}
             title={isCollapsed ? displayName : undefined}
-            className={`flex w-full items-center rounded transition ${
-              menuOpen ? "bg-white/10" : "hover:bg-white/10"
-            } ${isCollapsed ? "justify-center p-1" : "gap-2.5 p-1.5"}`}
+            className={`flex w-full items-center rounded transition 
+              
+             ${isCollapsed ? "justify-center p-1" : "gap-2.5 p-1.5"}`}
           >
             <Avatar name={displayName} size="h-8 w-8" />
             {!isCollapsed && (

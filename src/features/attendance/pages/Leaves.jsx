@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
+import { ChevronLeft, ChevronRight, Loader2, Plus } from "lucide-react";
 import useAuth from "../../../hooks/useAuth";
 import { ROLES } from "../../../constants/roles";
 import Modal from "../../../components/common/Modal";
@@ -110,7 +110,7 @@ const Leaves = () => {
     if (!cancelling) return;
     const needsReason = cancelling.status !== "pending";
     if (needsReason && !cancelReason.trim()) {
-      setCancelError("Cancel ka reason likho");
+      setCancelError("Enter a cancellation reason.");
       return;
     }
 
@@ -136,27 +136,64 @@ const Leaves = () => {
     { value: "cancelled", label: "Cancelled" },
   ];
 
+  const renderActions = (item, mobile = false) => (
+    <div className={`flex gap-2 ${mobile ? "w-full flex-col sm:flex-row" : "justify-end"}`}>
+      <button
+        type="button"
+        onClick={() => setViewing(item)}
+        className="rounded border border-slate-300 px-3 py-2 text-xs font-medium text-slate-700"
+      >
+        {isManager && item.status === "pending" ? "Review Request" : "View Details"}
+      </button>
+      {canCancel(item) && (
+        <button
+          type="button"
+          onClick={() => {
+            setCancelling(item);
+            setCancelReason("");
+            setCancelError("");
+          }}
+          className="rounded border border-rose-200 px-3 py-2 text-xs font-medium text-rose-600"
+        >
+          Cancel Request
+        </button>
+      )}
+    </div>
+  );
+
   return (
     <div className="space-y-5">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="min-w-0">
           <h2 className="text-2xl font-semibold text-slate-900">Leave Management</h2>
-          <p className="text-sm text-slate-500">
+          <p className="mt-1 text-sm text-slate-500">
             {isManager
               ? "Review, approve, or reject leave requests."
               : "View and manage your leave requests."}
           </p>
         </div>
 
-        <ExportButtons
-          title="Leave Management"
-          fileName="leave-requests"
-          columns={exportColumns}
-          getRows={getExportRows}
-        />
+        <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center">
+          {!isManager && (
+            <button
+              type="button"
+              onClick={() => setApplying(true)}
+              className="inline-flex min-h-10 items-center justify-center gap-2 rounded bg-slate-900 px-4 py-2 text-sm font-semibold text-white"
+            >
+              <Plus size={16} />
+              Apply for Leave
+            </button>
+          )}
+          <ExportButtons
+            title="Leave Management"
+            fileName="leave-requests"
+            columns={exportColumns}
+            getRows={getExportRows}
+          />
+        </div>
       </div>
 
-      <div className="flex gap-2 overflow-x-auto pb-1">
+      <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-2">
         {tabs.map((t) => (
           <button
             key={t.label}
@@ -165,10 +202,10 @@ const Leaves = () => {
               setStatus(t.value);
               setPage(1);
             }}
-            className={`whitespace-nowrap rounded-full px-4 py-1.5 text-sm font-medium transition ${
+            className={`shrink-0 whitespace-nowrap rounded-full px-4 py-2 text-sm font-medium ${
               status === t.value
-                ? "bg-black text-white"
-                : "bg-white text-slate-600 ring-1 ring-slate-200 hover:bg-slate-50"
+                ? "bg-slate-900 text-white"
+                : "bg-white text-slate-600 ring-1 ring-slate-200"
             }`}
           >
             {t.label}
@@ -178,107 +215,141 @@ const Leaves = () => {
       </div>
 
       {error && (
-        <p className="rounded bg-rose-50 px-4 py-3 text-sm text-rose-600">{error}</p>
+        <p role="alert" className="rounded border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-600">
+          {error}
+        </p>
       )}
 
-      <div className="overflow-x-auto rounded border border-slate-200 bg-white">
-        <table className="w-full min-w-[820px] text-left text-sm">
-          <thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
-            <tr>
-              <th className="px-4 py-3">Request ID</th>
-              {isManager && <th className="px-4 py-3">Staff Member</th>}
-              <th className="px-4 py-3">Leave Type</th>
-              <th className="px-4 py-3">Dates</th>
-              <th className="px-4 py-3">Duration</th>
-              <th className="px-4 py-3">Status</th>
-              <th className="px-4 py-3" />
-            </tr>
-          </thead>
+      {loading && (
+        <div className="flex justify-center rounded border border-slate-200 bg-white py-12 text-slate-400">
+          <Loader2 size={22} />
+        </div>
+      )}
 
-          <tbody>
-            {loading && (
-              <tr>
-                <td colSpan={isManager ? 7 : 6} className="px-4 py-12 text-center text-slate-400">
-                  <Loader2 size={20} className="mx-auto animate-spin" />
-                </td>
-              </tr>
-            )}
+      {!loading && data.items.length === 0 && (
+        <div className="rounded border border-slate-200 bg-white px-4 py-12 text-center text-sm text-slate-500">
+          No leave requests found.
+        </div>
+      )}
 
-            {!loading && data.items.length === 0 && (
-              <tr>
-                <td colSpan={isManager ? 7 : 6} className="px-4 py-12 text-center text-slate-400">
-                  No leave requests found.
-                </td>
-              </tr>
-            )}
-
-            {!loading && data.items.map((item) => (
-              <tr key={item._id} className="border-t border-slate-100">
-                <td className="px-4 py-3">
-                  <p className="font-medium text-slate-900">{item.requestNumber}</p>
-                  <p className="max-w-[200px] truncate text-xs text-slate-500">{item.reason}</p>
-                </td>
-
-                {isManager && <td className="px-4 py-3">{item.user?.name || "-"}</td>}
-
-                <td className="px-4 py-3">{leaveTypeLabel(item.requestedType)}</td>
-
-                <td className="px-4 py-3">
-                  {formatDay(item.fromDateKey)}
-                  {item.toDateKey !== item.fromDateKey && <span className="text-slate-400"> to </span>}
-                  {item.toDateKey !== item.fromDateKey && formatDay(item.toDateKey)}
-                </td>
-
-                <td className="px-4 py-3">
-                  {formatUnits(item.totalUnits)}
-                  {item.approvedUnits > 0 && (
-                    <p className="text-xs text-slate-500">
-                      Paid: {formatUnits(item.paidUnits)}, Unpaid: {formatUnits(item.unpaidUnits)}
+      {!loading && data.items.length > 0 && (
+        <>
+          
+          <div className="grid grid-cols-1 gap-3 lg:hidden">
+            {data.items.map((item) => (
+              <article key={item._id} className="min-w-0 rounded border border-slate-200 bg-white p-4">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="break-words text-sm font-semibold text-slate-900">
+                      {item.requestNumber || "Leave Request"}
                     </p>
-                  )}
-                </td>
-
-                <td className="px-4 py-3"><LeaveStatusChip status={item.status} /></td>
-
-                <td className="px-4 py-3">
-                  <div className="flex justify-end gap-2">
-                    <button
-                      type="button"
-                      onClick={() => setViewing(item)}
-                      className="rounded border border-slate-300 px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50"
-                    >
-                      {isManager && item.status === "pending" ? "Review Request" : "View Details"}
-                    </button>
-
-                    {canCancel(item) && (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setCancelling(item);
-                          setCancelReason("");
-                          setCancelError("");
-                        }}
-                        className="rounded px-3 py-1.5 text-xs font-medium text-rose-600 hover:bg-rose-50"
-                      >
-                        Cancel Request
-                      </button>
+                    {isManager && (
+                      <p className="mt-1 truncate text-sm text-slate-600">{item.user?.name || "Unknown staff member"}</p>
                     )}
                   </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+                  <div className="shrink-0">
+                    <LeaveStatusChip status={item.status} />
+                  </div>
+                </div>
 
-      <div className="flex items-center justify-between text-sm text-slate-600">
-        <span>Page {data.page} of {data.pages} ({data.total} requests)</span>
-        <div className="flex gap-2">
+                <div className="mt-4 grid grid-cols-2 gap-x-3 gap-y-4">
+                  <div className="min-w-0">
+                    <p className="text-xs text-slate-500">Leave Type</p>
+                    <p className="mt-1 break-words text-sm font-medium text-slate-800">{leaveTypeLabel(item.requestedType)}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-slate-500">Duration</p>
+                    <p className="mt-1 text-sm font-medium text-slate-800">{formatUnits(item.totalUnits)}</p>
+                    {item.approvedUnits > 0 && (
+                      <p className="mt-1 text-xs leading-5 text-slate-500">
+                        Paid: {formatUnits(item.paidUnits)} · Unpaid: {formatUnits(item.unpaidUnits)}
+                      </p>
+                    )}
+                  </div>
+                  <div className="col-span-2 min-w-0">
+                    <p className="text-xs text-slate-500">Dates</p>
+                    <p className="mt-1 text-sm font-medium text-slate-800">
+                      {formatDay(item.fromDateKey)}
+                      {item.toDateKey !== item.fromDateKey && ` to ${formatDay(item.toDateKey)}`}
+                    </p>
+                  </div>
+                  {item.reason && (
+                    <div className="col-span-2 min-w-0">
+                      <p className="text-xs text-slate-500">Reason</p>
+                      <p className="mt-1 break-words text-sm text-slate-700">{item.reason}</p>
+                    </div>
+                  )}
+                  {(item.reviewRemarks || item.managerRemarks) && (
+                    <div className="col-span-2 min-w-0">
+                      <p className="text-xs text-slate-500">Review Remarks</p>
+                      <p className="mt-1 break-words text-sm text-slate-700">{item.reviewRemarks || item.managerRemarks}</p>
+                    </div>
+                  )}
+                </div>
+
+                <div className="mt-4 border-t border-slate-100 pt-3">
+                  {renderActions(item, true)}
+                </div>
+              </article>
+            ))}
+          </div>
+
+          
+          <div className="hidden overflow-x-auto rounded border border-slate-200 bg-white lg:block">
+            <table className="w-full min-w-[820px] text-left text-sm">
+              <thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
+                <tr>
+                  <th className="px-4 py-3">Request ID</th>
+                  {isManager && <th className="px-4 py-3">Staff Member</th>}
+                  <th className="px-4 py-3">Leave Type</th>
+                  <th className="px-4 py-3">Dates</th>
+                  <th className="px-4 py-3">Duration</th>
+                  <th className="px-4 py-3">Status</th>
+                  <th className="px-4 py-3" />
+                </tr>
+              </thead>
+              <tbody>
+                {data.items.map((item) => (
+                  <tr key={item._id} className="border-t border-slate-100">
+                    <td className="px-4 py-3">
+                      <p className="font-medium text-slate-900">{item.requestNumber}</p>
+                      <p className="max-w-[200px] truncate text-xs text-slate-500">{item.reason}</p>
+                    </td>
+                    {isManager && <td className="px-4 py-3">{item.user?.name || "-"}</td>}
+                    <td className="px-4 py-3">{leaveTypeLabel(item.requestedType)}</td>
+                    <td className="px-4 py-3">
+                      {formatDay(item.fromDateKey)}
+                      {item.toDateKey !== item.fromDateKey && <span className="text-slate-400"> to </span>}
+                      {item.toDateKey !== item.fromDateKey && formatDay(item.toDateKey)}
+                    </td>
+                    <td className="px-4 py-3">
+                      {formatUnits(item.totalUnits)}
+                      {item.approvedUnits > 0 && (
+                        <p className="text-xs text-slate-500">
+                          Paid: {formatUnits(item.paidUnits)}, Unpaid: {formatUnits(item.unpaidUnits)}
+                        </p>
+                      )}
+                    </td>
+                    <td className="px-4 py-3"><LeaveStatusChip status={item.status} /></td>
+                    <td className="px-4 py-3">{renderActions(item)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
+      )}
+
+      <div className="flex flex-col gap-3 rounded border border-slate-200 bg-white p-3 text-sm text-slate-600 sm:flex-row sm:items-center sm:justify-between">
+        <span className="text-center sm:text-left">
+          Page {data.page} of {data.pages} ({data.total} requests)
+        </span>
+        <div className="grid grid-cols-2 gap-2 sm:flex">
           <button
             type="button"
             disabled={page <= 1 || loading}
             onClick={() => setPage((p) => p - 1)}
-            className="flex items-center gap-1 rounded border border-slate-300 bg-white px-3 py-1.5 hover:bg-slate-50 disabled:opacity-40"
+            className="inline-flex items-center justify-center gap-1 rounded border border-slate-300 bg-white px-3 py-2 disabled:opacity-40"
           >
             <ChevronLeft size={16} /> Previous
           </button>
@@ -286,7 +357,7 @@ const Leaves = () => {
             type="button"
             disabled={page >= data.pages || loading}
             onClick={() => setPage((p) => p + 1)}
-            className="flex items-center gap-1 rounded border border-slate-300 bg-white px-3 py-1.5 hover:bg-slate-50 disabled:opacity-40"
+            className="inline-flex items-center justify-center gap-1 rounded border border-slate-300 bg-white px-3 py-2 disabled:opacity-40"
           >
             Next <ChevronRight size={16} />
           </button>

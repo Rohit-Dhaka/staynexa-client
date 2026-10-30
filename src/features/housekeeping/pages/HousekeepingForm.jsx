@@ -19,7 +19,7 @@ const BACK_PATH = "/housekeeping";
 const MAX_CHECKLIST_ITEMS = 100;
 
 const inputClass =
-  "w-full rounded border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 disabled:opacity-60";
+  "w-full rounded border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none placeholder:text-slate-400 focus:border-indigo-500 disabled:opacity-60";
 const labelClass = "mb-1 block text-xs font-medium text-slate-700";
 
 const CHECKLIST_TEMPLATES = {
@@ -190,7 +190,6 @@ const HousekeepingForm = () => {
     setForm((previous) => {
       const next = { ...previous, [name]: value };
 
-      
       if (name === "taskType") {
         if (value === "public_area_cleaning") {
           next.room = "";
@@ -321,7 +320,7 @@ const HousekeepingForm = () => {
           <Link
             to={BACK_PATH}
             aria-label="Back to housekeeping"
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded border border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded border border-slate-200 bg-white text-slate-600"
           >
             <ArrowLeft size={17} />
           </Link>
@@ -409,10 +408,10 @@ const HousekeepingForm = () => {
                       <option value="">Select room</option>
                       {rooms.map((room) => (
                         <option key={room._id || room.id} value={room._id || room.id}>
-                          Room {room.roomNumber ?? room.number ?? "—"} · Floor{" "}
+                          Room {room.roomNumber ?? room.number ?? "—"} · Floor{""}
                           {room.floor ?? "—"}
                           {room.status
-                            ? ` · ${String(room.status).replace(/_/g, " ")}`
+                            ? ` · ${String(room.status).replace(/_/g, "")}`
                             : ""}
                         </option>
                       ))}
@@ -504,7 +503,7 @@ const HousekeepingForm = () => {
                     type="button"
                     onClick={handleAddAllSuggestions}
                     disabled={submitting}
-                    className="text-xs font-semibold text-indigo-600 hover:text-indigo-800 disabled:opacity-50"
+                    className="text-xs font-semibold text-indigo-600 disabled:opacity-50"
                   >
                     Add all
                   </button>
@@ -516,7 +515,7 @@ const HousekeepingForm = () => {
                       type="button"
                       onClick={() => addItem(item)}
                       disabled={submitting || checklist.length >= MAX_CHECKLIST_ITEMS}
-                      className="inline-flex items-center gap-1 rounded border border-slate-200 px-2.5 py-1.5 text-xs text-slate-700 hover:border-indigo-300 hover:bg-black disabled:opacity-50"
+                      className="inline-flex items-center gap-1 rounded border border-slate-200 px-2.5 py-1.5 text-xs text-slate-700 disabled:opacity-50"
                     >
                       <Plus size={12} />
                       {item}
@@ -546,7 +545,7 @@ const HousekeepingForm = () => {
                 type="button"
                 onClick={handleAddItem}
                 disabled={submitting || !newItem.trim() || checklist.length >= MAX_CHECKLIST_ITEMS}
-                className="inline-flex shrink-0 items-center gap-1 rounded bg-slate-900 px-3 text-sm font-medium text-white hover:bg-slate-700 disabled:opacity-50"
+                className="inline-flex shrink-0 items-center gap-1 rounded bg-slate-900 px-3 text-sm font-medium text-white disabled:opacity-50"
               >
                 <Plus size={15} />
                 Add
@@ -560,7 +559,7 @@ const HousekeepingForm = () => {
                     key={`${item}-${index}`}
                     className="flex min-w-0 items-center gap-2 rounded bg-slate-50 px-2.5 py-2"
                   >
-                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-white text-[11px] font-medium text-slate-500 ring-1 ring-slate-200">
+                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-white text-[11px] font-medium text-slate-500 ring-slate-200">
                       {index + 1}
                     </span>
                     <span className="min-w-0 flex-1 break-words text-xs text-slate-700">
@@ -575,7 +574,7 @@ const HousekeepingForm = () => {
                       }
                       disabled={submitting}
                       aria-label={`Remove ${item}`}
-                      className="shrink-0 rounded p-1 text-slate-400 hover:bg-rose-50 hover:text-rose-600 disabled:opacity-50"
+                      className="shrink-0 rounded p-1 text-slate-400 disabled:opacity-50"
                     >
                       <X size={14} />
                     </button>
@@ -604,16 +603,16 @@ const HousekeepingForm = () => {
               type="button"
               onClick={() => navigate(BACK_PATH)}
               disabled={submitting}
-              className="rounded border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-60"
+              className="rounded border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 disabled:opacity-60"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={submitting || loading}
-              className="inline-flex items-center justify-center gap-2 rounded bg-black px-4 py-2 text-sm font-semibold text-white hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-70"
+              className="inline-flex items-center justify-center gap-2 rounded bg-black px-4 py-2 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-70"
             >
-              {submitting && <Loader2 size={15} className="animate-spin" />}
+              {submitting && <Loader2 size={15} className="" />}
               Create Task
             </button>
           </div>

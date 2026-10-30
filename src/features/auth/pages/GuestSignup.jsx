@@ -12,7 +12,7 @@ const passwordChecks = [
 ];
 
 const inputClass =
-  "w-full rounded border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 disabled:opacity-60";
+  "w-full rounded border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400  focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 disabled:opacity-60";
 
 const labelClass = "mb-2 block text-xs font-medium text-slate-800";
 
@@ -149,7 +149,7 @@ const GuestSignup = () => {
               type="button"
               onClick={() => setShowPassword((prev) => !prev)}
               aria-label={showPassword ? "Hide password" : "Show password"}
-              className="absolute inset-y-0 right-0 flex items-center px-4 text-slate-400 transition hover:text-slate-800"
+              className="absolute inset-y-0 right-0 flex items-center px-4 text-slate-400 transition "
             >
               {showPassword ? <EyeOff size={17} /> : <Eye size={17} />}
             </button>
@@ -190,7 +190,7 @@ const GuestSignup = () => {
         <button
           type="submit"
           disabled={submitting}
-          className="flex w-full items-center justify-center gap-2 rounded bg-[#1a1a1a] py-3 text-sm font-semibold text-white transition hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-70"
+          className="flex w-full items-center justify-center gap-2 rounded bg-[#1a1a1a] py-3 text-sm font-semibold text-white transition  disabled:cursor-not-allowed disabled:opacity-70"
         >
           {submitting && <Loader2 size={16} className="animate-spin" />}
           {submitting ? "Creating account..." : "Create account"}
@@ -199,7 +199,7 @@ const GuestSignup = () => {
 
       <p className="mt-8 text-center text-xs text-slate-500">
         Already have an account?{" "}
-        <Link to="/login" className="font-semibold text-blue-600 hover:underline">
+        <Link to="/login" className="font-semibold text-blue-600 ">
           Login
         </Link>
       </p>

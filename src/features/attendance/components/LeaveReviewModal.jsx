@@ -112,7 +112,7 @@ const LeaveReviewModal = ({ leaveId, canReview, onClose, onDone }) => {
               type="button"
               onClick={onClose}
               disabled={saving}
-              className="rounded border border-slate-300 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-60"
+              className="rounded border border-slate-300 px-4 py-2.5 text-sm font-medium text-slate-700 disabled:opacity-60"
             >
               Band karo
             </button>
@@ -120,7 +120,7 @@ const LeaveReviewModal = ({ leaveId, canReview, onClose, onDone }) => {
               type="button"
               onClick={rejectAll}
               disabled={saving}
-              className="rounded border border-rose-200 px-4 py-2.5 text-sm font-semibold text-rose-600 hover:bg-rose-50 disabled:opacity-60"
+              className="rounded border border-rose-200 px-4 py-2.5 text-sm font-semibold text-rose-600  disabled:opacity-60"
             >
               Poori reject karo
             </button>
@@ -138,7 +138,7 @@ const LeaveReviewModal = ({ leaveId, canReview, onClose, onDone }) => {
           <button
             type="button"
             onClick={onClose}
-            className="rounded border border-slate-300 px-5 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
+            className="rounded border border-slate-300 px-5 py-2.5 text-sm font-medium text-slate-700 "
           >
             Band karo
           </button>

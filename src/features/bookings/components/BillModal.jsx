@@ -103,7 +103,7 @@ const BillModal = ({ booking, onClose, onDone }) => {
     <button
       type="button"
       onClick={close}
-      className="rounded border border-slate-300 px-5 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
+      className="rounded border border-slate-300 px-5 py-2.5 text-sm font-medium text-slate-700 "
     >
       Close
     </button>
@@ -170,7 +170,7 @@ const BillModal = ({ booking, onClose, onDone }) => {
                         onClick={() =>
                           setVoiding({ id: item._id, reason: "" })
                         }
-                        className="text-xs font-medium text-rose-600 hover:underline"
+                        className="text-xs font-medium text-rose-600 "
                       >
                         Void
                       </button>
@@ -200,7 +200,7 @@ const BillModal = ({ booking, onClose, onDone }) => {
             type="button"
             onClick={submitVoid}
             disabled={busy}
-            className="rounded bg-rose-600 px-4 py-2 text-sm font-semibold text-white hover:bg-rose-700 disabled:opacity-60"
+            className="rounded bg-rose-600 px-4 py-2 text-sm font-semibold text-white  disabled:opacity-60"
           >
             Void Charge
           </button>

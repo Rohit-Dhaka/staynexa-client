@@ -167,7 +167,7 @@ export default function GuestBanquetReservations() {
             <button
               onClick={loadBookings}
               disabled={loading}
-              className="w-fit rounded border border-slate-200 px-4 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 disabled:opacity-50"
+              className="w-fit rounded border border-slate-200 px-4 py-2 text-sm font-medium text-slate-600 transition  disabled:opacity-50"
             >
               {loading ? "Refreshing..." : "↻ Refresh"}
             </button>
@@ -188,7 +188,7 @@ export default function GuestBanquetReservations() {
                 className={`shrink-0 rounded px-4 py-2 text-sm font-medium transition ${
                   filter === value
                     ? "bg-black text-indigo-700"
-                    : "text-slate-500 hover:bg-slate-50 hover:text-slate-800"
+                    : "text-slate-500 "
                 }`}
               >
                 {label}
@@ -256,7 +256,7 @@ export default function GuestBanquetReservations() {
                 return (
                   <article
                     key={booking._id || booking.id || booking.bookingNumber}
-                    className="px-5 py-6 transition hover:bg-slate-50/70 sm:px-6"
+                    className="px-5 py-6 transition  sm:px-6"
                   >
                     <div className="flex flex-col justify-between gap-5 lg:flex-row lg:items-start">
                       <div className="min-w-0 flex-1">
@@ -341,7 +341,7 @@ export default function GuestBanquetReservations() {
                             `/guest/banquet/reservations/${bookingId}`
                           )
                         }
-                        className="inline-flex w-fit shrink-0 items-center gap-2 rounded border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:border-indigo-300 hover:bg-black hover:text-indigo-700"
+                        className="inline-flex w-fit shrink-0 items-center gap-2 rounded border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-700 transition "
                       >
                         View Details
                         <span aria-hidden="true">→</span>

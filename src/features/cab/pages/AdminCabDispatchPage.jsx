@@ -262,7 +262,7 @@ function RejectModal({ booking, saving, onClose, onConfirm }) {
             onClick={onClose}
             disabled={saving}
             aria-label="Close dialog"
-            className="rounded border border-slate-200 p-2 text-slate-500 hover:bg-slate-50"
+            className="rounded border border-slate-200 p-2 text-slate-500 "
           >
             <X size={17} />
           </button>
@@ -299,7 +299,7 @@ function RejectModal({ booking, saving, onClose, onConfirm }) {
               type="button"
               onClick={onClose}
               disabled={saving}
-              className={`${buttonClass} border-slate-300 bg-white text-slate-700 hover:bg-slate-50`}
+              className={`${buttonClass} border-slate-300 bg-white text-slate-700 `}
             >
               Cancel
             </button>
@@ -307,7 +307,7 @@ function RejectModal({ booking, saving, onClose, onConfirm }) {
             <button
               type="submit"
               disabled={saving}
-              className={`${buttonClass} border-rose-600 bg-rose-600 text-white hover:bg-rose-700`}
+              className={`${buttonClass} border-rose-600 bg-rose-600 text-white`}
             >
               {saving && <LoaderCircle size={16} className="animate-spin" />}
               Reject Booking
@@ -381,7 +381,7 @@ function AssignModal({
             onClick={onClose}
             disabled={saving}
             aria-label="Close dialog"
-            className="rounded border border-slate-200 p-2 text-slate-500 hover:bg-slate-50"
+            className="rounded border border-slate-200 p-2 text-slate-500 "
           >
             <X size={17} />
           </button>
@@ -494,7 +494,7 @@ function AssignModal({
                 type="button"
                 onClick={onClose}
                 disabled={saving}
-                className={`${buttonClass} border-slate-300 bg-white text-slate-700 hover:bg-slate-50`}
+                className={`${buttonClass} border-slate-300 bg-white text-slate-700 `}
               >
                 Cancel
               </button>
@@ -502,7 +502,7 @@ function AssignModal({
               <button
                 type="submit"
                 disabled={saving || loading || !vehicles.length || !drivers.length}
-                className={`${buttonClass} border-indigo-600 bg-black text-white hover:bg-black`}
+                className={`${buttonClass} border-indigo-600 bg-black text-white `}
               >
                 {saving && <LoaderCircle size={16} className="animate-spin" />}
                 Assign Resources
@@ -584,7 +584,7 @@ function CompleteTripModal({ booking, saving, onClose, onSubmit }) {
             onClick={onClose}
             disabled={saving}
             aria-label="Close dialog"
-            className="rounded border border-slate-200 p-2 text-slate-500 hover:bg-slate-50"
+            className="rounded border border-slate-200 p-2 text-slate-500 "
           >
             <X size={17} />
           </button>
@@ -655,7 +655,7 @@ function CompleteTripModal({ booking, saving, onClose, onSubmit }) {
               type="button"
               onClick={onClose}
               disabled={saving}
-              className={`${buttonClass} border-slate-300 bg-white text-slate-700 hover:bg-slate-50`}
+              className={`${buttonClass} border-slate-300 bg-white text-slate-700 `}
             >
               Cancel
             </button>
@@ -663,7 +663,7 @@ function CompleteTripModal({ booking, saving, onClose, onSubmit }) {
             <button
               type="submit"
               disabled={saving}
-              className={`${buttonClass} border-emerald-600 bg-emerald-600 text-white hover:bg-emerald-700`}
+              className={`${buttonClass} border-emerald-600 bg-emerald-600 text-white `}
             >
               {saving && <LoaderCircle size={16} className="animate-spin" />}
               Complete Trip
@@ -945,7 +945,7 @@ export default function AdminCabDispatchPage() {
             type="button"
             onClick={loadBookings}
             disabled={loading || saving}
-            className={`${buttonClass} border-slate-300 bg-white text-slate-700 hover:bg-slate-100`}
+            className={`${buttonClass} border-slate-300 bg-white text-slate-700 `}
           >
             <RefreshCw
               size={16}
@@ -972,7 +972,7 @@ export default function AdminCabDispatchPage() {
                 setActionError("");
               }}
               aria-label="Dismiss error"
-              className="rounded p-1 hover:bg-rose-100"
+              className="rounded p-1 "
             >
               <X size={16} />
             </button>
@@ -1032,7 +1032,7 @@ export default function AdminCabDispatchPage() {
               className={`rounded border p-3 text-left transition ${
                 statusFilter === status
                   ? "border-indigo-300 bg-black"
-                  : "border-slate-200 bg-white hover:bg-slate-50"
+                  : "border-slate-200 bg-white "
               }`}
             >
               <p className="text-xs text-slate-500">{formatStatus(status)}</p>
@@ -1112,7 +1112,7 @@ export default function AdminCabDispatchPage() {
                     setSearch("");
                     setStatusFilter("all");
                   }}
-                  className={`${buttonClass} mt-4 border-slate-300 bg-white text-slate-700 hover:bg-slate-50`}
+                  className={`${buttonClass} mt-4 border-slate-300 bg-white text-slate-700 `}
                 >
                   Clear Filters
                 </button>
@@ -1264,7 +1264,7 @@ export default function AdminCabDispatchPage() {
                           type="button"
                           onClick={() => openBookingDetails(booking)}
                           disabled={saving}
-                          className={`${buttonClass} border-slate-300 bg-white text-slate-700 hover:bg-slate-50`}
+                          className={`${buttonClass} border-slate-300 bg-white text-slate-700 `}
                         >
                           View Details
                         </button>
@@ -1274,7 +1274,7 @@ export default function AdminCabDispatchPage() {
                             type="button"
                             onClick={() => setAcceptTarget(booking)}
                             disabled={saving}
-                            className={`${buttonClass} border-emerald-600 bg-emerald-600 text-white hover:bg-emerald-700`}
+                            className={`${buttonClass} border-emerald-600 bg-emerald-600 text-white `}
                           >
                             <CheckCircle size={15} />
                             Accept
@@ -1286,7 +1286,7 @@ export default function AdminCabDispatchPage() {
                             type="button"
                             onClick={() => setRejectBooking(booking)}
                             disabled={saving}
-                            className={`${buttonClass} border-rose-200 bg-white text-rose-700 hover:bg-rose-50`}
+                            className={`${buttonClass} border-rose-200 bg-white text-rose-700 `}
                           >
                             <XCircle size={15} />
                             Reject
@@ -1298,7 +1298,7 @@ export default function AdminCabDispatchPage() {
                             type="button"
                             onClick={() => openAssignModal(booking)}
                             disabled={saving}
-                            className={`${buttonClass} border-indigo-600 bg-black text-white hover:bg-black`}
+                            className={`${buttonClass} border-indigo-600 bg-black text-white `}
                           >
                             <UserCheck size={15} />
                             Assign
@@ -1310,7 +1310,7 @@ export default function AdminCabDispatchPage() {
                             type="button"
                             onClick={() => setStartTarget(booking)}
                             disabled={saving}
-                            className={`${buttonClass} border-violet-600 bg-violet-600 text-white hover:bg-violet-700`}
+                            className={`${buttonClass} border-violet-600 bg-violet-600 text-white `}
                           >
                             <Play size={15} />
                             Start Trip
@@ -1322,7 +1322,7 @@ export default function AdminCabDispatchPage() {
                             type="button"
                             onClick={() => setCompleteBooking(booking)}
                             disabled={saving}
-                            className={`${buttonClass} border-emerald-600 bg-emerald-600 text-white hover:bg-emerald-700`}
+                            className={`${buttonClass} border-emerald-600 bg-emerald-600 text-white `}
                           >
                             <Flag size={15} />
                             Complete

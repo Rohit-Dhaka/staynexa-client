@@ -1,29 +1,10 @@
-
-// import api from "../api/axiosInstance";
 import api from "../../../api/axiosInstance";
 
-/**
- * AI Hotel Manager API Service
- *
- * Connects the frontend to:
- * /api/ai-manager
- *
- * Uses the existing Axios instance for authentication
- * and base URL configuration.
- */
+
 
 const BASE_URL = "/ai-manager";
 
-/**
- * Extract API response data.
- *
- * Expected backend response:
- * {
- *   success: true,
- *   message: "...",
- *   data: {}
- * }
- */
+
 const unwrap = (promise) =>
   promise.then((response) => {
     const result = response?.data;
@@ -37,9 +18,7 @@ const unwrap = (promise) =>
     return result?.data ?? result;
   });
 
-/**
- * Normalize errors returned by Axios.
- */
+
 const handleError = (error) => {
   const message =
     error?.response?.data?.message ||
@@ -59,9 +38,6 @@ const handleError = (error) => {
   return normalizedError;
 };
 
-/**
- * Run a request and provide a consistent error.
- */
 const request = async (promise) => {
   try {
     return await unwrap(promise);
@@ -70,9 +46,7 @@ const request = async (promise) => {
   }
 };
 
-/**
- * Build query parameters.
- */
+
 const buildParams = (params = {}) => {
   return Object.fromEntries(
     Object.entries(params).filter(
@@ -84,21 +58,15 @@ const buildParams = (params = {}) => {
   );
 };
 
-/**
- * Get AI Manager service status.
- *
- * GET /api/ai-manager/status
- */
+
 export const getAIManagerStatus = () =>
   request(api.get(`${BASE_URL}/status`));
 
 /**
- * Get hotel operational overview.
- *
- * GET /api/ai-manager/overview
+
  *
  * @param {Object} params
- * @param {string} params.date - Optional date in YYYY-MM-DD format
+ * @param {string} params.date
  */
 export const getHotelOverview = (params = {}) =>
   request(
@@ -122,11 +90,7 @@ export const getDailyHotelReport = (params = {}) =>
     })
   );
 
-/**
- * Get operational alerts.
- *
- * GET /api/ai-manager/alerts
- */
+
 export const getAIManagerAlerts = () =>
   request(api.get(`${BASE_URL}/alerts`));
 
@@ -172,9 +136,7 @@ export const askAIHotelManager = (question) => {
   );
 };
 
-/**
- * Default export.
- */
+
 const aiManagerService = {
   getAIManagerStatus,
   getHotelOverview,

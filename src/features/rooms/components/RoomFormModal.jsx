@@ -243,7 +243,7 @@ const RoomForm = () => {
                 
                 <section className="overflow-hidden rounded border border-slate-200 bg-white ">
                   <div className="flex items-center gap-3 border-b border-slate-100 px-5 py-5 sm:px-7">
-                    <div className="flex h-11 w-11 items-center justify-center rounded bg-black text-blue-600">
+                    <div className="flex h-11 w-11 items-center justify-center rounded bg-black text-white">
                       <DoorOpen size={22} />
                     </div>
 
@@ -615,9 +615,9 @@ const RoomForm = () => {
                       </span>
                     </div>
 
-                    <div className="rounded border border-blue-100 bg-black/70 p-4">
+                    <div className="rounded border border-blue-100 bg-gray-50 p-4">
                       <div className="flex gap-3">
-                        <div className="mt-0.5 text-blue-600">
+                        <div className="mt-0.5 text-black">
                           <Wrench size={18} />
                         </div>
                         <div>

@@ -8,7 +8,7 @@ const list = (url, params = {}, key = "items") =>
     return { items: data?.[key] ?? data?.items ?? [], meta: data?.meta ?? null };
   });
 
-/* ------------------------------- Guests ------------------------------- */
+
 export const getGuestList = (params) => list("/guests", params, "guests");
 export const getGuestById = (id) => unwrap(api.get(`/guests/${id}`));
 export const createGuest = (data) =>

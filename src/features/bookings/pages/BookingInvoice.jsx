@@ -53,7 +53,7 @@ const BookingInvoice = () => {
         <button
           type="button"
           onClick={() => navigate(`/bookings/${id}`)}
-          className="flex items-center gap-2 text-sm text-slate-600 hover:text-slate-900"
+          className="flex items-center gap-2 text-sm text-slate-600 "
         >
           <ArrowLeft size={16} /> Back to Booking
         </button>
@@ -82,7 +82,7 @@ const BookingInvoice = () => {
             </p>
             {inv.invoiceNumber && <p className="mt-1 font-medium">{inv.invoiceNumber}</p>}
             <p className="text-slate-600">Date: {formatDate(inv.invoiceDate)}</p>
-            {inv.isProforma && <p className="mt-1 text-xs text-amber-600">Draft hai, final invoice check-out par banega</p>}
+            {inv.isProforma && <p className="mt-1 text-xs text-amber-600">The invoice is a draft. The final invoice will be generated at check-out.</p>}
           </div>
         </div>
 

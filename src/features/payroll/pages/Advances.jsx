@@ -93,7 +93,8 @@ const Advances = () => {
     },
     {
       header: "First Recovery Period",
-      value: (advance) => advance.firstRecoveryPeriod ? periodLabel(advance.firstRecoveryPeriod) : "-",
+      value: (advance) =>
+        advance.firstRecoveryPeriod ? periodLabel(advance.firstRecoveryPeriod) : "-",
     },
     {
       header: "Recovered Amount",
@@ -153,18 +154,49 @@ const Advances = () => {
     { value: "", label: "All" },
   ];
 
+  const renderAdvanceActions = (advance) => {
+    if (!isManager || advance.status !== "active") return null;
+
+    return (
+      <div className="flex flex-wrap items-center gap-2">
+        <button
+          type="button"
+          onClick={() => {
+            setRepaying(advance);
+            setRepayAmount(String(advance.balanceAmount ?? ""));
+          }}
+          className="min-h-10 rounded border border-indigo-200 px-3 py-2 text-xs font-medium text-indigo-700"
+        >
+          Repayment
+        </button>
+        {Number(advance.recoveredAmount || 0) === 0 && (
+          <button
+            type="button"
+            onClick={() => {
+              setCancelling(advance);
+              setCancelReason("");
+            }}
+            className="min-h-10 rounded border border-rose-200 px-3 py-2 text-xs font-medium text-rose-600"
+          >
+            Cancel
+          </button>
+        )}
+      </div>
+    );
+  };
+
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-xl font-bold text-slate-900">Salary Advances</h1>
-          <p className="mt-1 text-sm text-slate-500">
+    <div className="min-w-0 space-y-4 sm:space-y-6">
+      <header className="flex min-w-0 flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="min-w-0">
+          <h1 className="text-xl font-bold text-slate-900 sm:text-2xl">Salary Advances</h1>
+          <p className="mt-1 max-w-2xl text-sm text-slate-500">
             {isManager
               ? "Advances given to staff. Installments are deducted automatically from the monthly payslip."
               : "Your salary advances and how much is still to be recovered."}
           </p>
         </div>
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center">
           <ExportButtons
             title="Salary Advances"
             fileName="salary-advances"
@@ -172,15 +204,19 @@ const Advances = () => {
             getRows={getExportRows}
           />
           {isManager && (
-            <button type="button" onClick={() => setCreating(true)} className={primaryButton}>
+            <button
+              type="button"
+              onClick={() => setCreating(true)}
+              className={`${primaryButton} w-full justify-center sm:w-auto`}
+            >
               <Plus size={16} />
               Give Advance
             </button>
           )}
         </div>
-      </div>
+      </header>
 
-      <div className="flex gap-2 overflow-x-auto pb-1">
+      <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0">
         {tabs.map((tab) => (
           <button
             key={tab.label}
@@ -189,10 +225,10 @@ const Advances = () => {
               setStatus(tab.value);
               setPage(1);
             }}
-            className={`whitespace-nowrap rounded-full px-4 py-1.5 text-sm font-medium transition ${
+            className={`min-h-9 shrink-0 rounded-full px-4 py-1.5 text-sm font-medium ${
               status === tab.value
                 ? "bg-black text-white"
-                : "bg-white text-slate-600 ring-1 ring-slate-200 hover:bg-slate-50"
+                : "border border-slate-200 bg-white text-slate-600"
             }`}
           >
             {tab.label}
@@ -200,106 +236,161 @@ const Advances = () => {
         ))}
       </div>
 
-      <div className="overflow-hidden rounded border border-slate-200 bg-white">
+      <section className="min-w-0 overflow-hidden rounded border border-slate-200 bg-white">
         {loading ? (
           <div className="flex justify-center py-16 text-slate-400">
-            <Loader2 className="animate-spin" />
+            <Loader2 size={24} />
           </div>
         ) : data.items.length === 0 ? (
-          <p className="px-4 py-16 text-center text-sm text-slate-500">No advances found.</p>
+          <p className="px-4 py-12 text-center text-sm text-slate-500 sm:py-16">
+            No advances found.
+          </p>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[900px] text-left text-sm">
-              <thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
-                <tr>
-                  {isManager && <th className="px-4 py-3 font-medium">Staff</th>}
-                  <th className="px-4 py-3 font-medium">Given on</th>
-                  <th className="px-4 py-3 text-right font-medium">Amount</th>
-                  <th className="px-4 py-3 font-medium">Installments</th>
-                  <th className="px-4 py-3 text-right font-medium">Recovered</th>
-                  <th className="px-4 py-3 text-right font-medium">Balance</th>
-                  <th className="px-4 py-3 font-medium">Status</th>
-                  {isManager && <th className="px-4 py-3" />}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                {data.items.map((advance) => (
-                  <tr key={advance._id}>
-                    {isManager && (
-                      <td className="px-4 py-3 font-medium text-slate-900">
-                        {advance.user?.name || "-"}
-                      </td>
-                    )}
-                    <td className="px-4 py-3">
-                      {formatDate(advance.givenOn)}
-                      {advance.reason && (
-                        <p className="max-w-[180px] truncate text-xs text-slate-500">
-                          {advance.reason}
+          <>
+            <div className="space-y-3 p-3 sm:hidden">
+              {data.items.map((advance) => (
+                <article key={advance._id} className="min-w-0 rounded border border-slate-200 p-3">
+                  <div className="flex min-w-0 items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      {isManager && (
+                        <p className="break-words text-sm font-semibold text-slate-900">
+                          {advance.user?.name || "-"}
                         </p>
                       )}
-                    </td>
-                    <td className="px-4 py-3 text-right font-medium">{formatINR(advance.amount)}</td>
-                    <td className="px-4 py-3">
-                      {advance.installments} x {formatINR(advance.installmentAmount)}
-                      <p className="text-xs text-slate-500">
-                        From {periodLabel(advance.firstRecoveryPeriod)}
+                      <p className="mt-1 text-xs text-slate-500">
+                        Given on {formatDate(advance.givenOn)}
                       </p>
-                    </td>
-                    <td className="px-4 py-3 text-right text-emerald-600">
-                      {formatINR(advance.recoveredAmount)}
-                    </td>
-                    <td className="px-4 py-3 text-right font-semibold text-slate-900">
-                      {formatINR(advance.balanceAmount)}
-                    </td>
-                    <td className="px-4 py-3">
-                      <Badge meta={ADVANCE_STATUS_META[advance.status]} value={advance.status} />
-                    </td>
-                    {isManager && (
+                    </div>
+                    <div className="shrink-0">
+                      <Badge
+                        meta={ADVANCE_STATUS_META[advance.status]}
+                        value={advance.status}
+                      />
+                    </div>
+                  </div>
+
+                  {advance.reason && (
+                    <p className="mt-2 break-words text-xs text-slate-500">
+                      {advance.reason}
+                    </p>
+                  )}
+
+                  <div className="mt-3 grid grid-cols-2 gap-3 border-t border-slate-100 pt-3">
+                    <div className="min-w-0">
+                      <p className="text-xs text-slate-500">Advance amount</p>
+                      <p className="mt-1 break-words text-sm font-semibold text-slate-900">
+                        {formatINR(advance.amount)}
+                      </p>
+                    </div>
+                    <div className="min-w-0 text-right">
+                      <p className="text-xs text-slate-500">Remaining balance</p>
+                      <p className="mt-1 break-words text-sm font-semibold text-slate-900">
+                        {formatINR(advance.balanceAmount)}
+                      </p>
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-xs text-slate-500">Installments</p>
+                      <p className="mt-1 text-sm text-slate-800">
+                        {advance.installments ?? 0} × {formatINR(advance.installmentAmount)}
+                      </p>
+                      <p className="mt-1 break-words text-xs text-slate-500">
+                        From {advance.firstRecoveryPeriod ? periodLabel(advance.firstRecoveryPeriod) : "-"}
+                      </p>
+                    </div>
+                    <div className="min-w-0 text-right">
+                      <p className="text-xs text-slate-500">Recovered</p>
+                      <p className="mt-1 break-words text-sm font-medium text-emerald-600">
+                        {formatINR(advance.recoveredAmount)}
+                      </p>
+                    </div>
+                  </div>
+
+                  {isManager && advance.status === "active" && (
+                    <div className="mt-3 border-t border-slate-100 pt-3">
+                      {renderAdvanceActions(advance)}
+                    </div>
+                  )}
+                </article>
+              ))}
+            </div>
+
+            <div className="hidden overflow-x-auto sm:block">
+              <table className="w-full min-w-[900px] text-left text-sm">
+                <thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
+                  <tr>
+                    {isManager && <th className="px-4 py-3 font-medium">Staff</th>}
+                    <th className="px-4 py-3 font-medium">Given on</th>
+                    <th className="px-4 py-3 text-right font-medium">Amount</th>
+                    <th className="px-4 py-3 font-medium">Installments</th>
+                    <th className="px-4 py-3 text-right font-medium">Recovered</th>
+                    <th className="px-4 py-3 text-right font-medium">Balance</th>
+                    <th className="px-4 py-3 font-medium">Status</th>
+                    {isManager && <th className="px-4 py-3 font-medium">Actions</th>}
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {data.items.map((advance) => (
+                    <tr key={advance._id}>
+                      {isManager && (
+                        <td className="px-4 py-3 font-medium text-slate-900">
+                          {advance.user?.name || "-"}
+                        </td>
+                      )}
                       <td className="px-4 py-3">
-                        {advance.status === "active" && (
-                          <div className="flex justify-end gap-3">
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setRepaying(advance);
-                                setRepayAmount(String(advance.balanceAmount ?? ""));
-                              }}
-                              className="text-xs font-medium text-indigo-600 hover:underline"
-                            >
-                              Repayment
-                            </button>
-                            {Number(advance.recoveredAmount || 0) === 0 && (
-                              <button
-                                type="button"
-                                onClick={() => {
-                                  setCancelling(advance);
-                                  setCancelReason("");
-                                }}
-                                className="text-xs font-medium text-rose-600 hover:underline"
-                              >
-                                Cancel
-                              </button>
-                            )}
-                          </div>
+                        {formatDate(advance.givenOn)}
+                        {advance.reason && (
+                          <p className="max-w-[180px] truncate text-xs text-slate-500">
+                            {advance.reason}
+                          </p>
                         )}
                       </td>
-                    )}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                      <td className="px-4 py-3 text-right font-medium">
+                        {formatINR(advance.amount)}
+                      </td>
+                      <td className="px-4 py-3">
+                        {advance.installments} × {formatINR(advance.installmentAmount)}
+                        <p className="text-xs text-slate-500">
+                          From {advance.firstRecoveryPeriod ? periodLabel(advance.firstRecoveryPeriod) : "-"}
+                        </p>
+                      </td>
+                      <td className="px-4 py-3 text-right text-emerald-600">
+                        {formatINR(advance.recoveredAmount)}
+                      </td>
+                      <td className="px-4 py-3 text-right font-semibold text-slate-900">
+                        {formatINR(advance.balanceAmount)}
+                      </td>
+                      <td className="px-4 py-3">
+                        <Badge
+                          meta={ADVANCE_STATUS_META[advance.status]}
+                          value={advance.status}
+                        />
+                      </td>
+                      {isManager && (
+                        <td className="px-4 py-3">
+                          <div className="flex justify-end">
+                            {renderAdvanceActions(advance)}
+                          </div>
+                        </td>
+                      )}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
         )}
 
         {!loading && data.pages > 1 && (
-          <div className="flex items-center justify-between border-t border-slate-200 px-4 py-3 text-sm text-slate-600">
-            <span>Page {data.page} of {data.pages} ({data.total} advances)</span>
-            <div className="flex gap-2">
+          <div className="flex flex-col gap-3 border-t border-slate-200 px-3 py-3 text-sm text-slate-600 sm:flex-row sm:items-center sm:justify-between sm:px-4">
+            <span className="text-xs sm:text-sm">
+              Page {data.page} of {data.pages} ({data.total} advances)
+            </span>
+            <div className="grid grid-cols-2 gap-2 sm:flex">
               <button
                 type="button"
                 disabled={page <= 1 || loading}
                 onClick={() => setPage((current) => current - 1)}
-                className="rounded border border-slate-300 px-3 py-1.5 disabled:opacity-40"
+                className="min-h-10 rounded border border-slate-300 px-3 py-1.5 disabled:opacity-40"
               >
                 Previous
               </button>
@@ -307,14 +398,14 @@ const Advances = () => {
                 type="button"
                 disabled={page >= data.pages || loading}
                 onClick={() => setPage((current) => current + 1)}
-                className="rounded border border-slate-300 px-3 py-1.5 disabled:opacity-40"
+                className="min-h-10 rounded border border-slate-300 px-3 py-1.5 disabled:opacity-40"
               >
                 Next
               </button>
             </div>
           </div>
         )}
-      </div>
+      </section>
 
       {creating && (
         <AdvanceFormModal
@@ -331,7 +422,11 @@ const Advances = () => {
         open={Boolean(repaying)}
         size="sm"
         title="Record Repayment"
-        subtitle={repaying ? `${repaying.user?.name || "Staff member"}, balance ${formatINR(repaying.balanceAmount)}` : ""}
+        subtitle={
+          repaying
+            ? `${repaying.user?.name || "Staff member"}, balance ${formatINR(repaying.balanceAmount)}`
+            : ""
+        }
         onClose={() => setRepaying(null)}
         busy={busy === "repay"}
         footer={
@@ -343,29 +438,35 @@ const Advances = () => {
           />
         }
       >
-        <Field
-          label="Amount received"
-          htmlFor="repayAmount"
-          hint="Use this when the staff member repays part or all of the advance directly."
-        >
-          <input
-            id="repayAmount"
-            type="number"
-            min="1"
-            max={repaying?.balanceAmount}
-            step="0.01"
-            value={repayAmount}
-            onChange={(event) => setRepayAmount(event.target.value)}
-            className={inputClass}
-          />
-        </Field>
+        <div className="space-y-4">
+          <Field
+            label="Amount received"
+            htmlFor="repayAmount"
+            hint="Use this when the staff member repays part or all of the advance directly."
+          >
+            <input
+              id="repayAmount"
+              type="number"
+              min="1"
+              max={repaying?.balanceAmount}
+              step="0.01"
+              value={repayAmount}
+              onChange={(event) => setRepayAmount(event.target.value)}
+              className={inputClass}
+            />
+          </Field>
+        </div>
       </Modal>
 
       <Modal
         open={Boolean(cancelling)}
         size="sm"
         title="Cancel Advance"
-        subtitle={cancelling ? `${cancelling.user?.name || "Staff member"}, ${formatINR(cancelling.amount)}` : ""}
+        subtitle={
+          cancelling
+            ? `${cancelling.user?.name || "Staff member"}, ${formatINR(cancelling.amount)}`
+            : ""
+        }
         onClose={() => setCancelling(null)}
         busy={busy === "cancel"}
         footer={

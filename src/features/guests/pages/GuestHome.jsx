@@ -64,7 +64,6 @@ const GuestHome = () => {
 
   return (
     <div className="w-full min-w-0 space-y-4 pb-4">
-      
       <section className="rounded bg-black p-5 text-white sm:p-6">
         <div className="flex flex-col justify-between gap-4 lg:flex-row lg:items-center">
           <div className="min-w-0">
@@ -87,7 +86,7 @@ const GuestHome = () => {
           <div className="flex shrink-0 flex-wrap gap-2">
             <Link
               to="/guest/reservation"
-              className="inline-flex items-center justify-center gap-2 rounded bg-white px-4 py-2.5 text-sm font-semibold text-black transition hover:bg-neutral-200"
+              className="inline-flex items-center justify-center gap-2 rounded bg-white px-4 py-2.5 text-sm font-semibold text-black"
             >
               <CalendarCheck size={16} />
               My Bookings
@@ -96,7 +95,7 @@ const GuestHome = () => {
 
             <Link
               to="/guest/services"
-              className="inline-flex items-center justify-center gap-2 rounded border border-white/30 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10"
+              className="inline-flex items-center justify-center gap-2 rounded border border-white/30 px-4 py-2.5 text-sm font-semibold text-white"
             >
               <HandHelping size={16} />
               Request Service
@@ -105,7 +104,6 @@ const GuestHome = () => {
         </div>
       </section>
 
-      
       <div className="grid grid-cols-1 items-start gap-4 xl:grid-cols-[minmax(0,1.65fr)_minmax(280px,0.85fr)]">
         <section className="min-w-0 space-y-4">
           <div>
@@ -120,7 +118,7 @@ const GuestHome = () => {
               <Link
                 key={path}
                 to={path}
-                className="group flex min-w-0 items-start gap-3 rounded border border-neutral-200 bg-white p-4 transition hover:border-black"
+                className="flex min-w-0 items-start gap-3 rounded border border-neutral-200 bg-white p-4"
               >
                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded bg-black text-white">
                   <Icon size={19} />
@@ -133,7 +131,7 @@ const GuestHome = () => {
                     </h3>
                     <ArrowUpRight
                       size={16}
-                      className="shrink-0 text-neutral-400 transition group-hover:text-black"
+                      className="shrink-0 text-neutral-400"
                     />
                   </div>
 
@@ -145,7 +143,6 @@ const GuestHome = () => {
             ))}
           </div>
 
-          
           <div className="rounded border border-neutral-200 bg-white p-4">
             <div className="flex items-center gap-3">
               <div className="flex h-9 w-9 items-center justify-center rounded bg-black text-white">
@@ -185,7 +182,6 @@ const GuestHome = () => {
           </div>
         </section>
 
-        
         <aside className="min-w-0 space-y-4">
           <section className="overflow-hidden rounded border border-neutral-200 bg-white">
             <div className="border-b border-neutral-100 px-4 py-3">
@@ -209,7 +205,7 @@ const GuestHome = () => {
                   </p>
                   <Link
                     to="/guest/services"
-                    className="mt-1.5 inline-flex items-center gap-1 text-xs font-semibold text-black underline-offset-4 hover:underline"
+                    className="mt-1.5 inline-flex items-center gap-1 text-xs font-semibold text-black underline-offset-4"
                   >
                     Request help <ArrowRight size={13} />
                   </Link>
@@ -230,7 +226,7 @@ const GuestHome = () => {
                   </p>
                   <Link
                     to="/guest/service-requests"
-                    className="mt-1.5 inline-flex items-center gap-1 text-xs font-semibold text-black underline-offset-4 hover:underline"
+                    className="mt-1.5 inline-flex items-center gap-1 text-xs font-semibold text-black underline-offset-4"
                   >
                     View requests <ArrowRight size={13} />
                   </Link>
@@ -239,7 +235,6 @@ const GuestHome = () => {
             </div>
           </section>
 
-          
           <section className="rounded border border-neutral-200 bg-white p-4">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-black text-white">
@@ -258,7 +253,7 @@ const GuestHome = () => {
 
             <Link
               to="/guest/profile"
-              className="mt-3 flex w-full items-center justify-between rounded border border-neutral-200 px-3 py-2 text-sm font-semibold text-black transition hover:bg-black hover:text-white"
+              className="mt-3 flex w-full items-center justify-between rounded border border-neutral-200 px-3 py-2 text-sm font-semibold text-black"
             >
               View Profile
               <ChevronRight size={16} />
@@ -285,9 +280,9 @@ function HelpfulLink({ icon: Icon, title, description, to }) {
   return (
     <Link
       to={to}
-      className="group flex items-center gap-3 py-3 first:pt-0 last:pb-0"
+      className="flex items-center gap-3 py-3 first:pt-0 last:pb-0"
     >
-      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded border border-neutral-200 text-black transition group-hover:bg-black group-hover:text-white">
+      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded border border-neutral-200 text-black">
         <Icon size={18} />
       </div>
 
@@ -296,10 +291,7 @@ function HelpfulLink({ icon: Icon, title, description, to }) {
         <p className="text-xs leading-5 text-neutral-500">{description}</p>
       </div>
 
-      <ChevronRight
-        size={16}
-        className="shrink-0 text-neutral-400 transition group-hover:translate-x-0.5 group-hover:text-black"
-      />
+      <ChevronRight size={16} className="shrink-0 text-neutral-400" />
     </Link>
   );
 }

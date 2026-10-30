@@ -26,7 +26,7 @@ const SOURCES = [
 ];
 
 const inputClass =
-  "w-full rounded border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 disabled:cursor-not-allowed disabled:bg-slate-50 disabled:opacity-60";
+  "w-full rounded border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 outline-none transition placeholder:text-slate-400  focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 disabled:cursor-not-allowed disabled:bg-slate-50 disabled:opacity-60";
 
 const labelClass = "mb-1.5 block text-xs font-medium text-slate-700";
 
@@ -320,7 +320,7 @@ const BookingForm = () => {
       <div>
         <Link
           to={BACK_PATH}
-          className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 transition hover:text-slate-900"
+          className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 transition "
         >
           <ArrowLeft size={16} />
           Back to Bookings
@@ -688,7 +688,7 @@ const BookingForm = () => {
                 type="button"
                 onClick={() => navigate(BACK_PATH)}
                 disabled={submitting}
-                className="rounded border border-slate-300 px-5 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50 disabled:opacity-60"
+                className="rounded border border-slate-300 px-5 py-2.5 text-sm font-medium text-slate-700 transition  disabled:opacity-60"
               >
                 Cancel
               </button>
@@ -696,7 +696,7 @@ const BookingForm = () => {
               <button
                 type="submit"
                 disabled={submitting || loadingRooms}
-                className="flex items-center justify-center gap-2 rounded bg-[#1a1a1a] px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-70"
+                className="flex items-center justify-center gap-2 rounded bg-[#1a1a1a] px-6 py-2.5 text-sm font-semibold text-white transition  disabled:cursor-not-allowed disabled:opacity-70"
               >
                 {submitting ? (
                   <Loader2 size={16} className="animate-spin" />

@@ -47,7 +47,7 @@ const ConfirmDialog = ({
             type="button"
             onClick={onCancel}
             disabled={loading}
-            className="rounded border border-slate-300 px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50 disabled:opacity-60"
+            className="rounded border border-slate-300 px-4 py-2.5 text-sm font-medium text-slate-700 transition  disabled:opacity-60"
           >
             {cancelText}
           </button>
@@ -55,7 +55,7 @@ const ConfirmDialog = ({
             type="button"
             onClick={onConfirm}
             disabled={loading}
-            className="flex items-center justify-center gap-2 rounded bg-rose-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-rose-700 disabled:cursor-not-allowed disabled:opacity-70"
+            className="flex items-center justify-center gap-2 rounded bg-rose-600 px-4 py-2.5 text-sm font-semibold text-white transition  disabled:cursor-not-allowed disabled:opacity-70"
           >
             {loading && <Loader2 size={16} className="animate-spin" />}
             {confirmText}

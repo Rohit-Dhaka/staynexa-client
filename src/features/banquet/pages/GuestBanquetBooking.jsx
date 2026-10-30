@@ -311,7 +311,7 @@ export default function GuestBanquetBooking() {
           <button
             type="button"
             onClick={() => navigate("/guest/banquet")}
-            className="mt-6 rounded bg-black px-5 py-2.5 text-sm font-medium text-white hover:bg-black"
+            className="mt-6 rounded bg-black px-5 py-2.5 text-sm font-medium text-white "
           >
             Back to Banquet Halls
           </button>
@@ -326,7 +326,7 @@ export default function GuestBanquetBooking() {
         <button
           type="button"
           onClick={() => navigate("/guest/banquet")}
-          className="mb-5 inline-flex items-center gap-2 text-sm font-medium text-gray-600 transition hover:text-blue-600"
+          className="mb-5 inline-flex items-center gap-2 text-sm font-medium text-gray-600 transition "
         >
           <span aria-hidden="true">←</span>
           Back to Banquet Halls
@@ -459,7 +459,7 @@ export default function GuestBanquetBooking() {
     <button
       type="button"
       onClick={() => navigate("/guest/banquet")}
-      className="mt-5 w-full rounded bg-black px-4 py-3 text-sm font-semibold text-white hover:bg-black"
+      className="mt-5 w-full rounded bg-black px-4 py-3 text-sm font-semibold text-white "
     >
       Back to Banquet Halls
     </button>
@@ -624,7 +624,7 @@ export default function GuestBanquetBooking() {
                     type="button"
                     onClick={handleCheckAvailability}
                     disabled={checking || booking}
-                    className="w-full rounded border border-blue-200 bg-black px-4 py-3 text-sm font-semibold text-blue-700 transition hover:bg-black disabled:cursor-not-allowed disabled:opacity-60"
+                    className="w-full rounded border border-blue-200 bg-black px-4 py-3 text-sm font-semibold text-blue-700 transition  disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     {checking
                       ? "Checking Availability..."
@@ -664,7 +664,7 @@ export default function GuestBanquetBooking() {
                   <button
                     type="submit"
                     disabled={booking || checking || !availability?.available}
-                    className="mt-4 w-full rounded bg-black px-4 py-3 text-sm font-semibold text-white transition hover:bg-black focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-gray-300"
+                    className="mt-4 w-full rounded bg-black px-4 py-3 text-sm font-semibold text-white transition  focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-gray-300"
                   >
                     {booking
                       ? "Submitting Booking..."

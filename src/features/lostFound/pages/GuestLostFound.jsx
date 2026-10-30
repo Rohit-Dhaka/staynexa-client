@@ -92,6 +92,9 @@ const unwrapList = (response) => {
   if (Array.isArray(response?.reports)) return response.reports;
   if (Array.isArray(response?.data?.items)) return response.data.items;
   if (Array.isArray(response?.data?.reports)) return response.data.reports;
+  if (Array.isArray(response?.data?.data?.items)) return response.data.data.items;
+  if (Array.isArray(response?.data?.data?.reports)) return response.data.data.reports;
+  if (Array.isArray(response?.data?.data)) return response.data.data;
   if (Array.isArray(response?.data)) return response.data;
   return [];
 };
@@ -190,7 +193,7 @@ function ReportDetailsModal({ report, onClose, onCancel, cancelling }) {
             type="button"
             onClick={onClose}
             aria-label="Close report details"
-            className="flex h-10 w-10 shrink-0 items-center justify-center rounded border border-slate-200 text-slate-600 transition hover:bg-slate-50"
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded border border-slate-200 text-slate-600"
           >
             <X size={19} />
           </button>
@@ -382,6 +385,7 @@ export default function GuestLostFound() {
       const items = unwrapList(response);
 
       setReports(items);
+      setCurrentPage(1);
     } catch (requestError) {
       setError(getErrorMessage(requestError));
     } finally {
@@ -504,6 +508,9 @@ export default function GuestLostFound() {
         response?.item ||
         response?.data?.report ||
         response?.data?.item ||
+        response?.data?.data?.report ||
+        response?.data?.data?.item ||
+        response?.data?.data ||
         response;
 
       if (detail && typeof detail === "object") {
@@ -515,21 +522,23 @@ export default function GuestLostFound() {
   };
 
   return (
-    <main className="min-h-screen ">
+    <main className="min-h-screen">
       <div className="mx-auto max-w-7xl space-y-3">
-        <div className="flex  items-center justify-between">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="min-w-0">
             <PageHeading
               title="Lost and Found"
               description="Report lost belongings, track your reports, and check for updates from the hotel team."
             />
-            <div className="grid grid-cols-2 gap-1 rounded border border-slate-200 bg-slate-100 p-1">
+            </div>
+            <div className="grid w-full grid-cols-2 gap-1 rounded border border-slate-200 p-1 sm:w-auto">
               <button
                 type="button"
                 onClick={() => setActiveTab("reports")}
-                className={`rounded px-3 py-2 text-sm font-medium transition-colors ${
+                className={`rounded px-3 py-2 text-sm font-medium  ${
                   activeTab === "reports"
                     ? "bg-white text-slate-900"
-                    : "text-slate-600 hover:text-slate-900"
+                    : "text-slate-600 "
                 }`}
               >
                 My Reports <span className="ml-1 text-xs">({reports.length})</span>
@@ -540,10 +549,10 @@ export default function GuestLostFound() {
                   setNotice("");
                   setActiveTab("report");
                 }}
-                className={`rounded px-3 py-2 text-sm font-medium transition-colors ${
+                className={`rounded px-3 py-2 text-sm font-medium  ${
                   activeTab === "report"
                     ? "bg-white text-slate-900"
-                    : "text-slate-600 hover:text-slate-900"
+                    : "text-slate-600 "
                 }`}
               >
                 <Plus size={14} className="mr-1 inline" />
@@ -555,7 +564,7 @@ export default function GuestLostFound() {
         {notice && (
           <div
             role="status"
-            className="flex  items-start gap-3 rounded border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-800"
+            className="flex items-start gap-3 rounded border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-800"
           >
             <CheckCircle2 size={19} className="mt-0.5 shrink-0" />
             <p className="flex-1">{notice}</p>
@@ -563,7 +572,7 @@ export default function GuestLostFound() {
               type="button"
               onClick={() => setNotice("")}
               aria-label="Dismiss notification"
-              className="rounded p-1 transition hover:bg-emerald-100"
+              className="rounded p-1"
             >
               <X size={17} />
             </button>
@@ -634,7 +643,7 @@ export default function GuestLostFound() {
               >
                 <RefreshCw
                   size={16}
-                  className={refreshing ? "animate-spin" : ""}
+                  className={refreshing ? "" : ""}
                 />
                 {refreshing ? "Refreshing..." : "Refresh"}
               </Button>
@@ -654,7 +663,7 @@ export default function GuestLostFound() {
                   }
                   placeholder="Search item, category, room or reference..."
                   aria-label="Search lost item reports"
-                  className="h-11 w-full rounded border border-slate-200 bg-white pl-10 pr-4 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-slate-400"
+                  className="h-11 w-full rounded border border-slate-200 bg-white pl-10 pr-4 text-sm text-slate-800 outline-none placeholder:text-slate-400 focus:border-slate-400"
                 />
               </div>
 
@@ -664,7 +673,7 @@ export default function GuestLostFound() {
                   handleStatusChange(event.target.value)
                 }
                 aria-label="Filter reports by status"
-                className="h-11 rounded border border-slate-200 bg-white px-3 text-sm text-slate-700 outline-none transition focus:border-slate-400"
+                className="h-11 rounded border border-slate-200 bg-white px-3 text-sm text-slate-700 outline-none focus:border-slate-400"
               >
                 {STATUS_FILTERS.map((option) => (
                   <option key={option.value} value={option.value}>
@@ -726,7 +735,7 @@ export default function GuestLostFound() {
                   return (
                     <article
                       key={reportId || `${itemName}-${report.createdAt}`}
-                      className="p-3 transition hover:bg-slate-50/70"
+                      className="p-3"
                     >
                       <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                         <div className="flex min-w-0 gap-4">
@@ -889,7 +898,7 @@ export default function GuestLostFound() {
               type="button"
               onClick={() => setActiveTab("reports")}
               aria-label="Close report form"
-              className="flex h-8 w-8 shrink-0 items-center justify-center rounded border border-slate-200 text-slate-500 hover:bg-slate-50"
+              className="flex h-8 w-8 shrink-0 items-center justify-center rounded border border-slate-200 text-slate-500"
             >
               <X size={16} />
             </button>

@@ -1,4 +1,3 @@
-
 import { useCallback, useEffect, useState } from "react";
 import {
   CarFront,
@@ -35,7 +34,7 @@ const inputClass =
   "w-full rounded border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-500 disabled:bg-slate-50";
 
 const buttonClass =
-  "inline-flex items-center justify-center gap-2 rounded border px-4 py-2.5 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-50";
+  "inline-flex items-center justify-center gap-2 rounded border px-4 py-2.5 text-sm font-medium  disabled:cursor-not-allowed disabled:opacity-50";
 
 function getErrorMessage(error) {
   return (
@@ -54,11 +53,18 @@ function formatLabel(value = "") {
 }
 
 function getVehicles(response) {
-  if (Array.isArray(response)) return response;
-  if (Array.isArray(response?.vehicles)) return response.vehicles;
-  if (Array.isArray(response?.items)) return response.items;
-  if (Array.isArray(response?.data)) return response.data;
-  return [];
+  const candidates = [
+    response,
+    response?.vehicles,
+    response?.items,
+    response?.data,
+    response?.data?.vehicles,
+    response?.data?.items,
+    response?.data?.data,
+    response?.data?.data?.vehicles,
+  ];
+
+  return candidates.find(Array.isArray) || [];
 }
 
 function getVehicleId(vehicle) {
@@ -132,9 +138,7 @@ export default function AdminCabVehiclesPage() {
       .join(" ")
       .toLowerCase();
 
-    const matchesSearch = searchText.includes(
-      search.toLowerCase().trim()
-    );
+    const matchesSearch = searchText.includes(search.toLowerCase().trim());
 
     const active = vehicle.isActive !== false;
 
@@ -147,7 +151,7 @@ export default function AdminCabVehiclesPage() {
   });
 
   const activeCount = vehicles.filter(
-    (vehicle) => vehicle.isActive !== false
+    (vehicle) => vehicle.isActive !== false,
   ).length;
 
   const inactiveCount = vehicles.length - activeCount;
@@ -184,6 +188,7 @@ export default function AdminCabVehiclesPage() {
     setEditingVehicle(null);
     setForm({ ...EMPTY_FORM });
     setError("");
+    setNotice("");
   }
 
   function handleChange(event) {
@@ -200,88 +205,78 @@ export default function AdminCabVehiclesPage() {
     }));
   }
 
+  async function handleSubmit(event) {
+    event.preventDefault();
+    setError("");
+    setNotice("");
 
-async function handleSubmit(event) {
-  event.preventDefault();
-  setError("");
-  setNotice("");
+    const registrationNumber = String(form.registrationNumber || "")
+      .trim()
+      .toUpperCase();
 
-  const registrationNumber = String(
-    form.registrationNumber || ""
-  )
-    .trim()
-    .toUpperCase();
+    const type = String(form.vehicleType || "")
+      .trim()
+      .toLowerCase();
 
-  const type = String(form.vehicleType || "")
-    .trim()
-    .toLowerCase();
+    const seats = Number(form.capacity);
 
-  const seats = Number(form.capacity);
-
-  if (!registrationNumber) {
-    setError("Registration number is required.");
-    return;
-  }
-
-  if (!type) {
-    setError("Please select a vehicle type.");
-    return;
-  }
-
-  if (!Number.isInteger(seats) || seats < 1 || seats > 60) {
-    setError("Seating capacity must be between 1 and 60.");
-    return;
-  }
-
-  // Match the backend cab.validator.js field names.
-  const payload = {
-    registrationNumber,
-    type,
-    make: String(form.brand || "").trim(),
-    model: String(form.model || "").trim(),
-    seats,
-    
-  };
-
-  console.log("Vehicle API payload:", payload);
-
-  try {
-    setSaving(true);
-
-    if (editingVehicle) {
-      const vehicleId = getVehicleId(editingVehicle);
-
-      if (!vehicleId) {
-        throw new Error("Vehicle ID is missing.");
-      }
-
-      await updateCabVehicle(vehicleId, payload);
-      setNotice("Vehicle updated successfully.");
-    } else {
-      await createCabVehicle(payload);
-      setNotice("Vehicle created successfully.");
+    if (!registrationNumber) {
+      setError("Registration number is required.");
+      return;
     }
 
-    setModalOpen(false);
-    setEditingVehicle(null);
-    setForm({ ...EMPTY_FORM });
+    if (!type) {
+      setError("Please select a vehicle type.");
+      return;
+    }
 
-    await loadVehicles();
-  } catch (err) {
-    console.error(
-      "Vehicle API error:",
-      err?.response?.data || err
-    );
+    if (!Number.isInteger(seats) || seats < 1 || seats > 60) {
+      setError("Seating capacity must be between 1 and 60.");
+      return;
+    }
 
-    setError(getErrorMessage(err));
-  } finally {
-    setSaving(false);
+    const payload = {
+      registrationNumber,
+      type,
+      make: String(form.brand || "").trim(),
+      model: String(form.model || "").trim(),
+      seats,
+    };
+
+    console.log("Vehicle API payload:", payload);
+
+    try {
+      setSaving(true);
+
+      if (editingVehicle) {
+        const vehicleId = getVehicleId(editingVehicle);
+
+        if (!vehicleId) {
+          throw new Error("Vehicle ID is missing.");
+        }
+
+        await updateCabVehicle(vehicleId, payload);
+        setNotice("Vehicle updated successfully.");
+      } else {
+        await createCabVehicle(payload);
+        setNotice("Vehicle created successfully.");
+      }
+
+      setModalOpen(false);
+      setEditingVehicle(null);
+      setForm({ ...EMPTY_FORM });
+
+      await loadVehicles();
+    } catch (err) {
+      setError(getErrorMessage(err));
+    } finally {
+      setSaving(false);
+    }
   }
-}
-
-
 
   async function handleDelete(vehicle) {
+    if (saving) return;
+
     const vehicleId = getVehicleId(vehicle);
 
     if (!vehicleId) {
@@ -292,7 +287,7 @@ async function handleSubmit(event) {
     const registrationNumber = getRegistrationNumber(vehicle);
 
     const confirmed = window.confirm(
-      `Delete vehicle ${registrationNumber}? This action may be blocked if the vehicle is linked to existing bookings.`
+      `Delete vehicle ${registrationNumber}? This action may be blocked if the vehicle is linked to existing bookings.`,
     );
 
     if (!confirmed) return;
@@ -314,7 +309,7 @@ async function handleSubmit(event) {
   }
 
   return (
-    <main className="min-h-screen  ">
+    <main className="min-h-screen">
       <div className="mx-auto max-w-7xl space-y-6">
         <header className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
           <div>
@@ -323,9 +318,7 @@ async function handleSubmit(event) {
               Fleet Management
             </div>
 
-            <h1 className="text-2xl font-bold sm:text-3xl">
-              Cab Vehicles
-            </h1>
+            <h1 className="text-2xl font-bold sm:text-3xl">Cab Vehicles</h1>
 
             <p className="mt-2 text-sm text-slate-500">
               Register vehicles and manage your cab fleet.
@@ -337,12 +330,9 @@ async function handleSubmit(event) {
               type="button"
               onClick={loadVehicles}
               disabled={loading || saving}
-              className={`${buttonClass} border-slate-300 bg-white text-slate-700 hover:bg-slate-50`}
+              className={`${buttonClass} border-slate-300 bg-white text-slate-700 `}
             >
-              <RefreshCw
-                size={16}
-                className={loading ? "animate-spin" : ""}
-              />
+              <RefreshCw size={16} className={loading ? "" : ""} />
               Refresh
             </button>
 
@@ -350,7 +340,7 @@ async function handleSubmit(event) {
               type="button"
               onClick={openCreateModal}
               disabled={saving}
-              className={`${buttonClass} border-indigo-600 bg-black text-white hover:bg-black`}
+              className={`${buttonClass} border-indigo-600 bg-black text-white `}
             >
               <Plus size={17} />
               Add Vehicle
@@ -369,7 +359,7 @@ async function handleSubmit(event) {
             <button
               type="button"
               onClick={() => setNotice("")}
-              className="rounded p-1 hover:bg-emerald-100"
+              className="rounded p-1"
               aria-label="Dismiss notification"
             >
               <X size={16} />
@@ -382,17 +372,14 @@ async function handleSubmit(event) {
             role="alert"
             className="flex items-start gap-3 rounded border border-rose-200 bg-rose-50 p-4 text-sm text-rose-700"
           >
-            <AlertCircle
-              size={18}
-              className="mt-0.5 shrink-0"
-            />
+            <AlertCircle size={18} className="mt-0.5 shrink-0" />
 
             <span className="flex-1">{error}</span>
 
             <button
               type="button"
               onClick={() => setError("")}
-              className="rounded p-1 hover:bg-rose-100"
+              className="rounded p-1"
               aria-label="Dismiss error"
             >
               <X size={16} />
@@ -403,9 +390,7 @@ async function handleSubmit(event) {
         <section className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           <article className="rounded border border-slate-200 bg-white p-5">
             <p className="text-sm text-slate-500">Total Vehicles</p>
-            <p className="mt-2 text-3xl font-bold">
-              {vehicles.length}
-            </p>
+            <p className="mt-2 text-3xl font-bold">{vehicles.length}</p>
           </article>
 
           <article className="rounded border border-slate-200 bg-white p-5">
@@ -442,9 +427,7 @@ async function handleSubmit(event) {
 
             <select
               value={statusFilter}
-              onChange={(event) =>
-                setStatusFilter(event.target.value)
-              }
+              onChange={(event) => setStatusFilter(event.target.value)}
               className={`${inputClass} md:max-w-48`}
               aria-label="Filter vehicles by status"
             >
@@ -456,15 +439,12 @@ async function handleSubmit(event) {
 
           {loading ? (
             <div className="flex items-center justify-center gap-2 py-12 text-sm text-slate-500">
-              <LoaderCircle size={20} className="animate-spin" />
+              <LoaderCircle size={20} className="" />
               Loading vehicles...
             </div>
           ) : filteredVehicles.length === 0 ? (
             <div className="rounded border border-dashed border-slate-300 p-10 text-center">
-              <CarFront
-                size={32}
-                className="mx-auto text-slate-400"
-              />
+              <CarFront size={32} className="mx-auto text-slate-400" />
 
               <h2 className="mt-3 font-semibold text-slate-800">
                 No vehicles found
@@ -477,7 +457,7 @@ async function handleSubmit(event) {
               <button
                 type="button"
                 onClick={openCreateModal}
-                className="mt-4 inline-flex items-center gap-2 rounded border border-indigo-600 bg-black px-4 py-2.5 text-sm font-semibold text-white hover:bg-black"
+                className="mt-4 inline-flex items-center gap-2 rounded border border-indigo-600 bg-black px-4 py-2.5 text-sm font-semibold text-white"
               >
                 <Plus size={16} />
                 Add Vehicle
@@ -488,21 +468,11 @@ async function handleSubmit(event) {
               <table className="w-full min-w-[800px] text-left text-sm">
                 <thead>
                   <tr className="border-b border-slate-200 text-xs uppercase tracking-wide text-slate-500">
-                    <th className="px-3 py-3 font-semibold">
-                      Vehicle
-                    </th>
-                    <th className="px-3 py-3 font-semibold">
-                      Type
-                    </th>
-                    <th className="px-3 py-3 font-semibold">
-                      Brand / Model
-                    </th>
-                    <th className="px-3 py-3 font-semibold">
-                      Capacity
-                    </th>
-                    <th className="px-3 py-3 font-semibold">
-                      Status
-                    </th>
+                    <th className="px-3 py-3 font-semibold">Vehicle</th>
+                    <th className="px-3 py-3 font-semibold">Type</th>
+                    <th className="px-3 py-3 font-semibold">Brand / Model</th>
+                    <th className="px-3 py-3 font-semibold">Capacity</th>
+                    <th className="px-3 py-3 font-semibold">Status</th>
                     <th className="px-3 py-3 text-right font-semibold">
                       Actions
                     </th>
@@ -522,8 +492,7 @@ async function handleSubmit(event) {
                           </span>
 
                           <span className="font-semibold text-slate-900">
-                            {getRegistrationNumber(vehicle) ||
-                              "Not provided"}
+                            {getRegistrationNumber(vehicle) || "Not provided"}
                           </span>
                         </div>
                       </td>
@@ -543,9 +512,7 @@ async function handleSubmit(event) {
                       </td>
 
                       <td className="px-3 py-4">
-                        <StatusBadge
-                          active={vehicle.isActive !== false}
-                        />
+                        <StatusBadge active={vehicle.isActive !== false} />
                       </td>
 
                       <td className="px-3 py-4">
@@ -554,7 +521,7 @@ async function handleSubmit(event) {
                             type="button"
                             onClick={() => openEditModal(vehicle)}
                             disabled={saving}
-                            className="inline-flex items-center gap-1.5 rounded border border-slate-300 px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 disabled:opacity-50"
+                            className="inline-flex items-center gap-1.5 rounded border border-slate-300 px-3 py-2 text-xs font-semibold text-slate-700 disabled:opacity-50"
                           >
                             <Pencil size={14} />
                             Edit
@@ -564,7 +531,7 @@ async function handleSubmit(event) {
                             type="button"
                             onClick={() => handleDelete(vehicle)}
                             disabled={saving}
-                            className="inline-flex items-center gap-1.5 rounded border border-rose-200 px-3 py-2 text-xs font-semibold text-rose-700 hover:bg-rose-50 disabled:opacity-50"
+                            className="inline-flex items-center gap-1.5 rounded border border-rose-200 px-3 py-2 text-xs font-semibold text-rose-700 disabled:opacity-50"
                           >
                             <Trash2 size={14} />
                             Delete
@@ -596,10 +563,7 @@ async function handleSubmit(event) {
             >
               <div className="mb-5 flex items-start justify-between gap-3">
                 <div>
-                  <h2
-                    id="vehicle-modal-title"
-                    className="text-xl font-bold"
-                  >
+                  <h2 id="vehicle-modal-title" className="text-xl font-bold">
                     {editingVehicle ? "Edit Vehicle" : "Add Vehicle"}
                   </h2>
 
@@ -612,7 +576,7 @@ async function handleSubmit(event) {
                   type="button"
                   onClick={closeModal}
                   disabled={saving}
-                  className="rounded border border-slate-200 p-2 text-slate-500 hover:bg-slate-50"
+                  className="rounded border border-slate-200 p-2 text-slate-500"
                   aria-label="Close dialog"
                 >
                   <X size={18} />
@@ -624,16 +588,13 @@ async function handleSubmit(event) {
                   role="alert"
                   className="mb-4 flex items-start gap-2 rounded border border-rose-200 bg-rose-50 p-3 text-sm text-rose-700"
                 >
-                  <AlertCircle
-                    size={17}
-                    className="mt-0.5 shrink-0"
-                  />
+                  <AlertCircle size={17} className="mt-0.5 shrink-0" />
                   <span className="flex-1">{error}</span>
 
                   <button
                     type="button"
                     onClick={() => setError("")}
-                    className="rounded p-1 hover:bg-rose-100"
+                    className="rounded p-1"
                     aria-label="Dismiss error"
                   >
                     <X size={15} />
@@ -762,7 +723,7 @@ async function handleSubmit(event) {
                     type="button"
                     onClick={closeModal}
                     disabled={saving}
-                    className={`${buttonClass} border-slate-300 bg-white text-slate-700 hover:bg-slate-50`}
+                    className={`${buttonClass} border-slate-300 bg-white text-slate-700 `}
                   >
                     Cancel
                   </button>
@@ -770,13 +731,10 @@ async function handleSubmit(event) {
                   <button
                     type="submit"
                     disabled={saving}
-                    className={`${buttonClass} border-indigo-600 bg-black text-white hover:bg-black`}
+                    className={`${buttonClass} border-indigo-600 bg-black text-white `}
                   >
                     {saving ? (
-                      <LoaderCircle
-                        size={16}
-                        className="animate-spin"
-                      />
+                      <LoaderCircle size={16} className="" />
                     ) : (
                       <Save size={16} />
                     )}

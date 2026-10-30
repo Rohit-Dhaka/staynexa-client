@@ -62,10 +62,10 @@ const field =
   " rounded border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100";
 
 const secondaryButton =
-  "inline-flex items-center justify-center gap-2 rounded border border-slate-200 bg-white px-3 py-2.5 text-sm font-medium text-slate-600 transition hover:border-blue-200 hover:bg-black hover:text-blue-700";
+  "inline-flex items-center justify-center gap-2 rounded border border-slate-200 bg-white px-3 py-2.5 text-sm font-medium text-slate-600 transition ";
 
 const primaryButton =
-  "inline-flex items-center justify-center gap-2 rounded bg-black px-4 py-2.5 text-sm font-semibold text-white  transition hover:bg-black focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-offset-2";
+  "inline-flex items-center justify-center gap-2 rounded bg-black px-4 py-2.5 text-sm font-semibold text-white  transition  focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-offset-2";
 
 const parseKey = (key) => {
   const [year, month, day] = key.split("-").map(Number);
@@ -302,7 +302,7 @@ const MonthView = ({ onPickDay }) => {
                   key={day.date}
                   type="button"
                   onClick={() => onPickDay(day.date)}
-                  className={`min-h-[105px] p-2 text-left transition hover:z-10 hover:ring-2 hover:ring-inset hover:ring-blue-400 sm:p-3    ${heat(day.occupancyPercent)}`}
+                  className={`min-h-[105px] p-2 text-left transition  sm:p-3    ${heat(day.occupancyPercent)}`}
                 >
                   <div className="flex items-center justify-between gap-1">
                     <span
@@ -572,7 +572,7 @@ const TimelineView = ({ search = "" }) => {
                       onClick={() => navigate(`/bookings/${booking._id}`)}
                       title={`${booking.bookingNumber}, ${booking.guestName}, ${formatDate(booking.checkIn)} to ${formatDate(booking.checkOut)}`}
                       aria-label={`Open booking for ${booking.guestName}`}
-                      className={`z-10 m-1 min-w-0 self-stretch truncate rounded px-2 py-2 text-left text-[10px] font-semibold text-white  transition hover:brightness-95 sm:text-xs ${
+                      className={`z-10 m-1 min-w-0 self-stretch truncate rounded px-2 py-2 text-left text-[10px] font-semibold text-white  transition  sm:text-xs ${
                         BOOKING_STATUS_META[booking.status]?.bar ||
                         "bg-slate-100"
                       } ${booking.startsBeforeRange ? "rounded" : ""} ${
@@ -645,7 +645,7 @@ const BookingRows = ({ title, items, onOpen }) => (
             <button
               type="button"
               onClick={() => onOpen(booking._id)}
-              className="flex w-full min-w-0 flex-wrap items-center justify-between gap-3 py-3 text-left transition hover:bg-black/60"
+              className="flex w-full min-w-0 flex-wrap items-center justify-between gap-3 py-3 text-left transition "
             >
               <span className="min-w-0 flex-1">
                 <span className="block truncate text-sm font-medium text-[#13284d]">
@@ -1025,7 +1025,7 @@ const MiniCalendar = ({ onPickDay, selectedDate }) => {
             type="button"
             onClick={() => shift(-1)}
             aria-label="Previous month"
-            className="rounded p-1.5 text-white transition hover:bg-white/15"
+            className="rounded p-1.5 text-white transition "
           >
             <ChevronLeft size={17} />
           </button>
@@ -1034,7 +1034,7 @@ const MiniCalendar = ({ onPickDay, selectedDate }) => {
             type="button"
             onClick={() => shift(1)}
             aria-label="Next month"
-            className="rounded p-1.5 text-white transition hover:bg-white/15"
+            className="rounded p-1.5 text-white transition "
           >
             <ChevronRight size={17} />
           </button>
@@ -1083,7 +1083,7 @@ const MiniCalendar = ({ onPickDay, selectedDate }) => {
                       ? "bg-white font-bold text-blue-700 ring-2 ring-blue-200"
                       : isToday
                         ? "bg-black font-semibold text-white ring-1 ring-white/70"
-                        : "text-white hover:bg-white/20"
+                        : "text-white "
                   }`}
                 >
                   {Number(day.date.split("-")[2])}
@@ -1115,7 +1115,7 @@ const CalendarSidebar = ({ onPickDay, selectedDate, search, setSearch }) => (
           type="button"
           onClick={() => setSearch("")}
           aria-label="Clear search"
-          className="text-xs text-white/80 hover:text-white"
+          className="text-xs text-white/80 "
         >
           Clear
         </button>
@@ -1126,7 +1126,8 @@ const CalendarSidebar = ({ onPickDay, selectedDate, search, setSearch }) => (
   </aside>
 );
 
-const BookingCalendar = () => {
+
+const BookingCalendar = ({ embedded = false }) => {
   const navigate = useNavigate();
 
   const [view, setView] = useState("timeline");
@@ -1139,8 +1140,9 @@ const BookingCalendar = () => {
   };
 
   return (
-    <div className="min-h-screen ">
+    <div className={embedded ? "" : "min-h-screen"}>
       <div className="mx-auto  space-y-5">
+        {!embedded && (
         <header className="flex flex-wrap items-center justify-between gap-4">
           <div className="flex min-w-0 items-center gap-3">
             <div className="rounded bg-white p-3 text-[#3158e8] ">
@@ -1167,6 +1169,7 @@ const BookingCalendar = () => {
             New Booking
           </button>
         </header>
+        )}
 
         <div className=" items-start gap-5 ">
           <main className="min-w-0 overflow-hidden rounded border border-white bg-white ">
@@ -1180,7 +1183,7 @@ const BookingCalendar = () => {
                   View and manage your hotel calendar
                 </p>
               </div>
-              <div className="mb-5 grid grid-cols-2 gap-1 rounded bg-slate-100 p-1 sm:grid-cols-4">
+              <div className="sm:mb-5 grid  gap-1 rounded bg-slate-100 p-1 grid-cols-4">
                 {VIEWS.map((item) => (
                   <button
                     key={item.value}
@@ -1190,7 +1193,7 @@ const BookingCalendar = () => {
                     className={`rounded px-2 py-2.5 text-xs font-medium transition sm:text-sm ${
                       view === item.value
                         ? "bg-white text-[#3158e8] "
-                        : "text-slate-500 hover:text-slate-800"
+                        : "text-slate-500 "
                     }`}
                   >
                     {item.label}
@@ -1211,9 +1214,7 @@ const BookingCalendar = () => {
               {view === "availability" && <AvailabilityView />}
             </div>
           </main>
-        </div>
-
-     
+        </div>     
       </div>
     </div>
   );
